@@ -2,6 +2,7 @@ package org.cheonyakplanet.be.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.cheonyakplanet.be.domain.Stamped;
 
 @Entity
 @Table(catalog = "planet", name = "subscription_price_info")
@@ -9,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SubscriptionPriceInfo {
+public class SubscriptionPriceInfo extends Stamped {
 
     @Id
     @Column(name = "id")

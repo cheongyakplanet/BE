@@ -2,6 +2,7 @@ package org.cheonyakplanet.be.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.cheonyakplanet.be.domain.Stamped;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Getter @Setter
-public class SubscriptionInfo {
+public class SubscriptionInfo extends Stamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // PK: 자동 생성 ID

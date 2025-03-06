@@ -2,6 +2,7 @@ package org.cheonyakplanet.be.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.cheonyakplanet.be.domain.Stamped;
 
 
 import java.math.BigDecimal;
@@ -12,7 +13,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 @Table(catalog = "planet", name = "subscription_supply_target")
-public class SubscriptionSupplyTarget {
+public class SubscriptionSupplyTarget extends Stamped {
     @Id
     @Column(name = "id")
     private Long id;

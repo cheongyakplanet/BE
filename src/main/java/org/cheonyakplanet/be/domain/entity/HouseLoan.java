@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.cheonyakplanet.be.domain.Stamped;
 
 @Entity
 @Table(catalog = "planet", name = "houseloan_product")
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class HouseLoan {
+public class HouseLoan extends Stamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // PK: 자동 생성 ID

@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.cheonyakplanet.be.domain.Stamped;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 

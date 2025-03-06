@@ -34,15 +34,9 @@ public class InfoController {
      */
     @GetMapping("/subscription/{id}")
     @Operation(summary = "id로 1건의 청약 물건 조회", description = "요소 클릭시 사용")
-    public ResponseEntity<?> getSubscription(@PathVariable("id") Long id) {
-        List<SubscriptionDetailDTO> subscriptionInfo = infoService.getSubscriptionById(id);
-        return ResponseEntity.ok(new ApiResponse("success", subscriptionInfo));
-    }
-
-    @GetMapping("/subscription/{id}/address")
-    @Operation(summary = "청약 물건의 id로 위도 경도 불러오기")
-    public ResponseEntity<?> getSubscriptionAddress(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(new ApiResponse<>("success",infoService.getSubscriptionAddr(id)));
+    public ResponseEntity<ApiResponse> getSubscription(@PathVariable("id") Long id) {
+        Object result = infoService.getSubscriptionById(id);
+        return ResponseEntity.ok(new ApiResponse("success", result));
     }
 
     /**

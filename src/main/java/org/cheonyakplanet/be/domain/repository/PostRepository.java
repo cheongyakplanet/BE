@@ -20,4 +20,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findPostsOrderByLikes(Pageable pageable);
 
     Page<Post> findAllByDeletedAtIsNull(Pageable pageable);
+
+    Page<Post> findAllByDeletedAtIsNullAndIsBlindIsFalse(Pageable pageable);
 }
