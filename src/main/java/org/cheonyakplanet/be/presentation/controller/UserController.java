@@ -9,17 +9,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.cheonyakplanet.be.application.dto.ApiResponse;
 import org.cheonyakplanet.be.application.dto.user.LoginRequestDTO;
 import org.cheonyakplanet.be.application.dto.user.SignupRequestDTO;
-import org.cheonyakplanet.be.application.dto.user.UserDTO;
-import org.cheonyakplanet.be.application.dto.user.UserUpdateRequestDTO;
-import org.cheonyakplanet.be.domain.repository.UserTokenRepository;
+
 import org.cheonyakplanet.be.domain.service.UserService;
 import org.cheonyakplanet.be.infrastructure.jwt.JwtUtil;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.cheonyakplanet.be.presentation.exception.CustomException;
 import org.cheonyakplanet.be.presentation.exception.ErrorCode;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -31,9 +31,7 @@ import java.io.IOException;
 public class UserController {
 
     private final UserService userService;
-    private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-    private final UserTokenRepository userTokenRepository;
 
     /**
      * 회원가입
@@ -57,8 +55,8 @@ public class UserController {
     @PostMapping("/login")
     @Operation(summary = "로그인", description = "이메일 입력")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO requestDto) {
-        ApiResponse response = userService.login(requestDto);
-        return ResponseEntity.ok().body(response);
+        Object result = userService.login(requestDto);
+        return ResponseEntity.ok(new ApiResponse("success", result));
     }
 
     /**
@@ -70,11 +68,13 @@ public class UserController {
      */
     @PostMapping("/logout")
     @Operation(summary = "로그아웃", description = "사용자 로그아웃 처리")
-    public ResponseEntity<?> logout(HttpServletRequest request) {
-        return ResponseEntity.ok(userService.logout(request));
+    public ResponseEntity<ApiResponse> logout(HttpServletRequest request) {
+        Object result = userService.logout(request);
+        return ResponseEntity.ok(new ApiResponse("success", result));
     }
 
     @GetMapping("/kako/callback")
+    @Operation(summary = "소셜 로그인 - 카카오", description = "미완성")
     public void kakaoLogin(@RequestParam String code, HttpServletResponse response) throws IOException {
         String email = userService.kakaoLogin(code);
 
@@ -88,9 +88,9 @@ public class UserController {
 
     @PostMapping("/auth/refresh")
     @Operation(summary = "토큰 갱신")
-    public ResponseEntity<?> refreshAccessToken(@RequestParam String refreshToken) {
-        ApiResponse response = userService.refreshAccessToken(refreshToken);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<ApiResponse> refreshAccessToken(@RequestParam String refreshToken) {
+        Object result = userService.refreshAccessToken(refreshToken);
+        return ResponseEntity.ok(new ApiResponse("success", result));
     }
 
     @GetMapping("/mypage")
