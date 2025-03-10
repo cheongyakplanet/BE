@@ -20,10 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -103,7 +100,15 @@ public class InfoService {
         Page<SubscriptionInfo> result = subscriptionInfoRepository.findAll(pageable);
         List<SubscriptionDTO> subscriptionDTOList = result.stream()
                 .map(SubscriptionDTO::fromEntity).collect(Collectors.toList());
-        return subscriptionDTOList;
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", subscriptionDTOList);
+        response.put("totalPages", result.getTotalPages());
+        response.put("totalElements", result.getTotalElements());
+        response.put("currentPage", result.getNumber() + 1);
+        response.put("size", result.getSize());
+
+        return response;
     }
 
     public Object getMySubscriptions(UserDetailsImpl userDetails) {
