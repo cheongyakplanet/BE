@@ -1,5 +1,6 @@
 package org.cheonyakplanet.be.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.cheonyakplanet.be.domain.Stamped;
@@ -169,11 +170,14 @@ public class SubscriptionInfo extends Stamped {
     private String detail;
 
     @OneToMany(mappedBy = "subscriptionInfo", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<SubscriptionPriceInfo> subscriptionPriceInfo;
 
     @OneToMany(mappedBy = "subscriptionInfo", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<SubscriptionSpecialSupplyTarget> subscriptionSpecialSupplyTarget;
 
     @OneToMany(mappedBy = "subscriptionInfo", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<SubscriptionSupplyTarget> subscriptionSupplyTarget;
 }
