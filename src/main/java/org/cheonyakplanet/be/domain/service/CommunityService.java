@@ -81,13 +81,7 @@ public class CommunityService {
 
         Page<Post> postPage = postRepository.findAllByDeletedAtIsNullAndIsBlindIsFalse(pageable);
 
-        return postPage.map(post -> PostDTO.builder()
-                .id(post.getId())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .username(post.getUsername())
-                .createdAt(post.getCreatedAt())
-                .build());
+        return postPage.map(Post::ToDTO);
     }
 
     @Transactional

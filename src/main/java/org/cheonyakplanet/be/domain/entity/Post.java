@@ -52,7 +52,7 @@ public class Post extends Stamped {
         this.views = (this.views == null ? 1L : this.views + 1);
     }
 
-    public PostDTO ToDTO(Post post) {
+    public static PostDTO ToDTO(Post post) {
         return PostDTO.builder()
                 .id(post.getId())
                 .username(post.getUsername())
