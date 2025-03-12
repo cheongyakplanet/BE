@@ -10,6 +10,8 @@ import org.cheonyakplanet.be.application.dto.ApiResponse;
 import org.cheonyakplanet.be.application.dto.user.LoginRequestDTO;
 import org.cheonyakplanet.be.application.dto.user.SignupRequestDTO;
 
+import org.cheonyakplanet.be.application.dto.user.UserDTO;
+import org.cheonyakplanet.be.application.dto.user.UserUpdateRequestDTO;
 import org.cheonyakplanet.be.domain.service.UserService;
 import org.cheonyakplanet.be.infrastructure.jwt.JwtUtil;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
@@ -96,7 +98,6 @@ public class UserController {
     @GetMapping("/mypage")
     @Operation(summary = "마이페이지 조회", description = "사용자의 전체 정보를 반환")
     public ResponseEntity<?> getMyPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-
         UserDTO userDTO = userService.getMyPage(userDetails.getUsername());
         return ResponseEntity.ok(new ApiResponse("success", userDTO));
     }
