@@ -58,6 +58,8 @@ public class Post extends Stamped {
                 .username(post.getUsername())
                 .title(post.getTitle())
                 .content(post.getContent())
+                .views(post.getViews())
+                .likes(post.getLikes())
                 .createdAt(post.getCreatedAt())
                 .build();
     }
