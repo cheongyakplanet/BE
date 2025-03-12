@@ -97,8 +97,7 @@ public class UserService {
      * @param requestDTO
      * @return
      */
-    public ApiResponse login(LoginRequestDTO requestDTO) {
-
+    public Object login(LoginRequestDTO requestDTO) {
         try {
             // 1) Spring Security AuthenticationManager 로 인증 시도
             Authentication authentication = authenticationManager.authenticate(
@@ -115,12 +114,10 @@ public class UserService {
             String refreshToken = jwtUtil.createRefreshToken(principal.getUsername(), principal.getUser().getRole());
             jwtUtil.storeTokens(principal.getUsername(), accessToken, refreshToken);
 
-            ApiResponse apiResponse = new ApiResponse("success", Map.of(
+            return Map.of(
                     "accessToken", accessToken,
                     "refreshToken", refreshToken
-            ));
-
-            return apiResponse;
+            );
         } catch (Exception e) {
             log.info(e.getMessage());
             log.error("Authentication failed", e);
@@ -128,11 +125,11 @@ public class UserService {
         }
     }
 
-    public ApiResponse logout(HttpServletRequest request) {
+    public Object logout(HttpServletRequest request) {
         // 요청 헤더에서 토큰 추출 (Bearer 접두어 제외)
         String token = jwtUtil.getTokenFromRequest(request);
         if (!StringUtils.hasText(token)) {
-            return new ApiResponse("fail", "토큰이 존재하지 않습니다.");
+            throw new CustomException(ErrorCode.AUTH001, "토큰이 존재하지 않습니다.");
         }
 
         // "Bearer " 접두어를 포함하여 토큰 조회
@@ -141,9 +138,9 @@ public class UserService {
             UserToken userToken = tokenEntityOpt.get();
             userToken.blacklist(); // 토큰을 블랙리스트에 등록
             userTokenRepository.save(userToken);
-            return new ApiResponse("success", "로그아웃 성공");
+            return "로그아웃 성공";
         } else {
-            return new ApiResponse("fail", "토큰 정보가 존재하지 않습니다.");
+            throw new CustomException(ErrorCode.AUTH002, "토큰 정보가 존재하지 않습니다.");
         }
     }
 
@@ -230,8 +227,7 @@ public class UserService {
         return new KakaoUserInfoDto(id, nickname, email);
     }
 
-    public ApiResponse refreshAccessToken(String refreshToken) {
-        // Remove Bearer prefix if present
+    public Object refreshAccessToken(String refreshToken) {
         String pureToken = jwtUtil.substringToken(refreshToken);
 
         String email = jwtUtil.getUserInfoFromToken(pureToken).getSubject();
@@ -242,11 +238,10 @@ public class UserService {
             throw new CustomException(ErrorCode.AUTH005, "Refresh Token이 유효하지 않습니다.");
         }
 
-        // Issue a new Access Token and update repository
         String newAccessToken = jwtUtil.createAccessToken(email, UserRoleEnum.USER);
         jwtUtil.storeTokens(email, newAccessToken, pureToken);
 
-        return new ApiResponse("success", Map.of("accessToken", newAccessToken));
+        return Map.of("accessToken", newAccessToken);
     }
 
     @Transactional(readOnly = true)

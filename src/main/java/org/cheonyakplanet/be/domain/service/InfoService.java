@@ -11,24 +11,16 @@ import org.cheonyakplanet.be.domain.entity.User;
 import org.cheonyakplanet.be.domain.repository.SggCodeRepository;
 import org.cheonyakplanet.be.domain.repository.SubscriptionInfoRepository;
 import org.cheonyakplanet.be.domain.repository.SubscriptionLocationInfoRepository;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.cheonyakplanet.be.presentation.exception.CustomException;
 import org.cheonyakplanet.be.presentation.exception.ErrorCode;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -43,14 +35,24 @@ public class InfoService {
     /**
      * 단일 청약 정보를 조회
      */
-    public List<SubscriptionDetailDTO> getSubscriptionById(Long id) {
-        Optional<SubscriptionInfo> result = subscriptionInfoRepository.findById(id);
+    public Object getSubscriptionById(Long id) {
+        // 청약 정보 조회
+        Optional<SubscriptionInfo> subscriptionInfoOpt = subscriptionInfoRepository.findById(id);
 
-        if (result.isPresent()) {
-            return result.stream().map(SubscriptionDetailDTO::fromEntity).collect(Collectors.toList());
-        } else {
+        if (subscriptionInfoOpt.isEmpty()) {
             throw new CustomException(ErrorCode.INFO001, "해당 아이디의 청약건 없음");
         }
+
+        SubscriptionInfo subscriptionInfo = subscriptionInfoOpt.get();
+
+        // 위치 정보 조회
+        Optional<SubscriptionLocationInfo> locationInfoOpt = subscriptionLocationInfoRepository.findById(id);
+        SubscriptionLocationInfo locationInfo = locationInfoOpt.orElse(null);
+
+        // DTO 변환 (위치 정보 포함)
+        SubscriptionDetailDTO detailDTO = SubscriptionDetailDTO.fromEntity(subscriptionInfo, locationInfo);
+
+        return detailDTO;
     }
 
     /**
@@ -98,7 +100,15 @@ public class InfoService {
         Page<SubscriptionInfo> result = subscriptionInfoRepository.findAll(pageable);
         List<SubscriptionDTO> subscriptionDTOList = result.stream()
                 .map(SubscriptionDTO::fromEntity).collect(Collectors.toList());
-        return subscriptionDTOList;
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", subscriptionDTOList);
+        response.put("totalPages", result.getTotalPages());
+        response.put("totalElements", result.getTotalElements());
+        response.put("currentPage", result.getNumber() + 1);
+        response.put("size", result.getSize());
+
+        return response;
     }
 
     public Object getMySubscriptions(UserDetailsImpl userDetails) {
@@ -121,7 +131,7 @@ public class InfoService {
                     if (parts.length < 2) {
                         throw new IllegalArgumentException("관심지역 형식이 올바르지 않습니다: " + interestLocal);
                     }
-                    log.error("지역 : "+parts[0].trim()+"도시 : "+parts[1].trim());
+                    log.error("지역 : " + parts[0].trim() + "도시 : " + parts[1].trim());
                     return subscriptionInfoRepository
                             .findByRegionAndCity(parts[0].trim(), parts[1].trim())
                             .stream();
@@ -134,7 +144,8 @@ public class InfoService {
     }
 
     /**
-     * TODO : 조회할 떄마다 호출하는게 아닌 DB 테이블저장으로 리팩토링
+     * 위도 경도 조회
+     *
      * @param id
      * @return
      */

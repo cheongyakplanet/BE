@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.cheonyakplanet.be.application.dto.ApiResponse;
 import org.cheonyakplanet.be.application.dto.CoordinateResponseDTO;
-import org.cheonyakplanet.be.domain.entity.SubscriptionLocationInfo;
 import org.cheonyakplanet.be.domain.service.FinanceService;
 import org.cheonyakplanet.be.domain.service.SubscriptionService;
 import org.springframework.http.ResponseEntity;
@@ -25,14 +24,14 @@ public class DataController {
     private final FinanceService financeService;
 
     @GetMapping("/subscription/apartment")
-    @Operation(summary = "아파트 청약 불러오기",description = "swagger")
-    public ResponseEntity<?> getSubscriptionData(){
+    @Operation(summary = "아파트 청약 불러오기", description = "swagger")
+    public ResponseEntity<?> getSubscriptionData() {
         String result = subscriptionService.updateSubAPT();
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(new ApiResponse<>("success", result));
     }
 
     @PutMapping("/updateAllCoordinates")
-    @Operation(summary = "모든 SubscriptionInfo 행의 위도/경도 업데이트",description = "SubscriptionLocationInfo에 저장")
+    @Operation(summary = "모든 SubscriptionInfo 행의 위도/경도 업데이트", description = "SubscriptionLocationInfo에 저장")
     public ResponseEntity<?> updateAllCoordinates() {
         List<CoordinateResponseDTO> coordinateResponses = subscriptionService.updateAllSubscriptionCoordinates();
         return ResponseEntity.ok(new ApiResponse<>("success", coordinateResponses));
@@ -40,15 +39,15 @@ public class DataController {
 
     @GetMapping("/mortgage")
     @Operation(summary = "모기지 상품 불러오기")
-    public ResponseEntity<?> getFinanceData(){
+    public ResponseEntity<?> getFinanceData() {
         String result = financeService.updateMortgageLoan();
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(new ApiResponse<>("success", result));
     }
 
     @GetMapping("/hosueloan")
     @Operation(summary = "주택담보 대출 상품 불어오기")
-    public ResponseEntity<?> getHouseLoanData(){
+    public ResponseEntity<?> getHouseLoanData() {
         String result = financeService.updateRenthouse();
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(new ApiResponse<>("success", result));
     }
 }

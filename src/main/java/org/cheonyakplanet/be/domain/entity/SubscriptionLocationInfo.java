@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.cheonyakplanet.be.domain.Stamped;
 
 @Entity
 @Table(catalog = "planet",name = "subscription_location_info")
@@ -15,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SubscriptionLocationInfo {
+public class SubscriptionLocationInfo extends Stamped {
 
     @Id
     private Long id;

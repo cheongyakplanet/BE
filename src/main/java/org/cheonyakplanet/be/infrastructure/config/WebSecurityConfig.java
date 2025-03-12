@@ -1,7 +1,9 @@
 package org.cheonyakplanet.be.infrastructure.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.cheonyakplanet.be.domain.repository.UserTokenRepository;
+import org.cheonyakplanet.be.presentation.exception.JwtExceptionFilter;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.filter.CorsFilter;
 import org.cheonyakplanet.be.infrastructure.jwt.JwtAuthenticationFilter;
@@ -36,6 +38,7 @@ public class WebSecurityConfig {
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final UserTokenRepository userTokenRepository;
+    private final ObjectMapper objectMapper;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -91,6 +94,8 @@ public class WebSecurityConfig {
                 // 4) 나머지는 인증필요
                 .anyRequest().authenticated()
         );
+        // JWT 예외 처리 필터 추가 (다른 필터보다 먼저 실행되어야 함)
+        http.addFilterBefore(jwtExceptionFilter(), corsFilter().getClass());
 
         http.addFilterBefore(corsFilter(), JwtAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
@@ -111,6 +116,11 @@ public class WebSecurityConfig {
 
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
+    }
+
+    @Bean
+    public JwtExceptionFilter jwtExceptionFilter() {
+        return new JwtExceptionFilter(objectMapper);
     }
 
 
