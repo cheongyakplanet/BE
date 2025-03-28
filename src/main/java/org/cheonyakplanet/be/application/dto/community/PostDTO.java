@@ -22,6 +22,10 @@ public class PostDTO {
     @Schema(description = "게시글 작성자", example = "tester")
     private String username;
 
+    private Long views;
+
+    private int likes;
+
     private LocalDateTime createdAt;
 
 }

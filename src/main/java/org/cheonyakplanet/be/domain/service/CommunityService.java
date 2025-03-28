@@ -74,7 +74,7 @@ public class CommunityService {
         } else if ("views".equalsIgnoreCase(sort)) {
             sortOrder = Sort.by(Sort.Direction.DESC, "views");
         } else {
-            sortOrder = Sort.by(Sort.Direction.ASC, "createdAt");
+            sortOrder = Sort.by(Sort.Direction.DESC, "createdAt");
         }
 
         Pageable pageable = PageRequest.of(page, size, sortOrder);
