@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.util.List;
 
 import org.cheonyakplanet.be.application.dto.ApiResponse;
+import org.cheonyakplanet.be.application.dto.user.InterestLocationDTO;
 import org.cheonyakplanet.be.application.dto.user.LoginRequestDTO;
+import org.cheonyakplanet.be.application.dto.user.MyPageDTO;
 import org.cheonyakplanet.be.application.dto.user.SignupRequestDTO;
 import org.cheonyakplanet.be.application.dto.user.UserDTO;
 import org.cheonyakplanet.be.application.dto.user.UserUpdateRequestDTO;
@@ -100,8 +102,8 @@ public class UserController {
 	@GetMapping("/mypage")
 	@Operation(summary = "마이페이지 조회", description = "사용자의 전체 정보를 반환")
 	public ResponseEntity<?> getMyPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-		UserDTO userDTO = userService.getMyPage(userDetails.getUsername());
-		return ResponseEntity.ok(new ApiResponse("success", userDTO));
+		MyPageDTO myPageDTO = userService.getMyPage(userDetails.getUsername());
+		return ResponseEntity.ok(new ApiResponse("success", myPageDTO));
 	}
 
 	@PatchMapping("/mypage")
@@ -156,9 +158,9 @@ public class UserController {
 	@PostMapping("/location")
 	@Operation(summary = "관심 지역 추가", description = "사용자의 관심 지역을 추가")
 	public ResponseEntity<?> addInterestLocation(@AuthenticationPrincipal UserDetailsImpl userDetails,
-		@RequestParam List<String> location) {
+		@RequestBody InterestLocationDTO interestLocationDTO) {
 
-		ApiResponse response = userService.addInterestLocations(userDetails.getUsername(), location);
+		ApiResponse response = userService.addInterestLocations(userDetails.getUsername(), interestLocationDTO);
 		return ResponseEntity.ok(response);
 	}
 

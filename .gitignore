@@ -37,3 +37,4 @@ out/
 .vscode/
 gradle/wrapper/gradle-wrapper.properties
 src/main/resources/application.properties
+src/main/resources/properties/env.properties
