@@ -41,27 +41,4 @@ public class TestController {
         return "login";
     }
 
-    @GetMapping("/subscription/detail/view")
-    @Operation(summary = "test")
-    public String subscriptionDetailView(Model model) {
-
-        List<SubscriptionDetailDTO> subscriptionList = infoService.getSubscriptionById(2L);
-
-        if (subscriptionList.isEmpty()) {
-            throw new RuntimeException("청약 정보를 찾을 수 없습니다.");
-        }
-
-        SubscriptionDetailDTO subscriptionInfo = subscriptionList.get(0);
-
-        // D-Day 계산
-        LocalDate today = LocalDate.now();
-        LocalDate rceptStartDate = subscriptionInfo.getCntrctCnclsBgnde()   ;
-        long dDay = ChronoUnit.DAYS.between(today, rceptStartDate);
-
-        model.addAttribute("subscription", subscriptionInfo);
-        model.addAttribute("dDay", dDay);
-
-
-        return "subscriptionDetail";
-    }
 }

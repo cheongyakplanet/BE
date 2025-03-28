@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.cheonyakplanet.be.domain.Stamped;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(catalog = "planet", name = "Comment")
-public class Comment {
+public class Comment extends Stamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

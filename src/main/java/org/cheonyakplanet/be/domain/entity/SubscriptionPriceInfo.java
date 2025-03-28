@@ -1,7 +1,9 @@
 package org.cheonyakplanet.be.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.cheonyakplanet.be.domain.Stamped;
 
 @Entity
 @Table(catalog = "planet", name = "subscription_price_info")
@@ -9,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SubscriptionPriceInfo {
+public class SubscriptionPriceInfo extends Stamped {
 
     @Id
     @Column(name = "id")
@@ -35,5 +37,6 @@ public class SubscriptionPriceInfo {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subscription_info_id", insertable = false, updatable = false)
+    @JsonBackReference
     private SubscriptionInfo subscriptionInfo;
 }

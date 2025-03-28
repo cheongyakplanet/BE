@@ -22,4 +22,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u.interestLocal1,u.interestLocal2,u.interestLocal3,u.interestLocal4,u.interestLocal5 from User u where u.email = :email")
     List<Object[]> myInterestLocals(@Param("email") String email);
 
+    Optional<User> findByEmailAndDeletedAtIsNull(String email);
+
+    Optional<User> findByEmailAndUsernameAndDeletedAtIsNull(String email, String username);
+
 }

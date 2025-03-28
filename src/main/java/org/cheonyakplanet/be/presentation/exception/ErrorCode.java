@@ -23,7 +23,6 @@ public enum ErrorCode {
     AUTH006("AUTH006","로그아웃된 토큰"),
     AUTH010("AUTH010","토큰 없음"),
 
-
     //community
     COMU001("COMU001","게시글 없음"),
     COMU002("COMU002","게시글에 수정 권한 없음"),
@@ -36,6 +35,15 @@ public enum ErrorCode {
 
     // Other
     OTHER001("OTHER001","필터 부분 에러"),
+
+    // Mypage
+    USER001("USER001", "사용자를 찾을 수 없습니다."),
+    USER002("USER002", "유효하지 않은 입력값입니다."),
+    USER003("USER003", "이미 탈퇴한 사용자입니다."),
+    USER004("USER004", "회원 탈퇴 시 토큰 삭제에 실패했습니다."),
+    LOCATION001("LOC001", "이미 등록된 관심 지역입니다."),
+    LOCATION002("LOC002", "최대 5개의 관심 지역만 등록할 수 있습니다."),
+    LOCATION003("LOC003", "등록되지 않은 관심 지역입니다."),
 
 
     UNKNOWN_ERROR("UNK000","알 수 없는 에러 발생");

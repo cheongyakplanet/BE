@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.cheonyakplanet.be.domain.entity.SubscriptionInfo;
+import org.cheonyakplanet.be.domain.entity.SubscriptionLocationInfo;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -80,13 +81,16 @@ public class SubscriptionDetailDTO {
     private String district;                      // 예: 온양읍
     private String detail;                        // 상세주소
 
+    private String latitude;                      // 위도
+    private String longitude;                     // 경도
+
     // 추가된 관계 세부정보
     private List<SubscriptionPriceInfoDTO> priceInfo;
     private List<SubscriptionSpecialSupplyTargetDTO> specialSupplyTarget;
     private List<SubscriptionSupplyTargetDTO> supplyTarget;
 
-    public static SubscriptionDetailDTO fromEntity(SubscriptionInfo entity) {
-        return SubscriptionDetailDTO.builder()
+    public static SubscriptionDetailDTO fromEntity(SubscriptionInfo entity, SubscriptionLocationInfo locationInfo) {
+        SubscriptionDetailDTO dto = SubscriptionDetailDTO.builder()
                 .id(entity.getId())
                 .bsnsMbyNm(entity.getBsnsMbyNm())
                 .cnstrctEntrpsNm(entity.getCnstrctEntrpsNm())
@@ -153,5 +157,13 @@ public class SubscriptionDetailDTO {
                                 .map(SubscriptionSupplyTargetDTO::fromEntity)
                                 .collect(Collectors.toList()))
                 .build();
+
+        // 위치 정보가 있으면 위도/경도 설정
+        if (locationInfo != null) {
+            dto.setLatitude(locationInfo.getLatitude());
+            dto.setLongitude(locationInfo.getLongitude());
+        }
+
+        return dto;
     }
 }
