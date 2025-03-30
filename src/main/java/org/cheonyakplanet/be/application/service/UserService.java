@@ -1,4 +1,4 @@
-package org.cheonyakplanet.be.domain.service;
+package org.cheonyakplanet.be.application.service;
 
 import java.net.URI;
 import java.util.List;

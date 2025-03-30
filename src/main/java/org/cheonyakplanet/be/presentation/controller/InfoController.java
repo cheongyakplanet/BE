@@ -3,7 +3,7 @@ package org.cheonyakplanet.be.presentation.controller;
 import java.util.List;
 
 import org.cheonyakplanet.be.application.dto.ApiResponse;
-import org.cheonyakplanet.be.domain.service.InfoService;
+import org.cheonyakplanet.be.application.service.InfoService;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,6 +27,12 @@ public class InfoController {
 
 	private final InfoService infoService;
 
+	/**
+	 * 모든 청약 불러오기
+	 * @param page
+	 * @param size
+	 * @return
+	 */
 	@GetMapping("/subscription")
 	@Operation(summary = "모든 청약 불러오기", description = "간단한 정보만 제공, 마감일 순으로 정렬",
 		responses = {
@@ -533,6 +539,11 @@ public class InfoController {
 		return ResponseEntity.ok(new ApiResponse("success", result));
 	}
 
+	/**
+	 * 나의 관심지역 청약 리스트
+	 * @param userDetails
+	 * @return
+	 */
 	@GetMapping("/subscription/mysubscriptions")
 	@Operation(summary = "나의 관심지역 청약 리스트", description = "관심지역이 제대로 등록되어 있어야 함",
 		responses = {

@@ -10,7 +10,7 @@ import org.cheonyakplanet.be.application.dto.user.MyPageDTO;
 import org.cheonyakplanet.be.application.dto.user.SignupRequestDTO;
 import org.cheonyakplanet.be.application.dto.user.UserDTO;
 import org.cheonyakplanet.be.application.dto.user.UserUpdateRequestDTO;
-import org.cheonyakplanet.be.domain.service.UserService;
+import org.cheonyakplanet.be.application.service.UserService;
 import org.cheonyakplanet.be.infrastructure.jwt.JwtUtil;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
