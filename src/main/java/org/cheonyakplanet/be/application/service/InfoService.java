@@ -8,13 +8,21 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.cheonyakplanet.be.application.dto.CoordinateResponseDTO;
+import org.cheonyakplanet.be.application.dto.infra.InfraResponseDTO;
+import org.cheonyakplanet.be.application.dto.infra.SchoolDTO;
+import org.cheonyakplanet.be.application.dto.infra.SchoolListDTO;
+import org.cheonyakplanet.be.application.dto.infra.StationDTO;
+import org.cheonyakplanet.be.application.dto.infra.StationListDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionDetailDTO;
+import org.cheonyakplanet.be.domain.entity.School;
+import org.cheonyakplanet.be.domain.entity.Station;
 import org.cheonyakplanet.be.domain.entity.SubscriptionInfo;
 import org.cheonyakplanet.be.domain.entity.SubscriptionLocationInfo;
 import org.cheonyakplanet.be.domain.entity.User;
+import org.cheonyakplanet.be.domain.repository.SchoolRepository;
 import org.cheonyakplanet.be.domain.repository.SggCodeRepository;
+import org.cheonyakplanet.be.domain.repository.StationRepository;
 import org.cheonyakplanet.be.domain.repository.SubscriptionInfoRepository;
 import org.cheonyakplanet.be.domain.repository.SubscriptionLocationInfoRepository;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
@@ -37,6 +45,11 @@ public class InfoService {
 	private final SubscriptionInfoRepository subscriptionInfoRepository;
 	private final SggCodeRepository sggCodeRepository;
 	private final SubscriptionLocationInfoRepository subscriptionLocationInfoRepository;
+	private final StationRepository stationRepository;
+	private final SchoolRepository schoolRepository;
+
+	// 하버사인 공식을 위한 Earth radius in kilometers
+	private static final double EARTH_RADIUS = 6371.0;
 
 	/**
 	 * 단일 청약 정보를 조회
@@ -149,24 +162,135 @@ public class InfoService {
 			.collect(Collectors.toList());
 	}
 
+	public InfraResponseDTO getNearbyInfrastructure(Long subscriptionId) {
+		// 청약 물건의 위치 정보 조회
+		Optional<SubscriptionLocationInfo> locationOpt = subscriptionLocationInfoRepository.findById(subscriptionId);
+
+		if (locationOpt.isEmpty() || locationOpt.get().getLatitude() == null
+			|| locationOpt.get().getLongitude() == null) {
+			throw new CustomException(ErrorCode.INFO003, "위치 정보가 없는 청약건입니다.");
+		}
+
+		SubscriptionLocationInfo location = locationOpt.get();
+		double latitude = Double.parseDouble(location.getLatitude());
+		double longitude = Double.parseDouble(location.getLongitude());
+
+		// 주변 2km 내의 역과 학교 조회
+		List<Station> nearbyStations = findNearbyStations(latitude, longitude, 1.0);
+		List<School> nearbySchools = findNearbySchools(latitude, longitude, 1.0);
+
+		List<StationDTO> stationDTOs = nearbyStations.stream()
+			.map(station -> {
+				double distance = calculateDistance(latitude, longitude, station.getLatitude(), station.getLongitude());
+				return StationDTO.builder()
+					.number(station.getNumber())
+					.name(station.getNmKor())
+					.line(station.getLine())
+					.operator(station.getOperator())
+					.isTransfer("Y".equals(station.getIsTransfer()))
+					.latitude(station.getLatitude())
+					.longitude(station.getLongitude())
+					.distance(Math.round(distance * 100) / 100.0) // Round to 2 decimal places
+					.build();
+			})
+			.sorted((s1, s2) -> Double.compare(s1.getDistance(), s2.getDistance()))
+			.collect(Collectors.toList());
+
+		List<SchoolDTO> schoolDTOs = nearbySchools.stream()
+			.map(school -> {
+				double distance = calculateDistance(latitude, longitude, school.getLatitude(), school.getLongitude());
+				return SchoolDTO.builder()
+					.schoolId(school.getSchoolId())
+					.schoolName(school.getSchoolName())
+					.category(school.getCategory())
+					.type(school.getType1())
+					.address(school.getAddress())
+					.latitude(school.getLatitude())
+					.longitude(school.getLongitude())
+					.distance(Math.round(distance * 100) / 100.0) // Round to 2 decimal places
+					.build();
+			})
+			.sorted((s1, s2) -> Double.compare(s1.getDistance(), s2.getDistance()))
+			.collect(Collectors.toList());
+
+		// 래퍼 DTO 생성
+		StationListDTO stationListDTO = StationListDTO.builder()
+			.stationList(stationDTOs)
+			.count(stationDTOs.size())
+			.build();
+
+		SchoolListDTO schoolListDTO = SchoolListDTO.builder()
+			.schoolList(schoolDTOs)
+			.count(schoolDTOs.size())
+			.build();
+
+		return InfraResponseDTO.builder()
+			.stations(stationListDTO.getStationList())
+			.schools(schoolListDTO.getSchoolList())
+			.build();
+	}
+
 	/**
-	 * 위도 경도 조회
-	 *
-	 * @param id
-	 * @return
+	 * 위도, 경도를 기준으로 주변 역 조회 (JPA 사용)
 	 */
-	public Object getSubscriptionAddr(Long id) {
-		Optional<SubscriptionLocationInfo> optionalSubscription = subscriptionLocationInfoRepository.findById(id);
-		if (!optionalSubscription.isPresent()) {
-			throw new RuntimeException("Subscription not found");
-		}
-		SubscriptionLocationInfo subscriptionLocationInfo = optionalSubscription.get();
-		String lat = subscriptionLocationInfo.getLatitude();
-		String lon = subscriptionLocationInfo.getLongitude();
-		if (lat != null && lon != null) {
-			return new CoordinateResponseDTO(lon, lat);
-		}
-		throw new RuntimeException("Coordinates not updated yet");
+	private List<Station> findNearbyStations(double latitude, double longitude, double radiusInKm) {
+		// Calculate the approximate bounding box for pre-filtering
+		double latDistance = radiusInKm / EARTH_RADIUS * (180.0 / Math.PI);
+		double lonDistance = radiusInKm / (EARTH_RADIUS * Math.cos(Math.toRadians(latitude))) * (180.0 / Math.PI);
+
+		double minLat = latitude - latDistance;
+		double maxLat = latitude + latDistance;
+		double minLon = longitude - lonDistance;
+		double maxLon = longitude + lonDistance;
+
+		// Get stations within the bounding box
+		List<Station> stationsInBox = stationRepository.findByLatitudeBetweenAndLongitudeBetween(
+			minLat, maxLat, minLon, maxLon);
+
+		// Filter stations by exact distance using Haversine formula
+		return stationsInBox.stream()
+			.filter(station -> calculateDistance(latitude, longitude, station.getLatitude(), station.getLongitude())
+				<= radiusInKm)
+			.collect(Collectors.toList());
+	}
+
+	/**
+	 * 위도, 경도를 기준으로 주변 학교 조회
+	 */
+	private List<School> findNearbySchools(double latitude, double longitude, double radiusInKm) {
+		// Calculate the approximate bounding box for pre-filtering
+		double latDistance = radiusInKm / EARTH_RADIUS * (180.0 / Math.PI);
+		double lonDistance = radiusInKm / (EARTH_RADIUS * Math.cos(Math.toRadians(latitude))) * (180.0 / Math.PI);
+
+		double minLat = latitude - latDistance;
+		double maxLat = latitude + latDistance;
+		double minLon = longitude - lonDistance;
+		double maxLon = longitude + lonDistance;
+
+		// Get schools within the bounding box
+		List<School> schoolsInBox = schoolRepository.findByLatitudeBetweenAndLongitudeBetween(
+			minLat, maxLat, minLon, maxLon);
+
+		// Filter schools by exact distance using Haversine formula
+		return schoolsInBox.stream()
+			.filter(school -> calculateDistance(latitude, longitude, school.getLatitude(), school.getLongitude())
+				<= radiusInKm)
+			.collect(Collectors.toList());
+	}
+
+	/**
+	 * Haversine formula to calculate distance between two points on Earth
+	 */
+	private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+		double dLat = Math.toRadians(lat2 - lat1);
+		double dLon = Math.toRadians(lon2 - lon1);
+
+		double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+			Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+				Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		return EARTH_RADIUS * c; // Distance in km
 	}
 
 }

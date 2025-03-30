@@ -1,4 +1,4 @@
-package org.cheonyakplanet.be.domain.service;
+package org.cheonyakplanet.be.application.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import org.cheonyakplanet.be.application.dto.ApiResponse;
 import org.cheonyakplanet.be.application.dto.user.LoginRequestDTO;
-import org.cheonyakplanet.be.application.service.UserService;
 import org.cheonyakplanet.be.domain.entity.User;
 import org.cheonyakplanet.be.domain.entity.UserRoleEnum;
 import org.cheonyakplanet.be.domain.entity.UserToken;
@@ -79,7 +78,7 @@ class UserServiceTest {
 		willDoNothing().given(jwtUtil).storeTokens(email, accessToken, refreshToken);
 
 		// When: 로그인 메서드 호출
-		ApiResponse response = userService.login(requestDTO);
+		ApiResponse response = (ApiResponse)userService.login(requestDTO);
 
 		// Then: 반환된 ApiResponse에 accessToken, refreshToken이 포함되어 있음
 		assertNotNull(response);
@@ -125,7 +124,7 @@ class UserServiceTest {
 		given(userTokenRepository.findByAccessToken(bearerToken)).willReturn(Optional.of(userToken));
 
 		// When: 로그아웃 메서드 호출
-		ApiResponse response = userService.logout(request);
+		ApiResponse response = (ApiResponse)userService.logout(request);
 
 		// Then: 로그아웃 성공 응답 및 토큰 블랙리스트 처리 확인
 		assertNotNull(response);
@@ -148,7 +147,7 @@ class UserServiceTest {
 		given(userTokenRepository.findByAccessToken(bearerToken)).willReturn(Optional.empty());
 
 		// When: 로그아웃 메서드 호출
-		ApiResponse response = userService.logout(request);
+		ApiResponse response = (ApiResponse)userService.logout(request);
 
 		// Then: 실패 응답 반환
 		assertNotNull(response);

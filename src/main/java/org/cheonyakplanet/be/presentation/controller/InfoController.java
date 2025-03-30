@@ -3,6 +3,7 @@ package org.cheonyakplanet.be.presentation.controller;
 import java.util.List;
 
 import org.cheonyakplanet.be.application.dto.ApiResponse;
+import org.cheonyakplanet.be.application.dto.infra.InfraResponseDTO;
 import org.cheonyakplanet.be.application.service.InfoService;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
@@ -467,16 +468,46 @@ public class InfoController {
 	 * @return
 	 */
 	@GetMapping("/subscription/{id}/detail/infra")
-	@Operation(summary = "청약 물건의 주변 인프라", description = "미완성",
+	@Operation(summary = "청약 물건의 주변 인프라", description = "반경 1km내의 학교와 역을 조회",
 		responses = {
 			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json",
 				schema = @Schema(implementation = ApiResponse.class),
-				examples = @ExampleObject(value = """ 
+				examples = @ExampleObject(value = """
+					{
+					  "status": "success",
+					  "data": {
+					    "stations": [
+					      {
+					        "number": "432",
+					        "name": "총신대입구(이수)",
+					        "line": "4호선",
+					        "operator": "서울교통공사",
+					        "latitude": 37.487521,
+					        "longitude": 126.982309,
+					        "distance": 0.62,
+					        "transfer": false
+					      }
+					    ],
+					    "schools": [
+					      {
+					        "schoolId": "B000012058",
+					        "schoolName": "서문여자고등학교",
+					        "category": "고등학교",
+					        "type": "사립",
+					        "address": "0",
+					        "latitude": 37.48891973,
+					        "longitude": 126.9845458,
+					        "distance": 0.37
+					      }
+					    ]
+					  }
+					}
 					"""))
 			)
 		})
-	public String getSubscriptionDetailInfra(@PathVariable("id") Long id) {
-		return null;
+	public ResponseEntity<?> getSubscriptionDetailInfra(@PathVariable("id") Long id) {
+		InfraResponseDTO response = infoService.getNearbyInfrastructure(id);
+		return ResponseEntity.ok(new ApiResponse("success", response));
 	}
 
 	/**
