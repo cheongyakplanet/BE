@@ -18,9 +18,9 @@ import org.cheonyakplanet.be.application.dto.user.MyPageDTO;
 import org.cheonyakplanet.be.application.dto.user.SignupRequestDTO;
 import org.cheonyakplanet.be.application.dto.user.UserDTO;
 import org.cheonyakplanet.be.application.dto.user.UserUpdateRequestDTO;
-import org.cheonyakplanet.be.domain.entity.User;
-import org.cheonyakplanet.be.domain.entity.UserRoleEnum;
-import org.cheonyakplanet.be.domain.entity.UserToken;
+import org.cheonyakplanet.be.domain.entity.user.User;
+import org.cheonyakplanet.be.domain.entity.user.UserRoleEnum;
+import org.cheonyakplanet.be.domain.entity.user.UserToken;
 import org.cheonyakplanet.be.domain.repository.UserRepository;
 import org.cheonyakplanet.be.domain.repository.UserTokenRepository;
 import org.cheonyakplanet.be.infrastructure.jwt.JwtUtil;
@@ -237,7 +237,7 @@ public class UserService {
 		Optional<?> storedTokenOpt = userTokenRepository.findByEmail(email);
 		if (storedTokenOpt.isEmpty() ||
 			!jwtUtil.substringToken(
-					((org.cheonyakplanet.be.domain.entity.UserToken)storedTokenOpt.get()).getRefreshToken())
+					((UserToken)storedTokenOpt.get()).getRefreshToken())
 				.equals(pureToken)) {
 			throw new CustomException(ErrorCode.AUTH005, "Refresh Token이 유효하지 않습니다.");
 		}

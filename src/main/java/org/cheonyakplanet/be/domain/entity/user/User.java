@@ -1,4 +1,4 @@
-package org.cheonyakplanet.be.domain.entity;
+package org.cheonyakplanet.be.domain.entity.user;
 
 import org.cheonyakplanet.be.application.dto.user.UserUpdateRequestDTO;
 import org.cheonyakplanet.be.domain.Stamped;

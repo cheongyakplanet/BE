@@ -19,7 +19,7 @@ import org.cheonyakplanet.be.domain.entity.School;
 import org.cheonyakplanet.be.domain.entity.Station;
 import org.cheonyakplanet.be.domain.entity.SubscriptionInfo;
 import org.cheonyakplanet.be.domain.entity.SubscriptionLocationInfo;
-import org.cheonyakplanet.be.domain.entity.User;
+import org.cheonyakplanet.be.domain.entity.user.User;
 import org.cheonyakplanet.be.domain.repository.SchoolRepository;
 import org.cheonyakplanet.be.domain.repository.SggCodeRepository;
 import org.cheonyakplanet.be.domain.repository.StationRepository;

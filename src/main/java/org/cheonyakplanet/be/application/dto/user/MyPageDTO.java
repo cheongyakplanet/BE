@@ -5,8 +5,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.cheonyakplanet.be.domain.entity.User;
-import org.cheonyakplanet.be.domain.entity.UserStatusEnum;
+import org.cheonyakplanet.be.domain.entity.user.User;
+import org.cheonyakplanet.be.domain.entity.user.UserStatusEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

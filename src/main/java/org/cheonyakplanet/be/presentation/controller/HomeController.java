@@ -5,7 +5,7 @@ import java.util.List;
 import org.cheonyakplanet.be.application.dto.ApiResponse;
 import org.cheonyakplanet.be.application.service.CommunityService;
 import org.cheonyakplanet.be.application.service.SubscriptionService;
-import org.cheonyakplanet.be.domain.entity.Post;
+import org.cheonyakplanet.be.domain.entity.comunity.Post;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
