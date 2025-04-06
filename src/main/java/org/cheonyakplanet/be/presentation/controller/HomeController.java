@@ -5,7 +5,7 @@ import java.util.List;
 import org.cheonyakplanet.be.application.dto.ApiResponse;
 import org.cheonyakplanet.be.application.service.CommunityService;
 import org.cheonyakplanet.be.application.service.SubscriptionService;
-import org.cheonyakplanet.be.domain.entity.Post;
+import org.cheonyakplanet.be.domain.entity.comunity.Post;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,16 +39,12 @@ public class HomeController {
 				schema = @Schema(implementation = ApiResponse.class),
 				examples = @ExampleObject(value = """
 					{
-					       "status": "sucess",
-					       "data": {
-					         "status": "success",
-					         "data": [
-					           "서울특별시 동대문구",
-					           "서울 강동구,서울 마포구",
-					           null
-					         ]
-					       }
-					     }
+					    "status": "success",
+					    "data": [
+					        "서울특별시 동대문구",
+					        "서울 강동구"
+					    ]
+					}
 					"""))
 			)
 		}

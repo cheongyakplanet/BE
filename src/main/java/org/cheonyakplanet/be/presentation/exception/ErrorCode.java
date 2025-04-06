@@ -26,6 +26,7 @@ public enum ErrorCode {
 	//community
 	COMU001("COMU001", "게시글 없음"),
 	COMU002("COMU002", "게시글에 수정 권한 없음"),
+	COMU003("COMU003", "이미 반응 함"),
 
 	// Info
 	INFO001("INFO001", "해당 아이디의 청약건 없음"),

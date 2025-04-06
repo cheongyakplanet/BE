@@ -8,9 +8,9 @@ import java.util.Optional;
 
 import org.cheonyakplanet.be.application.dto.ApiResponse;
 import org.cheonyakplanet.be.application.dto.user.LoginRequestDTO;
-import org.cheonyakplanet.be.domain.entity.User;
-import org.cheonyakplanet.be.domain.entity.UserRoleEnum;
-import org.cheonyakplanet.be.domain.entity.UserToken;
+import org.cheonyakplanet.be.domain.entity.user.User;
+import org.cheonyakplanet.be.domain.entity.user.UserRoleEnum;
+import org.cheonyakplanet.be.domain.entity.user.UserToken;
 import org.cheonyakplanet.be.domain.repository.UserRepository;
 import org.cheonyakplanet.be.domain.repository.UserTokenRepository;
 import org.cheonyakplanet.be.infrastructure.jwt.JwtUtil;

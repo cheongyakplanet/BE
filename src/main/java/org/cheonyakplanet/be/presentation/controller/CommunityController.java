@@ -5,7 +5,7 @@ import org.cheonyakplanet.be.application.dto.community.CommentDTO;
 import org.cheonyakplanet.be.application.dto.community.PostCreateDTO;
 import org.cheonyakplanet.be.application.dto.community.PostDTO;
 import org.cheonyakplanet.be.application.service.CommunityService;
-import org.cheonyakplanet.be.domain.entity.Post;
+import org.cheonyakplanet.be.domain.entity.comunity.Post;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -64,15 +64,17 @@ public class CommunityController {
 
 	@PostMapping("/post/like/{id}")
 	@Operation(summary = "게시글 좋아요")
-	public ResponseEntity<?> likePost(@PathVariable("id") Long id) {
-		communityService.likePost(id);
+	public ResponseEntity<?> likePost(@PathVariable("id") Long id,
+		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		communityService.likePost(id, userDetails);
 		return ResponseEntity.ok(new ApiResponse<>("success", "좋아요 +1"));
 	}
 
 	@PostMapping("/post/dislike/{id}")
 	@Operation(summary = "게시글 싫어요")
-	public ResponseEntity<?> dislikePost(@PathVariable("id") Long id) {
-		communityService.dislikePost(id);
+	public ResponseEntity<?> dislikePost(@PathVariable("id") Long id,
+		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		communityService.dislikePost(id, userDetails);
 		return ResponseEntity.ok(new ApiResponse<>("success", "싫어요 +1"));
 	}
 

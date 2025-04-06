@@ -1,15 +1,19 @@
 package org.cheonyakplanet.be.application.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.cheonyakplanet.be.application.dto.community.CommentDTO;
 import org.cheonyakplanet.be.application.dto.community.PostCreateDTO;
 import org.cheonyakplanet.be.application.dto.community.PostDTO;
-import org.cheonyakplanet.be.domain.entity.Comment;
-import org.cheonyakplanet.be.domain.entity.Post;
-import org.cheonyakplanet.be.domain.entity.Reply;
-import org.cheonyakplanet.be.domain.entity.User;
+import org.cheonyakplanet.be.domain.entity.comunity.Comment;
+import org.cheonyakplanet.be.domain.entity.comunity.Post;
+import org.cheonyakplanet.be.domain.entity.comunity.PostReaction;
+import org.cheonyakplanet.be.domain.entity.comunity.ReactionType;
+import org.cheonyakplanet.be.domain.entity.comunity.Reply;
+import org.cheonyakplanet.be.domain.entity.user.User;
 import org.cheonyakplanet.be.domain.repository.CommentRepository;
+import org.cheonyakplanet.be.domain.repository.PostReactionRepository;
 import org.cheonyakplanet.be.domain.repository.PostRepository;
 import org.cheonyakplanet.be.domain.repository.ReplyRepository;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
@@ -31,6 +35,7 @@ public class CommunityService {
 	private final PostRepository postRepository;
 	private final CommentRepository commentRepository;
 	private final ReplyRepository replyRepository;
+	private final PostReactionRepository reactionRepository;
 
 	public Post createPost(PostCreateDTO postCreateDTO, UserDetailsImpl userDetails) {
 
@@ -106,15 +111,44 @@ public class CommunityService {
 	 *
 	 * @param id
 	 */
-	public void likePost(Long id) {
+	@Transactional
+	public void likePost(Long id, UserDetailsImpl userDetails) {
 		Post post = postRepository.findPostById(id);
+		String email = userDetails.getUsername();
+		Optional<PostReaction> existingReaction = reactionRepository.findByPostAndEmail(post, email);
+
+		if (existingReaction.isPresent()) {
+			throw new CustomException(ErrorCode.COMU003, "이미 반응하였습니다.");
+		}
+
+		// 좋아요 여부 기록
+		PostReaction reaction = PostReaction.builder()
+			.post(post)
+			.email(email)
+			.reactionType(ReactionType.LIKE)
+			.build();
+		reactionRepository.save(reaction);
+
 		post.incrementLikes();
 		postRepository.save(post);
 	}
 
-	public void dislikePost(Long id) {
+	public void dislikePost(Long id, UserDetailsImpl userDetails) {
 		Post post = postRepository.findPostById(id);
-		post.decrementLikes();
+		String email = userDetails.getUsername();
+		Optional<PostReaction> existingReaction = reactionRepository.findByPostAndEmail(post, email);
+
+		if (existingReaction.isPresent()) {
+			throw new CustomException(ErrorCode.COMU003, "이미 반응하였습니다.");
+		}
+
+		PostReaction reaction = PostReaction.builder()
+			.post(post)
+			.email(email)
+			.reactionType(ReactionType.DISLIKE)
+			.build();
+		reactionRepository.save(reaction);
+		post.increaseDislikes();
 		postRepository.save(post);
 	}
 
