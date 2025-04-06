@@ -10,10 +10,10 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.cheonyakplanet.be.application.dto.ApiResponse;
 import org.cheonyakplanet.be.application.dto.CoordinateResponseDTO;
 import org.cheonyakplanet.be.domain.entity.SubscriptionInfo;
 import org.cheonyakplanet.be.domain.entity.SubscriptionLocationInfo;
@@ -243,10 +243,10 @@ public class SubscriptionService {
 		return coordinateResponses;
 	}
 
-	public ApiResponse<?> getPopularLocationList() {
-		List<String> popularLoacal = userRepository.findInterestLocal1TopByInterestLocal1(PageRequest.of(0, 5));
-		ApiResponse<?> response = new ApiResponse<>("success", popularLoacal);
-		return response;
+	public Object getPopularLocationList() {
+		List<String> popularLocal = userRepository.findInterestLocal1TopByInterestLocal1(PageRequest.of(0, 5));
+		popularLocal.removeIf(Objects::isNull);
+		return popularLocal;
 	}
 
 	/**

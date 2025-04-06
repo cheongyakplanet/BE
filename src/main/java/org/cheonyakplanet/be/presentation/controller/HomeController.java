@@ -39,16 +39,12 @@ public class HomeController {
 				schema = @Schema(implementation = ApiResponse.class),
 				examples = @ExampleObject(value = """
 					{
-					       "status": "sucess",
-					       "data": {
-					         "status": "success",
-					         "data": [
-					           "서울특별시 동대문구",
-					           "서울 강동구,서울 마포구",
-					           null
-					         ]
-					       }
-					     }
+					    "status": "success",
+					    "data": [
+					        "서울특별시 동대문구",
+					        "서울 강동구"
+					    ]
+					}
 					"""))
 			)
 		}
