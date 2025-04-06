@@ -10,7 +10,7 @@ import org.cheonyakplanet.be.application.dto.user.MyPageDTO;
 import org.cheonyakplanet.be.application.dto.user.SignupRequestDTO;
 import org.cheonyakplanet.be.application.dto.user.UserDTO;
 import org.cheonyakplanet.be.application.dto.user.UserUpdateRequestDTO;
-import org.cheonyakplanet.be.domain.service.UserService;
+import org.cheonyakplanet.be.application.service.UserService;
 import org.cheonyakplanet.be.infrastructure.jwt.JwtUtil;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +25,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -99,8 +102,42 @@ public class UserController {
 		return ResponseEntity.ok(new ApiResponse("success", result));
 	}
 
+	/**
+	 * 마이 페이지 조회
+	 * @param userDetails
+	 * @return
+	 */
 	@GetMapping("/mypage")
-	@Operation(summary = "마이페이지 조회", description = "사용자의 전체 정보를 반환")
+	@Operation(summary = "마이페이지 조회", description = "사용자의 전체 정보를 반환",
+		responses = {
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json",
+				schema = @Schema(implementation = ApiResponse.class),
+				examples = @ExampleObject(value = """
+					{
+					  "status": "success",
+					  "data": {
+					    "email": "test@test",
+					    "username": "tester",
+					    "interestLocals": [
+					      "서울특별시 동대문구",
+					      "서울특별시 서대문구",
+					      "서울특별시 서초구",
+					      "서울특별시 강북구",
+					      "서울시 용산구"
+					    ],
+					    "property": null,
+					    "income": 50000000,
+					    "isMarried": true,
+					    "numChild": 2,
+					    "numHouse": null,
+					    "status": "ACTIVE"
+					  }
+					}
+					"""))
+			)
+		}
+
+	)
 	public ResponseEntity<?> getMyPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		MyPageDTO myPageDTO = userService.getMyPage(userDetails.getUsername());
 		return ResponseEntity.ok(new ApiResponse("success", myPageDTO));
