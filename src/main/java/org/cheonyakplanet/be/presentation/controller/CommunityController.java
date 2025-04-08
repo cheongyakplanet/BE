@@ -70,6 +70,16 @@ public class CommunityController {
 		return ResponseEntity.ok(new ApiResponse<>("success", "좋아요 +1"));
 	}
 
+	@GetMapping("/post/my")
+	@Operation(summary = "내가 쓴 글 확인")
+	public ResponseEntity<?> getMyPosts(@RequestParam(value = "sort", defaultValue = "time") String sort,
+		@RequestParam(value = "page", defaultValue = "0") int page,
+		@RequestParam(value = "size", defaultValue = "10") int size,
+		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		Page<PostDTO> result = communityService.getMyPosts(sort, page, size, userDetails);
+		return ResponseEntity.ok(new ApiResponse<>("success", result));
+	}
+
 	@PostMapping("/post/dislike/{id}")
 	@Operation(summary = "게시글 싫어요")
 	public ResponseEntity<?> dislikePost(@PathVariable("id") Long id,
