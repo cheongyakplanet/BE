@@ -106,6 +106,26 @@ public class CommunityService {
 		return postRepository.findPostsOrderByLikes(PageRequest.of(0, 5)); // 상위 5개
 	}
 
+	public Page<PostDTO> getMyPosts(String sort, int page, int size, UserDetailsImpl userDetails) {
+		Sort sortOrder;
+		if ("likes".equalsIgnoreCase(sort)) {
+			sortOrder = Sort.by("likes").descending();
+		} else if ("views".equalsIgnoreCase(sort)) {
+			sortOrder = Sort.by(Sort.Direction.DESC, "views");
+		} else {
+			sortOrder = Sort.by(Sort.Direction.DESC, "createdAt");
+		}
+
+		Pageable pageable = PageRequest.of(page, size, sortOrder);
+
+		// 현재 로그인한 사용자의 username으로 필터링
+		String username = userDetails.getUser().getUsername();
+		Page<Post> postPage = postRepository.findByUsernameAndDeletedAtIsNullAndBlindIsFalse(username, pageable);
+
+		return postPage.map(Post::ToDTO);
+
+	}
+
 	/**
 	 * 게시글 좋아요
 	 *
