@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.cheonyakplanet.be.application.dto.ApiResponse;
 import org.cheonyakplanet.be.application.dto.infra.InfraResponseDTO;
+import org.cheonyakplanet.be.application.dto.infra.PublicFacilityDTO;
 import org.cheonyakplanet.be.application.service.InfoService;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
@@ -508,6 +509,42 @@ public class InfoController {
 	public ResponseEntity<?> getSubscriptionDetailInfra(
 		@PathVariable(name = "id") Long id) {
 		InfraResponseDTO response = infoService.getNearbyInfrastructure(id);
+		return ResponseEntity.ok(new ApiResponse("success", response));
+	}
+
+	@GetMapping("/subscription/{id}/detail/facilities")
+	@Operation(summary = "청약 물건의 주변 공공시설", description = "반경 1km내의 주변 공공시설 조회",
+		responses = {
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json",
+				schema = @Schema(implementation = ApiResponse.class),
+				examples = @ExampleObject(value = """
+					{
+					  "status": "success",
+					  "data": [
+					       {
+					         "dgmNm": "서문여자중,고등학교",
+					         "longitude": 126.9850997358138,
+					         "latitude": 37.48889848416472
+					       },
+					       {
+					         "dgmNm": "사회복지시설",
+					         "longitude": 126.9877484286745,
+					         "latitude": 37.48983331692146
+					       },
+					       {
+					         "dgmNm": "사당제2동사무소",
+					         "longitude": 126.97757856778836,
+					         "latitude": 37.48838552736948
+					       }
+					       ]
+					}
+					
+					"""))
+			)
+		})
+	public ResponseEntity<?> getSubscriptionDetailFacilities(
+		@PathVariable(name = "id") Long id) {
+		List<PublicFacilityDTO> response = infoService.getNearbyPublicFacility(id);
 		return ResponseEntity.ok(new ApiResponse("success", response));
 	}
 
