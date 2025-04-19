@@ -273,6 +273,9 @@ public class UserService {
 	@Transactional
 	public void withdrawUser(String email) {
 
+		/*
+		TODO : 탈퇴 회원 조회 안 되게 수정
+		 */
 		User user = userRepository.findByEmailAndDeletedAtIsNull(email)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER001, "사용자를 찾을 수 없습니다."));
 
