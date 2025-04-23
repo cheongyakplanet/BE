@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.cheonyakplanet.be.application.dto.community.CommentDTO;
 import org.cheonyakplanet.be.application.dto.community.PostCreateDTO;
 import org.cheonyakplanet.be.application.dto.community.PostDTO;
+import org.cheonyakplanet.be.application.dto.community.PostDetailDTO;
 import org.cheonyakplanet.be.domain.entity.comunity.Comment;
 import org.cheonyakplanet.be.domain.entity.comunity.Post;
 import org.cheonyakplanet.be.domain.entity.comunity.PostReaction;
@@ -91,11 +92,17 @@ public class CommunityService {
 	}
 
 	@Transactional
-	public Post getPostById(Long id) {
+	public PostDetailDTO getPostById(Long id, UserDetailsImpl userDetails) {
 		try {
 			Post post = postRepository.findPostById(id);
 			post.countViews();
-			return post;
+
+			String email = userDetails.getUsername();
+			PostReaction myReaction = reactionRepository
+				.findByPostAndEmail(post, email)
+				.orElse(null);
+
+			return PostDetailDTO.fromEntity(post, myReaction);
 
 		} catch (Exception e) {
 			throw new CustomException(ErrorCode.COMU001, e.getMessage());
@@ -174,8 +181,10 @@ public class CommunityService {
 
 	public void addComment(Long postId, CommentDTO commentDTO, UserDetailsImpl userDetails) {
 		Post post = postRepository.findPostById(postId);
+		User user = userDetails.getUser();
 		Comment comment = Comment.builder()
 			.content(commentDTO.getContent())
+			.username(user.getUsername())
 			.post(post)
 			.build();
 		commentRepository.save(comment);
@@ -193,9 +202,11 @@ public class CommunityService {
 
 	public Reply addReply(Long commentId, CommentDTO commentDTO, UserDetailsImpl userDetails) {
 		Comment comment = getCommentById(commentId);
+		User user = userDetails.getUser();
 		Reply reply = Reply.builder()
 			.content(commentDTO.getContent())
 			.comment(comment)
+			.username(user.getUsername())
 			.build();
 		return replyRepository.save(reply);
 	}

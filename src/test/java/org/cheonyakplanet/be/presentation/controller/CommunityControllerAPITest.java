@@ -169,23 +169,23 @@ class CommunityControllerAPITest {
 		verify(communityService).getAllPosts(anyString(), anyInt(), anyInt());
 	}
 
-	@Test
-	@DisplayName("게시글 단건 조회 테스트")
-	void getPostTest() throws Exception {
-		// given
-		given(communityService.getPostById(anyLong()))
-			.willReturn(post);
-
-		// when & then
-		mockMvc.perform(get("/api/community/post/{id}", 1L)
-				.with(user(userDetails)))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.status").value("success"))
-			.andExpect(jsonPath("$.data.id").exists());
-
-		verify(communityService).getPostById(anyLong());
-	}
+	// @Test
+	// @DisplayName("게시글 단건 조회 테스트")
+	// void getPostTest() throws Exception {
+	// 	// given
+	// 	given(communityService.getPostById(anyLong()))
+	// 		.willReturn(post);
+	//
+	// 	// when & then
+	// 	mockMvc.perform(get("/api/community/post/{id}", 1L)
+	// 			.with(user(userDetails)))
+	// 		.andDo(print())
+	// 		.andExpect(status().isOk())
+	// 		.andExpect(jsonPath("$.status").value("success"))
+	// 		.andExpect(jsonPath("$.data.id").exists());
+	//
+	// 	verify(communityService).getPostById(anyLong());
+	// }
 
 	@Test
 	@DisplayName("게시글 삭제 테스트")

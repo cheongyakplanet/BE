@@ -4,8 +4,8 @@ import org.cheonyakplanet.be.application.dto.ApiResponse;
 import org.cheonyakplanet.be.application.dto.community.CommentDTO;
 import org.cheonyakplanet.be.application.dto.community.PostCreateDTO;
 import org.cheonyakplanet.be.application.dto.community.PostDTO;
+import org.cheonyakplanet.be.application.dto.community.PostDetailDTO;
 import org.cheonyakplanet.be.application.service.CommunityService;
-import org.cheonyakplanet.be.domain.entity.comunity.Post;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -49,8 +49,9 @@ public class CommunityController {
 
 	@GetMapping("/post/{id}")
 	@Operation(summary = "게시글 한 건 조회")
-	public ResponseEntity<?> getPost(@PathVariable("id") Long id) {
-		Post result = communityService.getPostById(id);
+	public ResponseEntity<?> getPost(@PathVariable("id") Long id,
+		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		PostDetailDTO result = communityService.getPostById(id, userDetails);
 		return ResponseEntity.ok(new ApiResponse("success", result));
 	}
 

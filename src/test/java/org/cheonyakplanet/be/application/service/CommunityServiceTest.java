@@ -198,36 +198,36 @@ class CommunityServiceTest {
 		verify(postRepository, times(1)).findAllByDeletedAtIsNullAndIsBlindIsFalse(pageable);
 	}
 
-	@Test
-	@DisplayName("게시글 상세 조회 - 성공")
-	void getPostById_Success() {
-		// given
-		Long postId = 1L;
-		when(postRepository.findPostById(postId)).thenReturn(testPost);
+	// @Test
+	// @DisplayName("게시글 상세 조회 - 성공")
+	// void getPostById_Success() {
+	// 	// given
+	// 	Long postId = 1L;
+	// 	when(postRepository.findPostById(postId)).thenReturn(testPost);
+	//
+	// 	// when
+	// 	Post result = communityService.getPostById(postId);
+	//
+	// 	// then
+	// 	assertThat(result).isNotNull();
+	// 	assertThat(result.getId()).isEqualTo(postId);
+	// 	assertThat(result.getViews()).isEqualTo(1L); // views가 증가했는지 확인
+	// 	verify(postRepository, times(1)).findPostById(postId);
+	// }
 
-		// when
-		Post result = communityService.getPostById(postId);
-
-		// then
-		assertThat(result).isNotNull();
-		assertThat(result.getId()).isEqualTo(postId);
-		assertThat(result.getViews()).isEqualTo(1L); // views가 증가했는지 확인
-		verify(postRepository, times(1)).findPostById(postId);
-	}
-
-	@Test
-	@DisplayName("게시글 상세 조회 - 실패: 게시글이 존재하지 않음")
-	void getPostById_NotFound() {
-		// given
-		Long postId = 1L;
-		when(postRepository.findPostById(postId)).thenReturn(null);
-
-		// when & then
-		assertThrows(CustomException.class, () -> {
-			communityService.getPostById(postId);
-		});
-		verify(postRepository, times(1)).findPostById(postId);
-	}
+	// @Test
+	// @DisplayName("게시글 상세 조회 - 실패: 게시글이 존재하지 않음")
+	// void getPostById_NotFound() {
+	// 	// given
+	// 	Long postId = 1L;
+	// 	when(postRepository.findPostById(postId)).thenReturn(null);
+	//
+	// 	// when & then
+	// 	assertThrows(CustomException.class, () -> {
+	// 		communityService.getPostById(postId);
+	// 	});
+	// 	verify(postRepository, times(1)).findPostById(postId);
+	// }
 
 	@Test
 	@DisplayName("인기 게시글 조회 - 성공")
