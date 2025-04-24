@@ -716,4 +716,19 @@ public class InfoController {
 		List<SubscriptionLikeDTO> result = infoService.getLikeSubscription(userDetails);
 		return ResponseEntity.ok(new ApiResponse("success", result));
 	}
+
+	@Operation(summary = "1주일 이내 청약 시작")
+	@GetMapping("/subscription/like/upcoming")
+	public ResponseEntity<?> getUpcomingSubscriptions(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		List<SubscriptionLikeDTO> result = infoService.getUpcomingSubscriptionLikes(userDetails);
+		return ResponseEntity.ok(new ApiResponse("success", result));
+	}
+
+	@Operation(summary = "1주일 이내 청약 종료")
+	@GetMapping("/subscription/like/closing")
+	public ResponseEntity<?> getClosingSoonSubscriptions(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		List<SubscriptionLikeDTO> result = infoService.getClosingSoonSubscriptionLikes(userDetails);
+		return ResponseEntity.ok(new ApiResponse("success", result));
+	}
+
 }

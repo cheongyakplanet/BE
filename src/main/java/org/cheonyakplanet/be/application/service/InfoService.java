@@ -1,5 +1,6 @@
 package org.cheonyakplanet.be.application.service;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -387,5 +388,27 @@ public class InfoService {
 			subscriptionLike.softdelete(userEmail);
 			subscriptionLikeRepository.save(subscriptionLike);
 		});
+	}
+
+	public List<SubscriptionLikeDTO> getUpcomingSubscriptionLikes(UserDetailsImpl userDetails) {
+		String userEmail = userDetails.getUsername();
+		LocalDate today = LocalDate.now();
+		LocalDate oneWeekLater = today.plusDays(7);
+
+		return subscriptionLikeRepository.findByCreatedByAndRceptBgndeBetween(userEmail, today, oneWeekLater)
+			.stream()
+			.map(SubscriptionLikeDTO::fromEntity)
+			.collect(Collectors.toList());
+	}
+
+	public List<SubscriptionLikeDTO> getClosingSoonSubscriptionLikes(UserDetailsImpl userDetails) {
+		String userEmail = userDetails.getUsername();
+		LocalDate today = LocalDate.now();
+		LocalDate oneWeekLater = today.plusDays(7);
+
+		return subscriptionLikeRepository.findByCreatedByAndRceptEnddeBetween(userEmail, today, oneWeekLater)
+			.stream()
+			.map(SubscriptionLikeDTO::fromEntity)
+			.collect(Collectors.toList());
 	}
 }
