@@ -39,6 +39,8 @@ public class Comment extends Stamped {
 	@Column(columnDefinition = "TEXT")
 	private String content;
 
+	private String username;
+
 	@ManyToOne
 	@JsonBackReference
 	@JoinColumn(name = "post_id")

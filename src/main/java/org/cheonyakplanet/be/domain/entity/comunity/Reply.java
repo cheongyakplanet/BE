@@ -33,6 +33,8 @@ public class Reply extends Stamped {
 	@Column(columnDefinition = "TEXT")
 	private String content;
 
+	private String username;
+
 	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "comment_id")

@@ -51,7 +51,7 @@ public class HomeController {
 	)
 	public ResponseEntity<?> getPopularLocations() {
 		Object result = subscriptionService.getPopularLocationList();
-		return ResponseEntity.ok(new ApiResponse<>("sucess", result));
+		return ResponseEntity.ok(new ApiResponse<>("success", result));
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class HomeController {
 		})
 	public ResponseEntity<?> getMyLocations(HttpServletRequest request) {
 		List<String> interestLocals = subscriptionService.getInterestLocalsByEmail(request);
-		return ResponseEntity.ok(new ApiResponse<>("sucess", interestLocals));
+		return ResponseEntity.ok(new ApiResponse<>("success", interestLocals));
 	}
 
 	/**
@@ -141,6 +141,6 @@ public class HomeController {
 		})
 	public ResponseEntity<?> getPopularPosts() {
 		List<Post> posts = communityService.getPopularPosts();
-		return ResponseEntity.ok(new ApiResponse<>("sucess", posts));
+		return ResponseEntity.ok(new ApiResponse<>("success", posts));
 	}
 }

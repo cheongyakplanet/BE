@@ -1,5 +1,6 @@
 package org.cheonyakplanet.be.application.service;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -16,10 +17,13 @@ import org.cheonyakplanet.be.application.dto.infra.StationDTO;
 import org.cheonyakplanet.be.application.dto.infra.StationListDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionDetailDTO;
+import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionInfoSimpleDTO;
+import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionLikeDTO;
 import org.cheonyakplanet.be.domain.entity.PublicFacility;
 import org.cheonyakplanet.be.domain.entity.School;
 import org.cheonyakplanet.be.domain.entity.Station;
 import org.cheonyakplanet.be.domain.entity.SubscriptionInfo;
+import org.cheonyakplanet.be.domain.entity.SubscriptionLike;
 import org.cheonyakplanet.be.domain.entity.SubscriptionLocationInfo;
 import org.cheonyakplanet.be.domain.entity.user.User;
 import org.cheonyakplanet.be.domain.repository.PublicFacilityRepository;
@@ -27,6 +31,7 @@ import org.cheonyakplanet.be.domain.repository.SchoolRepository;
 import org.cheonyakplanet.be.domain.repository.SggCodeRepository;
 import org.cheonyakplanet.be.domain.repository.StationRepository;
 import org.cheonyakplanet.be.domain.repository.SubscriptionInfoRepository;
+import org.cheonyakplanet.be.domain.repository.SubscriptionLikeRepository;
 import org.cheonyakplanet.be.domain.repository.SubscriptionLocationInfoRepository;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.cheonyakplanet.be.presentation.exception.CustomException;
@@ -51,6 +56,7 @@ public class InfoService {
 	private final StationRepository stationRepository;
 	private final SchoolRepository schoolRepository;
 	private final PublicFacilityRepository publicFacilityRepository;
+	private final SubscriptionLikeRepository subscriptionLikeRepository;
 
 	// 하버사인 공식을 위한 Earth radius in kilometers
 	private static final double EARTH_RADIUS = 6371.0;
@@ -345,4 +351,103 @@ public class InfoService {
 		return EARTH_RADIUS * c; // Distance in km
 	}
 
+	public void createSubscriptionLike(UserDetailsImpl userDetails, Long id) {
+
+		if (userDetails == null) {
+			throw new CustomException(ErrorCode.SIGN000, "로그인이 필요한 서비스입니다.");
+		}
+
+		Optional<SubscriptionInfo> subscription = subscriptionInfoRepository.findById(id);
+
+		SubscriptionLike subscriptionLike = SubscriptionLike.builder()
+			.subscriptionId(id)
+			.houseNm(subscription.get().getHouseNm())
+			.hssplyAdres(subscription.get().getHssplyAdres())
+			.region(subscription.get().getRegion())
+			.city(subscription.get().getCity())
+			.district(subscription.get().getDistrict())
+			.detail(subscription.get().getDetail())
+			.rceptBgnde(subscription.get().getRceptBgnde())
+			.rceptEndde(subscription.get().getRceptEndde())
+			.build();
+
+		subscriptionLikeRepository.save(subscriptionLike);
+
+	}
+
+	public List<SubscriptionLikeDTO> getLikeSubscription(UserDetailsImpl userDetails) {
+
+		if (userDetails == null) {
+			throw new CustomException(ErrorCode.SIGN000, "로그인이 필요한 서비스입니다.");
+		}
+
+		String userEmail = userDetails.getUsername();
+		List<SubscriptionLike> subscriptionLike = subscriptionLikeRepository.findByCreatedBy(userEmail);
+
+		List<SubscriptionLikeDTO> subscriptionLikes = subscriptionLike.stream()
+			.map(SubscriptionLikeDTO::fromEntity)
+			.collect(Collectors.toList());
+
+		return subscriptionLikes;
+	}
+
+	public void deleteSubscriptionLike(UserDetailsImpl userDetails, Long id) {
+
+		if (userDetails == null) {
+			throw new CustomException(ErrorCode.SIGN000, "로그인이 필요한 서비스입니다.");
+		}
+
+		String userEmail = userDetails.getUsername();
+
+		subscriptionLikeRepository.findById(id).ifPresent(subscriptionLike -> {
+			subscriptionLike.softdelete(userEmail);
+			subscriptionLikeRepository.save(subscriptionLike);
+		});
+	}
+
+	public List<SubscriptionLikeDTO> getUpcomingSubscriptionLikes(UserDetailsImpl userDetails) {
+
+		if (userDetails == null) {
+			throw new CustomException(ErrorCode.SIGN000, "로그인이 필요한 서비스입니다.");
+		}
+
+		String userEmail = userDetails.getUsername();
+		LocalDate today = LocalDate.now();
+		LocalDate oneWeekLater = today.plusDays(7);
+
+		return subscriptionLikeRepository.findByCreatedByAndRceptBgndeBetween(userEmail, today, oneWeekLater)
+			.stream()
+			.map(SubscriptionLikeDTO::fromEntity)
+			.collect(Collectors.toList());
+	}
+
+	public List<SubscriptionLikeDTO> getClosingSoonSubscriptionLikes(UserDetailsImpl userDetails) {
+
+		if (userDetails == null) {
+			throw new CustomException(ErrorCode.SIGN000, "로그인이 필요한 서비스입니다.");
+		}
+
+		String userEmail = userDetails.getUsername();
+		LocalDate today = LocalDate.now();
+		LocalDate oneWeekLater = today.plusDays(7);
+
+		return subscriptionLikeRepository.findByCreatedByAndRceptEnddeBetween(userEmail, today, oneWeekLater)
+			.stream()
+			.map(SubscriptionLikeDTO::fromEntity)
+			.collect(Collectors.toList());
+	}
+
+	public List<SubscriptionInfoSimpleDTO> getSubscriptionsByYearMonth(int year, int month) {
+		LocalDate startOfMonth = LocalDate.of(year, month, 1);
+		LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth());
+
+		List<SubscriptionInfo> result = subscriptionInfoRepository
+			.findByRceptBgndeBetweenOrRceptEnddeBetween(
+				startOfMonth, endOfMonth, startOfMonth, endOfMonth
+			);
+
+		return result.stream()
+			.map(SubscriptionInfoSimpleDTO::fromEntity)
+			.collect(Collectors.toList());
+	}
 }

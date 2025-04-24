@@ -5,12 +5,16 @@ import java.util.List;
 import org.cheonyakplanet.be.application.dto.ApiResponse;
 import org.cheonyakplanet.be.application.dto.infra.InfraResponseDTO;
 import org.cheonyakplanet.be.application.dto.infra.PublicFacilityDTO;
+import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionInfoSimpleDTO;
+import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionLikeDTO;
 import org.cheonyakplanet.be.application.service.InfoService;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -512,6 +516,11 @@ public class InfoController {
 		return ResponseEntity.ok(new ApiResponse("success", response));
 	}
 
+	/**
+	 * 청약의 주변 공공시설을 불러오는 메서드
+	 * @param id
+	 * @return
+	 */
 	@GetMapping("/subscription/{id}/detail/facilities")
 	@Operation(summary = "청약 물건의 주변 공공시설", description = "반경 1km내의 주변 공공시설 조회",
 		responses = {
@@ -686,4 +695,53 @@ public class InfoController {
 	public ResponseEntity<?> getMySubscriptions(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		return ResponseEntity.ok(new ApiResponse<>("success", infoService.getMySubscriptions(userDetails)));
 	}
+
+	@Operation(summary = "관심 청약 추가")
+	@PostMapping("/subscription/like/{subscriptionId}")
+	public ResponseEntity<?> createSubscriptionLike(@AuthenticationPrincipal UserDetailsImpl userDetails,
+		@RequestParam("subscriptionId") Long id) {
+		infoService.createSubscriptionLike(userDetails, id);
+		return ResponseEntity.ok(new ApiResponse<>("success", "관심지역 추가 성공"));
+	}
+
+	@Operation(summary = "관심 청약 삭제")
+	@PatchMapping("/subscription/like/{subscriptionLikeId}")
+	public ResponseEntity<?> updateSubscriptionLike(@AuthenticationPrincipal UserDetailsImpl userDetails,
+		@RequestParam("subscriptionLikeId") Long id) {
+		infoService.deleteSubscriptionLike(userDetails, id);
+		return ResponseEntity.ok(new ApiResponse<>("success", "관심지역 삭제 성공"));
+	}
+
+	@Operation(summary = "관심 청약 조회")
+	@GetMapping("subscription/like")
+	public ResponseEntity<?> getLikeSubscription(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		List<SubscriptionLikeDTO> result = infoService.getLikeSubscription(userDetails);
+		return ResponseEntity.ok(new ApiResponse("success", result));
+	}
+
+	@Operation(summary = "1주일 이내 청약 시작")
+	@GetMapping("/subscription/like/upcoming")
+	public ResponseEntity<?> getUpcomingSubscriptions(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		List<SubscriptionLikeDTO> result = infoService.getUpcomingSubscriptionLikes(userDetails);
+		return ResponseEntity.ok(new ApiResponse("success", result));
+	}
+
+	@Operation(summary = "1주일 이내 청약 종료")
+	@GetMapping("/subscription/like/closing")
+	public ResponseEntity<?> getClosingSoonSubscriptions(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		List<SubscriptionLikeDTO> result = infoService.getClosingSoonSubscriptionLikes(userDetails);
+		return ResponseEntity.ok(new ApiResponse("success", result));
+	}
+
+	@Operation(summary = "년,월로 청약 검색")
+	@GetMapping("/subscription/bymonth")
+	public ResponseEntity<?> getByMonth(
+		@Parameter(description = "년", example = "2025")
+		@RequestParam("year") int year,
+		@Parameter(description = "월", example = "4")
+		@RequestParam("month") int month) {
+		List<SubscriptionInfoSimpleDTO> result = infoService.getSubscriptionsByYearMonth(year, month);
+		return ResponseEntity.ok(new ApiResponse("success", result));
+	}
+
 }
