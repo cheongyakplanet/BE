@@ -31,6 +31,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -121,6 +122,9 @@ public class UserService {
 				"accessToken", accessToken,
 				"refreshToken", refreshToken
 			);
+		} catch (DisabledException e) {
+			log.info("탈퇴한 회원 로그인 시도: {}", e.getMessage());
+			throw new CustomException(ErrorCode.SIGN006, "탈퇴한 회원입니다.");
 		} catch (Exception e) {
 			log.info(e.getMessage());
 			log.error("Authentication failed", e);
@@ -272,10 +276,6 @@ public class UserService {
 
 	@Transactional
 	public void withdrawUser(String email) {
-
-		/*
-		TODO : 탈퇴 회원 조회 안 되게 수정
-		 */
 		User user = userRepository.findByEmailAndDeletedAtIsNull(email)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER001, "사용자를 찾을 수 없습니다."));
 

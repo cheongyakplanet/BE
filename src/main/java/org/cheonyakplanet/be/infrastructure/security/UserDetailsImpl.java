@@ -60,6 +60,7 @@ public class UserDetailsImpl implements UserDetails {
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		// 탈퇴한 회원은 비활성화 처리
+		return user.getDeletedAt() == null;
 	}
 }

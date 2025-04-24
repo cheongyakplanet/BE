@@ -14,6 +14,7 @@ public enum ErrorCode {
 	SIGN003("SIGN003", "관리자 가입 토큰 불일치"),
 	SIGN004("SIGN004", "로그인 정보 불일치"),
 	SIGN005("SIGN005", "사용자를 찾을 수 없음"),
+	SIGN006("SIGN006", "탈퇴한 회원"),
 
 	// JWT
 	AUTH001("AUTH001", "유효하지 않은 JWT 서명"),
