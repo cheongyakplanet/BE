@@ -16,10 +16,12 @@ import org.cheonyakplanet.be.application.dto.infra.StationDTO;
 import org.cheonyakplanet.be.application.dto.infra.StationListDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionDetailDTO;
+import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionLikeDTO;
 import org.cheonyakplanet.be.domain.entity.PublicFacility;
 import org.cheonyakplanet.be.domain.entity.School;
 import org.cheonyakplanet.be.domain.entity.Station;
 import org.cheonyakplanet.be.domain.entity.SubscriptionInfo;
+import org.cheonyakplanet.be.domain.entity.SubscriptionLike;
 import org.cheonyakplanet.be.domain.entity.SubscriptionLocationInfo;
 import org.cheonyakplanet.be.domain.entity.user.User;
 import org.cheonyakplanet.be.domain.repository.PublicFacilityRepository;
@@ -27,6 +29,7 @@ import org.cheonyakplanet.be.domain.repository.SchoolRepository;
 import org.cheonyakplanet.be.domain.repository.SggCodeRepository;
 import org.cheonyakplanet.be.domain.repository.StationRepository;
 import org.cheonyakplanet.be.domain.repository.SubscriptionInfoRepository;
+import org.cheonyakplanet.be.domain.repository.SubscriptionLikeRepository;
 import org.cheonyakplanet.be.domain.repository.SubscriptionLocationInfoRepository;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.cheonyakplanet.be.presentation.exception.CustomException;
@@ -51,6 +54,7 @@ public class InfoService {
 	private final StationRepository stationRepository;
 	private final SchoolRepository schoolRepository;
 	private final PublicFacilityRepository publicFacilityRepository;
+	private final SubscriptionLikeRepository subscriptionLikeRepository;
 
 	// 하버사인 공식을 위한 Earth radius in kilometers
 	private static final double EARTH_RADIUS = 6371.0;
@@ -345,4 +349,31 @@ public class InfoService {
 		return EARTH_RADIUS * c; // Distance in km
 	}
 
+	public void createLikeSubscription(UserDetailsImpl userDetails, Long id) {
+		Optional<SubscriptionInfo> subscription = subscriptionInfoRepository.findById(id);
+
+		SubscriptionLike subscriptionLike = SubscriptionLike.builder()
+			.subscriptionId(id)
+			.houseNm(subscription.get().getHouseNm())
+			.hssplyAdres(subscription.get().getHssplyAdres())
+			.region(subscription.get().getRegion())
+			.city(subscription.get().getCity())
+			.district(subscription.get().getDistrict())
+			.detail(subscription.get().getDetail())
+			.build();
+
+		subscriptionLikeRepository.save(subscriptionLike);
+
+	}
+
+	public List<SubscriptionLikeDTO> getLikeSubscription(UserDetailsImpl userDetails) {
+		String userEmail = userDetails.getUsername();
+		List<SubscriptionLike> subscriptionLike = subscriptionLikeRepository.findByCreatedBy(userEmail);
+
+		List<SubscriptionLikeDTO> subscriptionLikes = subscriptionLike.stream()
+			.map(SubscriptionLikeDTO::fromEntity)
+			.collect(Collectors.toList());
+
+		return subscriptionLikes;
+	}
 }

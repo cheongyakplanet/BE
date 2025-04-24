@@ -5,12 +5,14 @@ import java.util.List;
 import org.cheonyakplanet.be.application.dto.ApiResponse;
 import org.cheonyakplanet.be.application.dto.infra.InfraResponseDTO;
 import org.cheonyakplanet.be.application.dto.infra.PublicFacilityDTO;
+import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionLikeDTO;
 import org.cheonyakplanet.be.application.service.InfoService;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -512,6 +514,11 @@ public class InfoController {
 		return ResponseEntity.ok(new ApiResponse("success", response));
 	}
 
+	/**
+	 * 청약의 주변 공공시설을 불러오는 메서드
+	 * @param id
+	 * @return
+	 */
 	@GetMapping("/subscription/{id}/detail/facilities")
 	@Operation(summary = "청약 물건의 주변 공공시설", description = "반경 1km내의 주변 공공시설 조회",
 		responses = {
@@ -685,5 +692,18 @@ public class InfoController {
 		})
 	public ResponseEntity<?> getMySubscriptions(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		return ResponseEntity.ok(new ApiResponse<>("success", infoService.getMySubscriptions(userDetails)));
+	}
+
+	@PostMapping("/subscription/like/{subscriptionId}")
+	public ResponseEntity<?> createLikeSubscription(@AuthenticationPrincipal UserDetailsImpl userDetails,
+		@RequestParam("subscriptionId") Long id) {
+		infoService.createLikeSubscription(userDetails, id);
+		return ResponseEntity.ok(new ApiResponse<>("success", "관심지역 추가 성공"));
+	}
+
+	@GetMapping("subscription/like")
+	public ResponseEntity<?> getLikeSubscription(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		List<SubscriptionLikeDTO> result = infoService.getLikeSubscription(userDetails);
+		return ResponseEntity.ok(new ApiResponse("success", result));
 	}
 }
