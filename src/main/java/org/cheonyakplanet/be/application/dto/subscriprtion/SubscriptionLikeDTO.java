@@ -1,5 +1,6 @@
 package org.cheonyakplanet.be.application.dto.subscriprtion;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.cheonyakplanet.be.domain.entity.SubscriptionLike;
@@ -21,6 +22,9 @@ public class SubscriptionLikeDTO {
 	private String district;                      // 예: 온양읍
 	private String detail;                        // 상세주소
 
+	private LocalDate rceptBgnde; // 청약 접수 시작일
+	private LocalDate rceptEndde;
+
 	private String userEmail;
 
 	private LocalDateTime createdAt;
@@ -35,6 +39,8 @@ public class SubscriptionLikeDTO {
 			.city(entity.getCity())
 			.district(entity.getDistrict())
 			.detail(entity.getDetail())
+			.rceptBgnde(entity.getRceptBgnde())
+			.rceptEndde(entity.getRceptEndde())
 			.userEmail(entity.getCreatedBy())
 			.createdAt(entity.getCreatedAt())
 			.build();

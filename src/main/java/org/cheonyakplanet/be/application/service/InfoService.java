@@ -360,6 +360,8 @@ public class InfoService {
 			.city(subscription.get().getCity())
 			.district(subscription.get().getDistrict())
 			.detail(subscription.get().getDetail())
+			.rceptBgnde(subscription.get().getRceptBgnde())
+			.rceptEndde(subscription.get().getRceptEndde())
 			.build();
 
 		subscriptionLikeRepository.save(subscriptionLike);
