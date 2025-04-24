@@ -46,4 +46,8 @@ public class SubscriptionLike extends Stamped {
 			.detail(entity.getDetail())
 			.build();
 	}
+
+	public void softdelete(String userEmail) {
+		this.softdelete(userEmail);
+	}
 }

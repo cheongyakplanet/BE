@@ -349,7 +349,7 @@ public class InfoService {
 		return EARTH_RADIUS * c; // Distance in km
 	}
 
-	public void createLikeSubscription(UserDetailsImpl userDetails, Long id) {
+	public void createSubscriptionLike(UserDetailsImpl userDetails, Long id) {
 		Optional<SubscriptionInfo> subscription = subscriptionInfoRepository.findById(id);
 
 		SubscriptionLike subscriptionLike = SubscriptionLike.builder()
@@ -375,5 +375,15 @@ public class InfoService {
 			.collect(Collectors.toList());
 
 		return subscriptionLikes;
+	}
+
+	public void deleteSubscriptionLike(UserDetailsImpl userDetails, Long id) {
+
+		String userEmail = userDetails.getUsername();
+
+		subscriptionLikeRepository.findById(id).ifPresent(subscriptionLike -> {
+			subscriptionLike.softdelete(userEmail);
+			subscriptionLikeRepository.save(subscriptionLike);
+		});
 	}
 }
