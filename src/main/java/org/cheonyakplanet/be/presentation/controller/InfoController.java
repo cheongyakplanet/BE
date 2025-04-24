@@ -5,6 +5,7 @@ import java.util.List;
 import org.cheonyakplanet.be.application.dto.ApiResponse;
 import org.cheonyakplanet.be.application.dto.infra.InfraResponseDTO;
 import org.cheonyakplanet.be.application.dto.infra.PublicFacilityDTO;
+import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionInfoSimpleDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionLikeDTO;
 import org.cheonyakplanet.be.application.service.InfoService;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
@@ -703,6 +704,7 @@ public class InfoController {
 		return ResponseEntity.ok(new ApiResponse<>("success", "관심지역 추가 성공"));
 	}
 
+	@Operation(summary = "관심 청약 삭제")
 	@PatchMapping("/subscription/like/{subscriptionLikeId}")
 	public ResponseEntity<?> updateSubscriptionLike(@AuthenticationPrincipal UserDetailsImpl userDetails,
 		@RequestParam("subscriptionLikeId") Long id) {
@@ -728,6 +730,17 @@ public class InfoController {
 	@GetMapping("/subscription/like/closing")
 	public ResponseEntity<?> getClosingSoonSubscriptions(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		List<SubscriptionLikeDTO> result = infoService.getClosingSoonSubscriptionLikes(userDetails);
+		return ResponseEntity.ok(new ApiResponse("success", result));
+	}
+
+	@Operation(summary = "년,월로 청약 검색")
+	@GetMapping("/subscription/bymonth")
+	public ResponseEntity<?> getByMonth(
+		@Parameter(description = "년", example = "2025")
+		@RequestParam("year") int year,
+		@Parameter(description = "월", example = "4")
+		@RequestParam("month") int month) {
+		List<SubscriptionInfoSimpleDTO> result = infoService.getSubscriptionsByYearMonth(year, month);
 		return ResponseEntity.ok(new ApiResponse("success", result));
 	}
 

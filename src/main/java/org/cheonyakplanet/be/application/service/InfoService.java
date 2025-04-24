@@ -17,6 +17,7 @@ import org.cheonyakplanet.be.application.dto.infra.StationDTO;
 import org.cheonyakplanet.be.application.dto.infra.StationListDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionDetailDTO;
+import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionInfoSimpleDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionLikeDTO;
 import org.cheonyakplanet.be.domain.entity.PublicFacility;
 import org.cheonyakplanet.be.domain.entity.School;
@@ -351,6 +352,11 @@ public class InfoService {
 	}
 
 	public void createSubscriptionLike(UserDetailsImpl userDetails, Long id) {
+
+		if (userDetails == null) {
+			throw new CustomException(ErrorCode.SIGN000, "로그인이 필요한 서비스입니다.");
+		}
+
 		Optional<SubscriptionInfo> subscription = subscriptionInfoRepository.findById(id);
 
 		SubscriptionLike subscriptionLike = SubscriptionLike.builder()
@@ -370,6 +376,11 @@ public class InfoService {
 	}
 
 	public List<SubscriptionLikeDTO> getLikeSubscription(UserDetailsImpl userDetails) {
+
+		if (userDetails == null) {
+			throw new CustomException(ErrorCode.SIGN000, "로그인이 필요한 서비스입니다.");
+		}
+
 		String userEmail = userDetails.getUsername();
 		List<SubscriptionLike> subscriptionLike = subscriptionLikeRepository.findByCreatedBy(userEmail);
 
@@ -382,6 +393,10 @@ public class InfoService {
 
 	public void deleteSubscriptionLike(UserDetailsImpl userDetails, Long id) {
 
+		if (userDetails == null) {
+			throw new CustomException(ErrorCode.SIGN000, "로그인이 필요한 서비스입니다.");
+		}
+
 		String userEmail = userDetails.getUsername();
 
 		subscriptionLikeRepository.findById(id).ifPresent(subscriptionLike -> {
@@ -391,6 +406,11 @@ public class InfoService {
 	}
 
 	public List<SubscriptionLikeDTO> getUpcomingSubscriptionLikes(UserDetailsImpl userDetails) {
+
+		if (userDetails == null) {
+			throw new CustomException(ErrorCode.SIGN000, "로그인이 필요한 서비스입니다.");
+		}
+
 		String userEmail = userDetails.getUsername();
 		LocalDate today = LocalDate.now();
 		LocalDate oneWeekLater = today.plusDays(7);
@@ -402,6 +422,11 @@ public class InfoService {
 	}
 
 	public List<SubscriptionLikeDTO> getClosingSoonSubscriptionLikes(UserDetailsImpl userDetails) {
+
+		if (userDetails == null) {
+			throw new CustomException(ErrorCode.SIGN000, "로그인이 필요한 서비스입니다.");
+		}
+
 		String userEmail = userDetails.getUsername();
 		LocalDate today = LocalDate.now();
 		LocalDate oneWeekLater = today.plusDays(7);
@@ -409,6 +434,20 @@ public class InfoService {
 		return subscriptionLikeRepository.findByCreatedByAndRceptEnddeBetween(userEmail, today, oneWeekLater)
 			.stream()
 			.map(SubscriptionLikeDTO::fromEntity)
+			.collect(Collectors.toList());
+	}
+
+	public List<SubscriptionInfoSimpleDTO> getSubscriptionsByYearMonth(int year, int month) {
+		LocalDate startOfMonth = LocalDate.of(year, month, 1);
+		LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth());
+
+		List<SubscriptionInfo> result = subscriptionInfoRepository
+			.findByRceptBgndeBetweenOrRceptEnddeBetween(
+				startOfMonth, endOfMonth, startOfMonth, endOfMonth
+			);
+
+		return result.stream()
+			.map(SubscriptionInfoSimpleDTO::fromEntity)
 			.collect(Collectors.toList());
 	}
 }

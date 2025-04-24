@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum ErrorCode {
 
 	// 계정
+	SIGN000("SIGN000", "로그인이 필요한 서비스입니다."),
 	SIGN001("SIGN001", "일치하는 이메일 없음"),
 	SIGN002("SIGN002", "중복된 이메일 존재"),
 	SIGN003("SIGN003", "관리자 가입 토큰 불일치"),
