@@ -16,6 +16,7 @@ import org.cheonyakplanet.be.application.dto.user.KakaoUserInfoDto;
 import org.cheonyakplanet.be.application.dto.user.LoginRequestDTO;
 import org.cheonyakplanet.be.application.dto.user.MyPageDTO;
 import org.cheonyakplanet.be.application.dto.user.SignupRequestDTO;
+import org.cheonyakplanet.be.application.dto.user.TokenResponse;
 import org.cheonyakplanet.be.application.dto.user.UserDTO;
 import org.cheonyakplanet.be.application.dto.user.UserUpdateRequestDTO;
 import org.cheonyakplanet.be.domain.entity.user.User;
@@ -151,15 +152,32 @@ public class UserService {
 		}
 	}
 
-	public String kakaoLogin(String code) throws JsonProcessingException {
+	public TokenResponse kakaoLogin(String code) throws JsonProcessingException {
 		// 1. "인가 코드"로 "액세스 토큰" 요청
-		String accessToken = getToken(code);
+		String kakaoAccessToken = getToken(code);
 
 		// 2. 토큰으로 카카오 API 호출 : "액세스 토큰"으로 "카카오 사용자 정보" 가져오기
-		KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
-		// TODO: 사용자 존재 여부 확인 후 신규 등록 또는 연동 처리
+		KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(kakaoAccessToken);
 
-		return kakaoUserInfo.getEmail();
+		// 3. 이메일로 사용자 조회, 없으면 신규 가입
+		String email = kakaoUserInfo.getEmail();
+		User user = userRepository.findByEmailAndDeletedAtIsNull(email)
+			.orElseGet(() -> {
+				// 신규 사용자 생성
+				String rawPassword = String.valueOf(kakaoUserInfo.getId());
+				String encodedPassword = passwordEncoder.encode(rawPassword);
+				String nickname = kakaoUserInfo.getNickname();
+				User newUser = new User(email, encodedPassword, UserRoleEnum.USER, nickname);
+				return userRepository.save(newUser);
+			});
+
+		// 4) JWT 생성 및 저장
+		String accessToken = jwtUtil.createAccessToken(user.getEmail(), user.getRole());
+		String refreshToken = jwtUtil.createRefreshToken(user.getEmail(), user.getRole());
+		jwtUtil.storeTokens(user.getEmail(), accessToken, refreshToken);
+
+		return new TokenResponse(accessToken, refreshToken);
+
 	}
 
 	private String getToken(String code) throws JsonProcessingException {
@@ -179,7 +197,7 @@ public class UserService {
 		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 		body.add("grant_type", "authorization_code");
 		body.add("client_id", "b3ffa0766c60125572ebdc645fceb9c6");
-		body.add("redirect_uri", "http://localhost:8080/api/user/kakao/callback");
+		body.add("redirect_uri", "http://localhost:8082/api/member/kakao/callback");
 		body.add("code", code);
 
 		RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity

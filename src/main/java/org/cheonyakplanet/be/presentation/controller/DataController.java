@@ -3,7 +3,7 @@ package org.cheonyakplanet.be.presentation.controller;
 import java.util.List;
 
 import org.cheonyakplanet.be.application.dto.ApiResponse;
-import org.cheonyakplanet.be.application.dto.CoordinateResponseDTO;
+import org.cheonyakplanet.be.application.dto.subscriprtion.CoordinateResponseDTO;
 import org.cheonyakplanet.be.application.service.FinanceService;
 import org.cheonyakplanet.be.application.service.SubscriptionService;
 import org.springframework.http.ResponseEntity;

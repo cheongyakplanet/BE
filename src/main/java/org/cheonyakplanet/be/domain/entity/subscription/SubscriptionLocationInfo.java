@@ -1,4 +1,6 @@
-package org.cheonyakplanet.be.domain.entity;
+package org.cheonyakplanet.be.domain.entity.subscription;
+
+import org.cheonyakplanet.be.domain.Stamped;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,22 +10,21 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.cheonyakplanet.be.domain.Stamped;
 
 @Entity
-@Table(catalog = "planet",name = "subscription_location_info")
+@Table(catalog = "planet", name = "subscription_location_info")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class SubscriptionLocationInfo extends Stamped {
 
-    @Id
-    private Long id;
+	@Id
+	private Long id;
 
-    @Column(name = "latitude")
-    private String latitude;
+	@Column(name = "latitude")
+	private String latitude;
 
-    @Column(name = "longitude")
-    private String longitude;
+	@Column(name = "longitude")
+	private String longitude;
 }

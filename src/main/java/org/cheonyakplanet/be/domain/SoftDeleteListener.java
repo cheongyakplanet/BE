@@ -27,7 +27,7 @@ public class SoftDeleteListener {
 				if (auth != null && auth.isAuthenticated()) {
 					user.setDeletedBy(auth.getName());
 				} else {
-					user.setDeletedBy("SYSTEM"); // 인증 정보가 없을 경우 SYSTEM으로 처리
+					user.setDeletedBy("SYSTEM"); // 인증 정보가 없을 경우
 				}
 			}
 		}

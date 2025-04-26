@@ -3,7 +3,7 @@ package org.cheonyakplanet.be.domain.repository;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.cheonyakplanet.be.domain.entity.SubscriptionInfo;
+import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

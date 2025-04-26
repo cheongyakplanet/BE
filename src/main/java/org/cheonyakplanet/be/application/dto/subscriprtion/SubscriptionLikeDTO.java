@@ -3,7 +3,7 @@ package org.cheonyakplanet.be.application.dto.subscriprtion;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import org.cheonyakplanet.be.domain.entity.SubscriptionLike;
+import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionLike;
 
 import lombok.Builder;
 import lombok.Getter;
