@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -64,6 +65,7 @@ public class UserService {
 	private final RestTemplate restTemplate;
 	private final JwtUtil jwtUtil;
 	private final EmailService emailService;
+	private final TokenCacheService tokenCacheService;
 
 	private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
@@ -134,13 +136,12 @@ public class UserService {
 	}
 
 	public Object logout(HttpServletRequest request) {
-		// 요청 헤더에서 토큰 추출 (Bearer 접두어 제외)
+
 		String token = jwtUtil.getTokenFromRequest(request);
 		if (!StringUtils.hasText(token)) {
 			throw new CustomException(ErrorCode.AUTH001, "토큰이 존재하지 않습니다.");
 		}
 
-		// "Bearer " 접두어를 포함하여 토큰 조회
 		Optional<UserToken> tokenEntityOpt = userTokenRepository.findByAccessToken(JwtUtil.BEARER_PREFIX + token);
 		if (tokenEntityOpt.isPresent()) {
 			UserToken userToken = tokenEntityOpt.get();
@@ -152,7 +153,7 @@ public class UserService {
 		}
 	}
 
-	public TokenResponse kakaoLogin(String code) throws JsonProcessingException {
+	public String kakaoLogin(String code) throws JsonProcessingException {
 		// 1. "인가 코드"로 "액세스 토큰" 요청
 		String kakaoAccessToken = getToken(code);
 
@@ -171,12 +172,20 @@ public class UserService {
 				return userRepository.save(newUser);
 			});
 
-		// 4) JWT 생성 및 저장
+		// 4) 토큰 생성
 		String accessToken = jwtUtil.createAccessToken(user.getEmail(), user.getRole());
 		String refreshToken = jwtUtil.createRefreshToken(user.getEmail(), user.getRole());
 		jwtUtil.storeTokens(user.getEmail(), accessToken, refreshToken);
 
-		return new TokenResponse(accessToken, refreshToken);
+		TokenResponse tokens = new TokenResponse(accessToken, refreshToken);
+
+		// 임시 코드 생성
+		String stateCode = UUID.randomUUID().toString().substring(0, 8);
+
+		// 인메모리 캐시에 임시 저장 (5분 만료)
+		tokenCacheService.storeTokens(stateCode, tokens, 300);
+
+		return stateCode;
 
 	}
 

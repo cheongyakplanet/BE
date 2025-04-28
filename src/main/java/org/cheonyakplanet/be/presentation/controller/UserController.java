@@ -11,8 +11,8 @@ import org.cheonyakplanet.be.application.dto.user.SignupRequestDTO;
 import org.cheonyakplanet.be.application.dto.user.TokenResponse;
 import org.cheonyakplanet.be.application.dto.user.UserDTO;
 import org.cheonyakplanet.be.application.dto.user.UserUpdateRequestDTO;
+import org.cheonyakplanet.be.application.service.TokenCacheService;
 import org.cheonyakplanet.be.application.service.UserService;
-import org.cheonyakplanet.be.infrastructure.jwt.JwtUtil;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -41,7 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
 	private final UserService userService;
-	private final JwtUtil jwtUtil;
+	private final TokenCacheService tokenCacheService;
 
 	/**
 	 * 회원가입
@@ -84,17 +84,19 @@ public class UserController {
 	}
 
 	@GetMapping("/kakao/callback")
-	@Operation(summary = "소셜 로그인 - 카카오", description = "미완성")
+	@Operation(summary = "소셜 로그인 - 카카오", description = "")
 	public void kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
-		TokenResponse tokens = userService.kakaoLogin(code);
+		String stateCode = userService.kakaoLogin(code);
 		String redirectUrl = String.format(
-			"https://cheongyakplanet.vercel.app?accessToken=%s&refreshToken=%s",
-			tokens.getAccessToken(),
-			tokens.getRefreshToken()
-		);
+			"https://cheongyakplanet.vercel.app?state=%s", stateCode);
 		response.sendRedirect(redirectUrl);
-		log.error("토큰 검사 {}, {}", tokens.getAccessToken(), tokens.getRefreshToken());
+	}
 
+	@GetMapping("/kakao/exchange")
+	@Operation(summary = "상태 코드로 토큰 교환", description = "상태 코드를 사용하여 실제 인증 토큰 획득")
+	public ResponseEntity<?> exchangeStateForTokens(@RequestParam("state") String stateCode) {
+		TokenResponse tokens = tokenCacheService.getAndRemoveTokens(stateCode);
+		return ResponseEntity.ok(new ApiResponse("success", tokens));
 	}
 
 	@PostMapping("/auth/refresh")
