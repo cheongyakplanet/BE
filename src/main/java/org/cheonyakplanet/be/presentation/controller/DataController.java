@@ -57,7 +57,7 @@ public class DataController {
 	}
 
 	@PostMapping("/refresh")
-	public ResponseEntity<?> triggerRefresh(@RequestParam("yyyMM") String yyyyMM) {
+	public ResponseEntity<?> triggerRefresh(@RequestParam("yyyyMM") String yyyyMM) {
 		infoService.collectRealPrice(yyyyMM);
 		return ResponseEntity.ok(new ApiResponse<>("success", "APT 실거래가 업데이트 완료"));
 	}
