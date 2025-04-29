@@ -38,7 +38,7 @@ public class CommunityService {
 	private final ReplyRepository replyRepository;
 	private final PostReactionRepository reactionRepository;
 
-	public Post createPost(PostCreateDTO postCreateDTO, UserDetailsImpl userDetails) {
+	public void createPost(PostCreateDTO postCreateDTO, UserDetailsImpl userDetails) {
 
 		User user = userDetails.getUser();
 
@@ -48,7 +48,8 @@ public class CommunityService {
 			.content(postCreateDTO.getContent())
 			.likes(0)
 			.build();
-		return postRepository.save(post);
+
+		postRepository.save(post);
 	}
 
 	public void deletePost(Long postId, UserDetailsImpl userDetails) {

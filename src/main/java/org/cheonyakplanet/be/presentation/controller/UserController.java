@@ -8,10 +8,11 @@ import org.cheonyakplanet.be.application.dto.user.InterestLocationDTO;
 import org.cheonyakplanet.be.application.dto.user.LoginRequestDTO;
 import org.cheonyakplanet.be.application.dto.user.MyPageDTO;
 import org.cheonyakplanet.be.application.dto.user.SignupRequestDTO;
+import org.cheonyakplanet.be.application.dto.user.TokenResponse;
 import org.cheonyakplanet.be.application.dto.user.UserDTO;
 import org.cheonyakplanet.be.application.dto.user.UserUpdateRequestDTO;
+import org.cheonyakplanet.be.application.service.TokenCacheService;
 import org.cheonyakplanet.be.application.service.UserService;
-import org.cheonyakplanet.be.infrastructure.jwt.JwtUtil;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -40,7 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
 	private final UserService userService;
-	private final JwtUtil jwtUtil;
+	private final TokenCacheService tokenCacheService;
 
 	/**
 	 * 회원가입
@@ -82,17 +83,20 @@ public class UserController {
 		return ResponseEntity.ok(new ApiResponse("success", result));
 	}
 
-	@GetMapping("/kako/callback")
-	@Operation(summary = "소셜 로그인 - 카카오", description = "미완성")
-	public void kakaoLogin(@RequestParam String code, HttpServletResponse response) throws IOException {
-		String email = userService.kakaoLogin(code);
+	@GetMapping("/kakao/callback")
+	@Operation(summary = "소셜 로그인 - 카카오", description = "")
+	public void kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
+		String stateCode = userService.kakaoLogin(code);
+		String redirectUrl = String.format(
+			"https://cheongyakplanet.vercel.app?state=%s", stateCode);
+		response.sendRedirect(redirectUrl);
+	}
 
-		// 2. 저장된 Access Token 가져오기
-		String accessToken = jwtUtil.getAccessToken(email);
-
-		// 3. 프론트엔드로 리다이렉트 (Access Token 포함)
-		response.sendRedirect("https://frontend-domain.com/oauth/callback?accessToken=" + accessToken);
-
+	@GetMapping("/kakao/exchange")
+	@Operation(summary = "상태 코드로 토큰 교환", description = "상태 코드를 사용하여 실제 인증 토큰 획득")
+	public ResponseEntity<?> exchangeStateForTokens(@RequestParam("state") String stateCode) {
+		TokenResponse tokens = tokenCacheService.getAndRemoveTokens(stateCode);
+		return ResponseEntity.ok(new ApiResponse("success", tokens));
 	}
 
 	@PostMapping("/auth/refresh")

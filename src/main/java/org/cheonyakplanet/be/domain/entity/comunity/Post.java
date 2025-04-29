@@ -59,7 +59,7 @@ public class Post extends Stamped {
 	}
 
 	public void increaseDislikes() {
-		this.dislikes--;
+		this.dislikes++;
 	}
 
 	public void countViews() {

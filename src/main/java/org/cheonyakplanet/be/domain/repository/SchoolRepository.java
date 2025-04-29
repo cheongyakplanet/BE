@@ -2,7 +2,7 @@ package org.cheonyakplanet.be.domain.repository;
 
 import java.util.List;
 
-import org.cheonyakplanet.be.domain.entity.School;
+import org.cheonyakplanet.be.domain.entity.infra.School;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

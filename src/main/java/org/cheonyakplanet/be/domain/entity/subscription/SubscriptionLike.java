@@ -1,4 +1,4 @@
-package org.cheonyakplanet.be.domain.entity;
+package org.cheonyakplanet.be.domain.entity.subscription;
 
 import java.time.LocalDate;
 

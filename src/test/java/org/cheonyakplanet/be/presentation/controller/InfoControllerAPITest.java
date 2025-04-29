@@ -20,7 +20,7 @@ import org.cheonyakplanet.be.application.dto.infra.StationDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionDetailDTO;
 import org.cheonyakplanet.be.application.service.InfoService;
-import org.cheonyakplanet.be.domain.entity.SubscriptionInfo;
+import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionInfo;
 import org.cheonyakplanet.be.domain.entity.user.User;
 import org.cheonyakplanet.be.domain.entity.user.UserRoleEnum;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;

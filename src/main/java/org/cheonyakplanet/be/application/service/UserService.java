@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -16,6 +17,7 @@ import org.cheonyakplanet.be.application.dto.user.KakaoUserInfoDto;
 import org.cheonyakplanet.be.application.dto.user.LoginRequestDTO;
 import org.cheonyakplanet.be.application.dto.user.MyPageDTO;
 import org.cheonyakplanet.be.application.dto.user.SignupRequestDTO;
+import org.cheonyakplanet.be.application.dto.user.TokenResponse;
 import org.cheonyakplanet.be.application.dto.user.UserDTO;
 import org.cheonyakplanet.be.application.dto.user.UserUpdateRequestDTO;
 import org.cheonyakplanet.be.domain.entity.user.User;
@@ -63,6 +65,7 @@ public class UserService {
 	private final RestTemplate restTemplate;
 	private final JwtUtil jwtUtil;
 	private final EmailService emailService;
+	private final TokenCacheService tokenCacheService;
 
 	private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
@@ -133,13 +136,12 @@ public class UserService {
 	}
 
 	public Object logout(HttpServletRequest request) {
-		// 요청 헤더에서 토큰 추출 (Bearer 접두어 제외)
+
 		String token = jwtUtil.getTokenFromRequest(request);
 		if (!StringUtils.hasText(token)) {
 			throw new CustomException(ErrorCode.AUTH001, "토큰이 존재하지 않습니다.");
 		}
 
-		// "Bearer " 접두어를 포함하여 토큰 조회
 		Optional<UserToken> tokenEntityOpt = userTokenRepository.findByAccessToken(JwtUtil.BEARER_PREFIX + token);
 		if (tokenEntityOpt.isPresent()) {
 			UserToken userToken = tokenEntityOpt.get();
@@ -153,13 +155,38 @@ public class UserService {
 
 	public String kakaoLogin(String code) throws JsonProcessingException {
 		// 1. "인가 코드"로 "액세스 토큰" 요청
-		String accessToken = getToken(code);
+		String kakaoAccessToken = getToken(code);
 
 		// 2. 토큰으로 카카오 API 호출 : "액세스 토큰"으로 "카카오 사용자 정보" 가져오기
-		KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
-		// TODO: 사용자 존재 여부 확인 후 신규 등록 또는 연동 처리
+		KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(kakaoAccessToken);
 
-		return kakaoUserInfo.getEmail();
+		// 3. 이메일로 사용자 조회, 없으면 신규 가입
+		String email = kakaoUserInfo.getEmail();
+		User user = userRepository.findByEmailAndDeletedAtIsNull(email)
+			.orElseGet(() -> {
+				// 신규 사용자 생성
+				String rawPassword = String.valueOf(kakaoUserInfo.getId());
+				String encodedPassword = passwordEncoder.encode(rawPassword);
+				String nickname = kakaoUserInfo.getNickname();
+				User newUser = new User(email, encodedPassword, UserRoleEnum.USER, nickname);
+				return userRepository.save(newUser);
+			});
+
+		// 4) 토큰 생성
+		String accessToken = jwtUtil.createAccessToken(user.getEmail(), user.getRole());
+		String refreshToken = jwtUtil.createRefreshToken(user.getEmail(), user.getRole());
+		jwtUtil.storeTokens(user.getEmail(), accessToken, refreshToken);
+
+		TokenResponse tokens = new TokenResponse(accessToken, refreshToken);
+
+		// 임시 코드 생성
+		String stateCode = UUID.randomUUID().toString().substring(0, 8);
+
+		// 인메모리 캐시에 임시 저장 (5분 만료)
+		tokenCacheService.storeTokens(stateCode, tokens, 300);
+
+		return stateCode;
+
 	}
 
 	private String getToken(String code) throws JsonProcessingException {
@@ -179,7 +206,7 @@ public class UserService {
 		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 		body.add("grant_type", "authorization_code");
 		body.add("client_id", "b3ffa0766c60125572ebdc645fceb9c6");
-		body.add("redirect_uri", "http://localhost:8080/api/user/kakao/callback");
+		body.add("redirect_uri", "http://localhost:8082/api/member/kakao/callback");
 		body.add("code", code);
 
 		RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity

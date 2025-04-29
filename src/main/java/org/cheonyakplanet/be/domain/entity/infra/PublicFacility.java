@@ -1,4 +1,4 @@
-package org.cheonyakplanet.be.domain.entity;
+package org.cheonyakplanet.be.domain.entity.infra;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
