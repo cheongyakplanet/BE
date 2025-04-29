@@ -14,12 +14,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SubscriptionInfoSimpleDTO {
+	private Long id;
 	private String houseNm;
 	private LocalDate rceptBgnde;
 	private LocalDate rceptEndde;
 
 	public static SubscriptionInfoSimpleDTO fromEntity(SubscriptionInfo entity) {
 		return SubscriptionInfoSimpleDTO.builder()
+			.id(entity.getId())
 			.houseNm(entity.getHouseNm())
 			.rceptBgnde(entity.getRceptBgnde())
 			.rceptEndde(entity.getRceptEndde())
