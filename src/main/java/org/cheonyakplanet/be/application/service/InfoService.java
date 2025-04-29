@@ -6,6 +6,7 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -485,6 +486,16 @@ public class InfoService {
 		return result.stream()
 			.map(SubscriptionInfoSimpleDTO::fromEntity)
 			.collect(Collectors.toList());
+	}
+
+	public void collectRealPrice(String yyyyMM) {
+		String callDate = yyyyMM;
+		if (callDate == null || callDate.isEmpty()) {
+			callDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
+		}
+
+		ingestAll(callDate);
+		refreshSummary();
 	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
