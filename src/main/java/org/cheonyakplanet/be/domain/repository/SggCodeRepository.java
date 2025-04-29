@@ -14,4 +14,5 @@ public interface SggCodeRepository extends JpaRepository<SggCode, Integer> {
 
 	@Query("SELECT DISTINCT s.sggCdNmCity FROM SggCode s where s.sggCdNmRegion= :region")
 	List<String> findAllCities(@Param("region") String region);
+	
 }
