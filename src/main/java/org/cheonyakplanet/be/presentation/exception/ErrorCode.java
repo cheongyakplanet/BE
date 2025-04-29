@@ -36,6 +36,7 @@ public enum ErrorCode {
 	INFO003("INFO003", "위치 정보가 없는 청약건입니다."),
 
 	INFO005("INFO005", "지역 테이블 없음, DB확인"),
+	INFO006("INFO006", "관심지역 아님"),
 
 	// Other
 	OTHER001("OTHER001", "필터 부분 에러"),

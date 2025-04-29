@@ -11,8 +11,8 @@ import org.cheonyakplanet.be.application.service.InfoService;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -705,7 +705,7 @@ public class InfoController {
 	}
 
 	@Operation(summary = "관심 청약 삭제")
-	@PatchMapping("/subscription/like/{subscriptionLikeId}")
+	@DeleteMapping("/subscription/like/{subscriptionLikeId}")
 	public ResponseEntity<?> updateSubscriptionLike(@AuthenticationPrincipal UserDetailsImpl userDetails,
 		@RequestParam("subscriptionLikeId") Long id) {
 		infoService.deleteSubscriptionLike(userDetails, id);
@@ -717,6 +717,14 @@ public class InfoController {
 	public ResponseEntity<?> getLikeSubscription(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		List<SubscriptionLikeDTO> result = infoService.getLikeSubscription(userDetails);
 		return ResponseEntity.ok(new ApiResponse("success", result));
+	}
+
+	@Operation(summary = "관심 청약 여부")
+	@GetMapping("subscription/islike")
+	public ResponseEntity<?> isLikeSubscription(@AuthenticationPrincipal UserDetailsImpl userDetails,
+		@RequestParam("id") Long id) {
+		boolean reslut = infoService.isLikeSubscription(id, userDetails);
+		return ResponseEntity.ok(new ApiResponse("success", reslut));
 	}
 
 	@Operation(summary = "1주일 이내 청약 시작")

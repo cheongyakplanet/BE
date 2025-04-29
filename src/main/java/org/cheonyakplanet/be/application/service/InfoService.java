@@ -6,6 +6,7 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -427,6 +428,21 @@ public class InfoService {
 		return subscriptionLikes;
 	}
 
+	public boolean isLikeSubscription(Long id, UserDetailsImpl userDetails) {
+		SubscriptionLike like = subscriptionLikeRepository.findBySubscriptionId(id);
+
+		if (like == null) {
+			return false;
+		}
+
+		String userEmail = userDetails.getUsername();
+		if (userEmail.equals(like.getCreatedBy())) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public void deleteSubscriptionLike(UserDetailsImpl userDetails, Long id) {
 
 		if (userDetails == null) {
@@ -485,6 +501,16 @@ public class InfoService {
 		return result.stream()
 			.map(SubscriptionInfoSimpleDTO::fromEntity)
 			.collect(Collectors.toList());
+	}
+
+	public void collectRealPrice(String yyyyMM) {
+		String callDate = yyyyMM;
+		if (callDate == null || callDate.isEmpty()) {
+			callDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
+		}
+
+		ingestAll(callDate);
+		refreshSummary();
 	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
