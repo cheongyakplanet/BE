@@ -428,6 +428,21 @@ public class InfoService {
 		return subscriptionLikes;
 	}
 
+	public boolean isLikeSubscription(Long id, UserDetailsImpl userDetails) {
+		SubscriptionLike like = subscriptionLikeRepository.findBySubscriptionId(id);
+
+		if (like == null) {
+			return false;
+		}
+
+		String userEmail = userDetails.getUsername();
+		if (userEmail.equals(like.getCreatedBy())) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public void deleteSubscriptionLike(UserDetailsImpl userDetails, Long id) {
 
 		if (userDetails == null) {

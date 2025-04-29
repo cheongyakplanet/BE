@@ -719,6 +719,14 @@ public class InfoController {
 		return ResponseEntity.ok(new ApiResponse("success", result));
 	}
 
+	@Operation(summary = "관심 청약 여부")
+	@GetMapping("subscription/islike")
+	public ResponseEntity<?> isLikeSubscription(@AuthenticationPrincipal UserDetailsImpl userDetails,
+		@RequestParam("id") Long id) {
+		boolean reslut = infoService.isLikeSubscription(id, userDetails);
+		return ResponseEntity.ok(new ApiResponse("success", reslut));
+	}
+
 	@Operation(summary = "1주일 이내 청약 시작")
 	@GetMapping("/subscription/like/upcoming")
 	public ResponseEntity<?> getUpcomingSubscriptions(@AuthenticationPrincipal UserDetailsImpl userDetails) {
