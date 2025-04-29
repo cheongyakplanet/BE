@@ -25,6 +25,7 @@ public class SubscriptionDTO {
 	private LocalDate rceptBgnde;       // 청약 접수 시작일
 	private LocalDate rceptEndde;       // 청약 접수 종료일
 	private Integer totSuplyHshldco;    // 공급규모 (총 공급 가구수)
+	private String rentSecdNm;
 
 	public static SubscriptionDTO fromEntity(SubscriptionInfo entity) {
 		return SubscriptionDTO.builder()
@@ -39,6 +40,7 @@ public class SubscriptionDTO {
 			.rceptBgnde(entity.getRceptBgnde())
 			.rceptEndde(entity.getRceptEndde())
 			.totSuplyHshldco(entity.getTotSuplyHshldco())
+			.rentSecdNm(entity.getRentSecdNm())
 			.build();
 	}
 }

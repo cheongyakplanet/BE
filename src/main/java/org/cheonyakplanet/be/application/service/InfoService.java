@@ -1,6 +1,12 @@
 package org.cheonyakplanet.be.application.service;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +15,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.cheonyakplanet.be.application.dto.RealEstatePriceSummaryDTO;
 import org.cheonyakplanet.be.application.dto.infra.InfraResponseDTO;
 import org.cheonyakplanet.be.application.dto.infra.PublicFacilityDTO;
 import org.cheonyakplanet.be.application.dto.infra.SchoolDTO;
@@ -19,14 +29,18 @@ import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionDetailDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionInfoSimpleDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionLikeDTO;
+import org.cheonyakplanet.be.domain.entity.RealEstatePrice;
 import org.cheonyakplanet.be.domain.entity.infra.PublicFacility;
 import org.cheonyakplanet.be.domain.entity.infra.School;
 import org.cheonyakplanet.be.domain.entity.infra.Station;
+import org.cheonyakplanet.be.domain.entity.subscription.SggCode;
 import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionInfo;
 import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionLike;
 import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionLocationInfo;
 import org.cheonyakplanet.be.domain.entity.user.User;
 import org.cheonyakplanet.be.domain.repository.PublicFacilityRepository;
+import org.cheonyakplanet.be.domain.repository.RealEstatePriceRepository;
+import org.cheonyakplanet.be.domain.repository.RealEstatePriceSummaryRepository;
 import org.cheonyakplanet.be.domain.repository.SchoolRepository;
 import org.cheonyakplanet.be.domain.repository.SggCodeRepository;
 import org.cheonyakplanet.be.domain.repository.StationRepository;
@@ -36,11 +50,23 @@ import org.cheonyakplanet.be.domain.repository.SubscriptionLocationInfoRepositor
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.cheonyakplanet.be.presentation.exception.CustomException;
 import org.cheonyakplanet.be.presentation.exception.ErrorCode;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,9 +83,19 @@ public class InfoService {
 	private final SchoolRepository schoolRepository;
 	private final PublicFacilityRepository publicFacilityRepository;
 	private final SubscriptionLikeRepository subscriptionLikeRepository;
+	private final RealEstatePriceRepository priceRepository;
+	private final RealEstatePriceSummaryRepository priceSummaryRepository;
+	@Qualifier("taskExecutor")
+	private final TaskExecutor taskExecutor;
 
 	// 하버사인 공식을 위한 Earth radius in kilometers
 	private static final double EARTH_RADIUS = 6371.0;
+
+	@Value("${public.api.key}")
+	private String apiKey;
+
+	@Value("${realestate.api.url}")
+	private String priceUrl;
 
 	/**
 	 * 단일 청약 정보를 조회
@@ -449,5 +485,141 @@ public class InfoService {
 		return result.stream()
 			.map(SubscriptionInfoSimpleDTO::fromEntity)
 			.collect(Collectors.toList());
+	}
+
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	public void ingestAll(String callDate) {
+		List<SggCode> codes = sggCodeRepository.findAll();
+		for (SggCode code : codes) {
+			taskExecutor.execute(() -> {
+				try {
+					ingestOne(code, callDate);
+				} catch (Exception e) {
+					log.error("Ingest failed for {}", code.getSggCd5(), e);
+				}
+			});
+		}
+		// TODO: Await termination if synchronous completion needed
+	}
+
+	@Retryable(
+		value = Exception.class,
+		maxAttempts = 3,
+		backoff = @Backoff(delay = 2000, multiplier = 2)
+	)
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void ingestOne(SggCode code, String callDate) throws Exception {
+		String url = String.format("%s?serviceKey=%s&LAWD_CD=%s&DEAL_YMD=%s&numOfRows=1000",
+			priceUrl, apiKey, code.getSggCd5(), callDate);
+		HttpURLConnection conn = null;
+		StringBuilder sb = new StringBuilder();
+		try {
+			URL apiUrl = new URL(url);
+			conn = (HttpURLConnection)apiUrl.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setConnectTimeout(30000);
+			conn.setReadTimeout(60000);
+			int status = conn.getResponseCode();
+			BufferedReader reader = new BufferedReader(
+				new InputStreamReader(
+					status == 200 ? conn.getInputStream() : conn.getErrorStream(), "UTF-8"));
+			String line;
+			while ((line = reader.readLine()) != null)
+				sb.append(line);
+			reader.close();
+		} finally {
+			if (conn != null)
+				conn.disconnect();
+		}
+		String response = sb.toString();
+		List<RealEstatePrice> list = parseResponse(response, code);
+		if (list.isEmpty())
+			throw new RuntimeException("No items parsed for " + code.getSggCd5());
+		priceRepository.saveAll(list);
+		log.info("Saved {} records for {}", list.size(), code.getSggCd5());
+	}
+
+	private List<RealEstatePrice> parseResponse(String xml, SggCode code) throws Exception {
+		List<RealEstatePrice> result = new ArrayList<>();
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		Document doc = builder.parse(new InputSource(new StringReader(xml)));
+		NodeList items = doc.getElementsByTagName("item");
+		for (int i = 0; i < items.getLength(); i++) {
+			Node item = items.item(i);
+			RealEstatePrice p = new RealEstatePrice();
+			// 1) SsgCode에서 가져온 region, city 연결
+			p.setRegion(code.getSggCdNmRegion());  // ex. "경기도"
+			p.setSsgCdNm(code.getSggCdNmCity());      // ex. "연천군"
+
+			// 2) XML <법정동> 태그에서 district 추출
+			String district = getNodeValue(item, "법정동");   // getNodeValue 구현 그대로
+			p.setUmdNm(district);
+
+			// 3) 나머지 필드
+			p.setSggCd(String.valueOf(code.getSggCd5()));
+			p.setAptDong(getNodeValue(item, "번지"));       // 예: "41800"
+			p.setAptNm(getNodeValue(item, "아파트"));      // 예: "삼익"
+			p.setDealYear(getInt(item, "년"));             // 예: "2024"
+			p.setDealMonth(getInt(item, "월"));            // 예: "4"
+			p.setDealDay(getInt(item, "일"));              // 예: "20"
+			String amt = getNodeValue(item, "거래금액");    // 예: "1,160,000"
+			if (amt != null) {
+				p.setDealAmount(Long.parseLong(amt.replace(",", "")));
+			}
+			p.setDealDate(formatDate(p.getDealYear(), p.getDealMonth(), p.getDealDay()));
+			p.setExcluUseAr(getBigDecimal(item, "전용면적")); // ex. "84.88"
+			result.add(p);
+		}
+		return result;
+	}
+
+	private String getNodeValue(Node node, String tag) {
+		NodeList nl = ((org.w3c.dom.Element)node).getElementsByTagName(tag);
+		if (nl.getLength() > 0)
+			return nl.item(0).getTextContent().trim();
+		return null;
+	}
+
+	private Integer getInt(Node node, String tag) {
+		String v = getNodeValue(node, tag);
+		try {
+			return v != null ? Integer.parseInt(v) : null;
+		} catch (NumberFormatException e) {
+			return null;
+		}
+	}
+
+	private java.math.BigDecimal getBigDecimal(Node node, String tag) {
+		String v = getNodeValue(node, tag);
+		try {
+			return v != null ? new java.math.BigDecimal(v.replace(",", "")) : null;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private java.util.Date formatDate(int y, int m, int d) {
+		return java.util.Date.from(
+			java.time.LocalDate.of(y, m, d).atStartOfDay(java.time.ZoneId.systemDefault()).toInstant()
+		);
+	}
+
+	@Recover
+	public void recover(Exception e, SggCode code, String callDate) {
+		log.error("Final failure after retries for {}", code.getSggCd5(), e);
+	}
+
+	public List<RealEstatePriceSummaryDTO> getRealEstateSummary(Integer ssgCd5, String umdNm) {
+		SggCode code = sggCodeRepository.findById(ssgCd5)
+			.orElseThrow(() -> new CustomException(ErrorCode.UNKNOWN_ERROR, "실거래 변환중 오류"));
+		return priceSummaryRepository.findByRegionAndSggCdNmAndUmdNm(
+			code.getSggCdNmRegion(), code.getSggCdNmCity(), umdNm);
+	}
+
+	@Transactional
+	public void refreshSummary() {
+		priceSummaryRepository.deleteAll();
+		priceSummaryRepository.insertSummary();
 	}
 }
