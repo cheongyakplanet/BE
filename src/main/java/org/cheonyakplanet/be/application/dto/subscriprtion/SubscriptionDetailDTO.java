@@ -1,6 +1,7 @@
 package org.cheonyakplanet.be.application.dto.subscriprtion;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -85,12 +86,29 @@ public class SubscriptionDetailDTO {
 	private String latitude;                      // 위도
 	private String longitude;                     // 경도
 
+	private Integer totalSupplyCountNormal;
+	private Integer totalSupplyCountSpecial;
+	private Integer totalSupplyCountTotal;
+
 	// 추가된 관계 세부정보
 	private List<SubscriptionPriceInfoDTO> priceInfo;
 	private List<SubscriptionSpecialSupplyTargetDTO> specialSupplyTarget;
 	private List<SubscriptionSupplyTargetDTO> supplyTarget;
 
 	public static SubscriptionDetailDTO fromEntity(SubscriptionInfo entity, SubscriptionLocationInfo locationInfo) {
+
+		// 1) 공급대상 DTO 리스트로 변환
+		List<SubscriptionSupplyTargetDTO> supplyTargetList = entity.getSubscriptionSupplyTarget() == null
+			? Collections.emptyList()
+			: entity.getSubscriptionSupplyTarget().stream()
+			.map(SubscriptionSupplyTargetDTO::fromEntity)
+			.collect(Collectors.toList());
+
+		// 2) 합계 계산
+		int sumNormal = supplyTargetList.stream().mapToInt(SubscriptionSupplyTargetDTO::getSupplyCountNormal).sum();
+		int sumSpecial = supplyTargetList.stream().mapToInt(SubscriptionSupplyTargetDTO::getSupplyCountSpecial).sum();
+		int sumTotal = supplyTargetList.stream().mapToInt(SubscriptionSupplyTargetDTO::getSupplyCountTotal).sum();
+
 		SubscriptionDetailDTO dto = SubscriptionDetailDTO.builder()
 			.id(entity.getId())
 			.bsnsMbyNm(entity.getBsnsMbyNm())
@@ -153,10 +171,10 @@ public class SubscriptionDetailDTO {
 				entity.getSubscriptionSpecialSupplyTarget().stream()
 					.map(SubscriptionSpecialSupplyTargetDTO::fromEntity)
 					.collect(Collectors.toList()))
-			.supplyTarget(entity.getSubscriptionSupplyTarget() == null ? null :
-				entity.getSubscriptionSupplyTarget().stream()
-					.map(SubscriptionSupplyTargetDTO::fromEntity)
-					.collect(Collectors.toList()))
+			.supplyTarget(supplyTargetList)
+			.totalSupplyCountNormal(sumNormal)
+			.totalSupplyCountSpecial(sumSpecial)
+			.totalSupplyCountTotal(sumTotal)
 			.build();
 
 		// 위치 정보가 있으면 위도/경도 설정
