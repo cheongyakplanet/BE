@@ -394,18 +394,30 @@ public class InfoService {
 			throw new CustomException(ErrorCode.SIGN000, "로그인이 필요한 서비스입니다.");
 		}
 
-		Optional<SubscriptionInfo> subscription = subscriptionInfoRepository.findById(id);
+		String userEmail = userDetails.getUsername();
+
+		SubscriptionInfo subscription = subscriptionInfoRepository.findById(id)
+			.orElseThrow(() -> new CustomException(ErrorCode.INFO001, "청약 정보가 존재하지 않습니다."));
+
+		// 중복 확인
+		List<SubscriptionLike> existingLikes = subscriptionLikeRepository.findByCreatedByAndDeletedAtIsNull(userEmail);
+		boolean alreadyLiked = existingLikes.stream()
+			.anyMatch(like -> like.getSubscriptionId().equals(subscription.getId()) && like.getDeletedAt() == null);
+
+		if (alreadyLiked) {
+			throw new CustomException(ErrorCode.INFO007, "이미 좋아요한 청약입니다.");
+		}
 
 		SubscriptionLike subscriptionLike = SubscriptionLike.builder()
-			.subscriptionId(id)
-			.houseNm(subscription.get().getHouseNm())
-			.hssplyAdres(subscription.get().getHssplyAdres())
-			.region(subscription.get().getRegion())
-			.city(subscription.get().getCity())
-			.district(subscription.get().getDistrict())
-			.detail(subscription.get().getDetail())
-			.rceptBgnde(subscription.get().getRceptBgnde())
-			.rceptEndde(subscription.get().getRceptEndde())
+			.subscriptionId(subscription.getId())
+			.houseNm(subscription.getHouseNm())
+			.hssplyAdres(subscription.getHssplyAdres())
+			.region(subscription.getRegion())
+			.city(subscription.getCity())
+			.district(subscription.getDistrict())
+			.detail(subscription.getDetail())
+			.rceptBgnde(subscription.getRceptBgnde())
+			.rceptEndde(subscription.getRceptEndde())
 			.build();
 
 		subscriptionLikeRepository.save(subscriptionLike);
@@ -419,7 +431,8 @@ public class InfoService {
 		}
 
 		String userEmail = userDetails.getUsername();
-		List<SubscriptionLike> subscriptionLike = subscriptionLikeRepository.findByCreatedBy(userEmail);
+		List<SubscriptionLike> subscriptionLike = subscriptionLikeRepository.findByCreatedByAndDeletedAtIsNull(
+			userEmail);
 
 		List<SubscriptionLikeDTO> subscriptionLikes = subscriptionLike.stream()
 			.map(SubscriptionLikeDTO::fromEntity)
@@ -429,7 +442,7 @@ public class InfoService {
 	}
 
 	public boolean isLikeSubscription(Long id, UserDetailsImpl userDetails) {
-		SubscriptionLike like = subscriptionLikeRepository.findBySubscriptionId(id);
+		SubscriptionLike like = subscriptionLikeRepository.findBySubscriptionIdAndDeletedAtIsNull(id);
 
 		if (like == null) {
 			return false;
@@ -443,6 +456,7 @@ public class InfoService {
 		}
 	}
 
+	@Transactional
 	public void deleteSubscriptionLike(UserDetailsImpl userDetails, Long id) {
 
 		if (userDetails == null) {
@@ -451,10 +465,16 @@ public class InfoService {
 
 		String userEmail = userDetails.getUsername();
 
-		subscriptionLikeRepository.findById(id).ifPresent(subscriptionLike -> {
-			subscriptionLike.softdelete(userEmail);
-			subscriptionLikeRepository.save(subscriptionLike);
-		});
+		List<SubscriptionLike> subscriptionLikes = subscriptionLikeRepository.findByCreatedByAndDeletedAtIsNull(
+			userEmail);
+
+		SubscriptionLike likeToDelete = subscriptionLikes.stream()
+			.filter(like -> Objects.equals(like.getSubscriptionId(), id))
+			.findFirst()
+			.orElseThrow(() -> new CustomException(ErrorCode.INFO006, "해당 청약에 대한 좋아요 정보가 없습니다."));
+
+		likeToDelete.softdelete(userEmail);
+		subscriptionLikeRepository.save(likeToDelete);
 	}
 
 	public List<SubscriptionLikeDTO> getUpcomingSubscriptionLikes(UserDetailsImpl userDetails) {

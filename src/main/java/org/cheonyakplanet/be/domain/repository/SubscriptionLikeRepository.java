@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SubscriptionLikeRepository extends JpaRepository<SubscriptionLike, Long> {
 
-	SubscriptionLike findBySubscriptionId(Long subscriptionId);
+	SubscriptionLike findBySubscriptionIdAndDeletedAtIsNull(Long subscriptionId);
 
-	List<SubscriptionLike> findByCreatedBy(String createdBy);
+	List<SubscriptionLike> findByCreatedByAndDeletedAtIsNull(String createdBy);
 
 	List<SubscriptionLike> findByCreatedByAndRceptBgndeBetween(String createdBy, LocalDate from, LocalDate to);
 

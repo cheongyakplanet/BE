@@ -37,6 +37,7 @@ public enum ErrorCode {
 
 	INFO005("INFO005", "지역 테이블 없음, DB확인"),
 	INFO006("INFO006", "관심지역 아님"),
+	INFO007("INFO007", "이미 추가한 관심 청약"),
 
 	// Other
 	OTHER001("OTHER001", "필터 부분 에러"),
