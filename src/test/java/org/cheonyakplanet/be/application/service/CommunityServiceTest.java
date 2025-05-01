@@ -203,7 +203,7 @@ class CommunityServiceTest {
 	// void getPostById_Success() {
 	// 	// given
 	// 	Long postId = 1L;
-	// 	when(postRepository.findPostById(postId)).thenReturn(testPost);
+	// 	when(postRepository.findPostByIdAndDeletedAtIsNull(postId)).thenReturn(testPost);
 	//
 	// 	// when
 	// 	Post result = communityService.getPostById(postId);
@@ -212,7 +212,7 @@ class CommunityServiceTest {
 	// 	assertThat(result).isNotNull();
 	// 	assertThat(result.getId()).isEqualTo(postId);
 	// 	assertThat(result.getViews()).isEqualTo(1L); // views가 증가했는지 확인
-	// 	verify(postRepository, times(1)).findPostById(postId);
+	// 	verify(postRepository, times(1)).findPostByIdAndDeletedAtIsNull(postId);
 	// }
 
 	// @Test
@@ -220,13 +220,13 @@ class CommunityServiceTest {
 	// void getPostById_NotFound() {
 	// 	// given
 	// 	Long postId = 1L;
-	// 	when(postRepository.findPostById(postId)).thenReturn(null);
+	// 	when(postRepository.findPostByIdAndDeletedAtIsNull(postId)).thenReturn(null);
 	//
 	// 	// when & then
 	// 	assertThrows(CustomException.class, () -> {
 	// 		communityService.getPostById(postId);
 	// 	});
-	// 	verify(postRepository, times(1)).findPostById(postId);
+	// 	verify(postRepository, times(1)).findPostByIdAndDeletedAtIsNull(postId);
 	// }
 
 	@Test
@@ -235,7 +235,7 @@ class CommunityServiceTest {
 		// given
 		Pageable pageable = PageRequest.of(0, 5);
 		List<Post> popularPosts = List.of(testPost);
-		when(postRepository.findPostsOrderByLikes(pageable)).thenReturn(popularPosts);
+		when(postRepository.findPostsOrderByLikesAndDeletedAtIsNull(pageable)).thenReturn(popularPosts);
 
 		// when
 		List<Post> result = communityService.getPopularPosts();
@@ -244,7 +244,7 @@ class CommunityServiceTest {
 		assertThat(result).isNotNull();
 		assertThat(result).hasSize(1);
 		assertThat(result.get(0)).isEqualTo(testPost);
-		verify(postRepository, times(1)).findPostsOrderByLikes(pageable);
+		verify(postRepository, times(1)).findPostsOrderByLikesAndDeletedAtIsNull(pageable);
 	}
 
 	@Test
@@ -278,7 +278,7 @@ class CommunityServiceTest {
 	void likePost_Success() {
 		// given
 		Long postId = 1L;
-		when(postRepository.findPostById(postId)).thenReturn(testPost);
+		when(postRepository.findPostByIdAndDeletedAtIsNull(postId)).thenReturn(testPost);
 		when(reactionRepository.findByPostAndEmail(testPost, userDetails.getUsername()))
 			.thenReturn(Optional.empty());
 
@@ -287,7 +287,7 @@ class CommunityServiceTest {
 
 		// then
 		assertThat(testPost.getLikes()).isEqualTo(1);
-		verify(postRepository, times(1)).findPostById(postId);
+		verify(postRepository, times(1)).findPostByIdAndDeletedAtIsNull(postId);
 		verify(reactionRepository, times(1)).findByPostAndEmail(testPost, userDetails.getUsername());
 		verify(reactionRepository, times(1)).save(any(PostReaction.class));
 		verify(postRepository, times(1)).save(testPost);
@@ -298,7 +298,7 @@ class CommunityServiceTest {
 	void likePost_AlreadyReacted() {
 		// given
 		Long postId = 1L;
-		when(postRepository.findPostById(postId)).thenReturn(testPost);
+		when(postRepository.findPostByIdAndDeletedAtIsNull(postId)).thenReturn(testPost);
 
 		PostReaction existingReaction = PostReaction.builder()
 			.post(testPost)
@@ -315,7 +315,7 @@ class CommunityServiceTest {
 		});
 
 		assertThat(exception.getErrorCode()).isEqualTo(ErrorCode.COMU003);
-		verify(postRepository, times(1)).findPostById(postId);
+		verify(postRepository, times(1)).findPostByIdAndDeletedAtIsNull(postId);
 		verify(reactionRepository, times(1)).findByPostAndEmail(testPost, userDetails.getUsername());
 		verify(reactionRepository, never()).save(any());
 		verify(postRepository, never()).save(any());
@@ -329,13 +329,13 @@ class CommunityServiceTest {
 		CommentDTO commentDTO = new CommentDTO();
 		commentDTO.setContent("테스트 댓글");
 
-		when(postRepository.findPostById(postId)).thenReturn(testPost);
+		when(postRepository.findPostByIdAndDeletedAtIsNull(postId)).thenReturn(testPost);
 
 		// when
 		communityService.addComment(postId, commentDTO, userDetails);
 
 		// then
-		verify(postRepository, times(1)).findPostById(postId);
+		verify(postRepository, times(1)).findPostByIdAndDeletedAtIsNull(postId);
 		verify(commentRepository, times(1)).save(any(Comment.class));
 	}
 
@@ -348,7 +348,7 @@ class CommunityServiceTest {
 		comments.add(testComment);
 		testPost.setComments(comments);
 
-		when(postRepository.findPostById(postId)).thenReturn(testPost);
+		when(postRepository.findPostByIdAndDeletedAtIsNull(postId)).thenReturn(testPost);
 
 		// when
 		List<Comment> result = communityService.getCommentsByPostId(postId);
@@ -357,7 +357,7 @@ class CommunityServiceTest {
 		assertThat(result).isNotNull();
 		assertThat(result).hasSize(1);
 		assertThat(result.get(0).getContent()).isEqualTo("테스트 댓글");
-		verify(postRepository, times(1)).findPostById(postId);
+		verify(postRepository, times(1)).findPostByIdAndDeletedAtIsNull(postId);
 	}
 
 	@Test

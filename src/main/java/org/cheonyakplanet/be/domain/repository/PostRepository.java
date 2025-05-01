@@ -13,14 +13,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-	void deletePostById(Long id);
-
-	Post findPostById(Long id);
+	Post findPostByIdAndDeletedAtIsNull(Long id);
 
 	@Query("select p from Post p order by p.likes desc ")
-	List<Post> findPostsOrderByLikes(Pageable pageable);
-
-	Page<Post> findAllByDeletedAtIsNull(Pageable pageable);
+	List<Post> findPostsOrderByLikesAndDeletedAtIsNull(Pageable pageable);
 
 	Page<Post> findAllByDeletedAtIsNullAndIsBlindIsFalse(Pageable pageable);
 
