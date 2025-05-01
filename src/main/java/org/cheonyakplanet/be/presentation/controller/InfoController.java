@@ -699,7 +699,7 @@ public class InfoController {
 	@Operation(summary = "관심 청약 추가")
 	@PostMapping("/subscription/like/{subscriptionId}")
 	public ResponseEntity<?> createSubscriptionLike(@AuthenticationPrincipal UserDetailsImpl userDetails,
-		@RequestParam("subscriptionId") Long id) {
+		@PathVariable("subscriptionId") Long id) {
 		infoService.createSubscriptionLike(userDetails, id);
 		return ResponseEntity.ok(new ApiResponse<>("success", "관심지역 추가 성공"));
 	}
@@ -707,7 +707,7 @@ public class InfoController {
 	@Operation(summary = "관심 청약 삭제")
 	@DeleteMapping("/subscription/like/{subscriptionLikeId}")
 	public ResponseEntity<?> updateSubscriptionLike(@AuthenticationPrincipal UserDetailsImpl userDetails,
-		@RequestParam("subscriptionLikeId") Long id) {
+		@PathVariable("subscriptionLikeId") Long id) {
 		infoService.deleteSubscriptionLike(userDetails, id);
 		return ResponseEntity.ok(new ApiResponse<>("success", "관심지역 삭제 성공"));
 	}
