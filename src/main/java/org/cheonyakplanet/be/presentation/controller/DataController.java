@@ -50,13 +50,14 @@ public class DataController {
 	}
 
 	@GetMapping("/hosueloan")
-	@Operation(summary = "주택담보 대출 상품 불어오기")
+	@Operation(summary = "주택담보 대출 상품 불러오기")
 	public ResponseEntity<?> getHouseLoanData() {
 		String result = financeService.updateRenthouse();
 		return ResponseEntity.ok(new ApiResponse<>("success", result));
 	}
 
 	@PostMapping("/refresh")
+	@Operation(summary = "APT 실거래가 불러오기")
 	public ResponseEntity<?> triggerRefresh(@RequestParam("yyyyMM") String yyyyMM) {
 		infoService.collectRealPrice(yyyyMM);
 		return ResponseEntity.ok(new ApiResponse<>("success", "APT 실거래가 업데이트 완료"));

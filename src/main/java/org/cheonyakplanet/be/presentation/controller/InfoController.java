@@ -699,7 +699,7 @@ public class InfoController {
 	@Operation(summary = "관심 청약 추가")
 	@PostMapping("/subscription/like/{subscriptionId}")
 	public ResponseEntity<?> createSubscriptionLike(@AuthenticationPrincipal UserDetailsImpl userDetails,
-		@RequestParam("subscriptionId") Long id) {
+		@PathVariable("subscriptionId") Long id) {
 		infoService.createSubscriptionLike(userDetails, id);
 		return ResponseEntity.ok(new ApiResponse<>("success", "관심지역 추가 성공"));
 	}
@@ -707,7 +707,7 @@ public class InfoController {
 	@Operation(summary = "관심 청약 삭제")
 	@DeleteMapping("/subscription/like/{subscriptionLikeId}")
 	public ResponseEntity<?> updateSubscriptionLike(@AuthenticationPrincipal UserDetailsImpl userDetails,
-		@RequestParam("subscriptionLikeId") Long id) {
+		@PathVariable("subscriptionLikeId") Long id) {
 		infoService.deleteSubscriptionLike(userDetails, id);
 		return ResponseEntity.ok(new ApiResponse<>("success", "관심지역 삭제 성공"));
 	}
@@ -752,4 +752,16 @@ public class InfoController {
 		return ResponseEntity.ok(new ApiResponse("success", result));
 	}
 
+	@Operation(summary = "년,월, 지역으로 실거래가 검색")
+	@GetMapping("/subscription/PriceSummary")
+	public ResponseEntity<?> getPriceSummary(
+		@Parameter(description = "시도", example = "서울특별시")
+		@RequestParam("region") String region,
+		@Parameter(description = "군구", example = "노원구")
+		@RequestParam("city") String city,
+		@Parameter(description = "동", example = "하계동")
+		@RequestParam("umdNm") String umdNm) {
+		Object result = infoService.getRealEstateSummary(region, city, umdNm);
+		return ResponseEntity.ok(new ApiResponse<>("success", result));
+	}
 }

@@ -38,7 +38,7 @@ public class CommunityService {
 	private final ReplyRepository replyRepository;
 	private final PostReactionRepository reactionRepository;
 
-	public void createPost(PostCreateDTO postCreateDTO, UserDetailsImpl userDetails) {
+	public Post createPost(PostCreateDTO postCreateDTO, UserDetailsImpl userDetails) {
 
 		User user = userDetails.getUser();
 
@@ -50,6 +50,7 @@ public class CommunityService {
 			.build();
 
 		postRepository.save(post);
+		return post;
 	}
 
 	public void deletePost(Long postId, UserDetailsImpl userDetails) {
@@ -63,8 +64,7 @@ public class CommunityService {
 		if (!post.getUsername().equals(user.getUsername())) {
 			throw new CustomException(ErrorCode.COMU002, "게시글 삭제 권한이 없습니다.");
 		}
-
-		postRepository.delete(post);
+		post.setDeletedBy(user.getUsername());
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class CommunityService {
 	@Transactional
 	public PostDetailDTO getPostById(Long id, UserDetailsImpl userDetails) {
 		try {
-			Post post = postRepository.findPostById(id);
+			Post post = postRepository.findPostByIdAndDeletedAtIsNull(id);
 			post.countViews();
 
 			String email = userDetails.getUsername();
@@ -111,7 +111,7 @@ public class CommunityService {
 	}
 
 	public List<Post> getPopularPosts() {
-		return postRepository.findPostsOrderByLikes(PageRequest.of(0, 5)); // 상위 5개
+		return postRepository.findPostsOrderByLikesAndDeletedAtIsNull(PageRequest.of(0, 5)); // 상위 5개
 	}
 
 	public Page<PostDTO> getMyPosts(String sort, int page, int size, UserDetailsImpl userDetails) {
@@ -141,7 +141,7 @@ public class CommunityService {
 	 */
 	@Transactional
 	public void likePost(Long id, UserDetailsImpl userDetails) {
-		Post post = postRepository.findPostById(id);
+		Post post = postRepository.findPostByIdAndDeletedAtIsNull(id);
 		String email = userDetails.getUsername();
 		Optional<PostReaction> existingReaction = reactionRepository.findByPostAndEmail(post, email);
 
@@ -162,7 +162,7 @@ public class CommunityService {
 	}
 
 	public void dislikePost(Long id, UserDetailsImpl userDetails) {
-		Post post = postRepository.findPostById(id);
+		Post post = postRepository.findPostByIdAndDeletedAtIsNull(id);
 		String email = userDetails.getUsername();
 		Optional<PostReaction> existingReaction = reactionRepository.findByPostAndEmail(post, email);
 
@@ -181,7 +181,7 @@ public class CommunityService {
 	}
 
 	public void addComment(Long postId, CommentDTO commentDTO, UserDetailsImpl userDetails) {
-		Post post = postRepository.findPostById(postId);
+		Post post = postRepository.findPostByIdAndDeletedAtIsNull(postId);
 		User user = userDetails.getUser();
 		Comment comment = Comment.builder()
 			.content(commentDTO.getContent())
@@ -192,7 +192,7 @@ public class CommunityService {
 	}
 
 	public List<Comment> getCommentsByPostId(Long postId) {
-		Post post = postRepository.findPostById(postId);
+		Post post = postRepository.findPostByIdAndDeletedAtIsNull(postId);
 		return post.getComments();
 	}
 
@@ -211,4 +211,6 @@ public class CommunityService {
 			.build();
 		return replyRepository.save(reply);
 	}
+
+	// TODO : 작성자 별칭 등록및 보이는 기능 추가
 }
