@@ -25,11 +25,11 @@ public class RealEstatePrice {
 	@Column(name = "region")
 	private String region;
 
-	@Column(name = "ssg_cd")
+	@Column(name = "sgg_cd")
 	private String sggCd;
 
-	@Column(name = "ssg_cd_nm")
-	private String ssgCdNm;
+	@Column(name = "sgg_cd_nm")
+	private String sggCdNm;
 
 	@Column(name = "umd_nm")
 	private String umdNm;
