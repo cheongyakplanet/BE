@@ -64,8 +64,7 @@ public class CommunityService {
 		if (!post.getUsername().equals(user.getUsername())) {
 			throw new CustomException(ErrorCode.COMU002, "게시글 삭제 권한이 없습니다.");
 		}
-
-		postRepository.delete(post); //TODO : soft delete로 변경
+		post.setDeletedBy(user.getUsername());
 	}
 
 	/**
