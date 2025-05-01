@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
+	// TODO : 조회에서 빼지 않고 "삭제된 게시글입니다."로 보이는 것 검토
 	Post findPostByIdAndDeletedAtIsNull(Long id);
 
 	@Query("select p from Post p order by p.likes desc ")

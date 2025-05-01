@@ -65,7 +65,7 @@ public class CommunityService {
 			throw new CustomException(ErrorCode.COMU002, "게시글 삭제 권한이 없습니다.");
 		}
 
-		postRepository.delete(post);
+		postRepository.delete(post); //TODO : soft delete로 변경
 	}
 
 	/**
@@ -212,4 +212,6 @@ public class CommunityService {
 			.build();
 		return replyRepository.save(reply);
 	}
+
+	// TODO : 작성자 별칭 등록및 보이는 기능 추가
 }
