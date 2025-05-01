@@ -545,7 +545,6 @@ public class InfoService {
 				}
 			});
 		}
-		// TODO: Await termination if synchronous completion needed
 	}
 
 	@Retryable(
