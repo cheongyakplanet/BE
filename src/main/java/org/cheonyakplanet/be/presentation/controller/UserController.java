@@ -88,7 +88,8 @@ public class UserController {
 	public void kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
 		String stateCode = userService.kakaoLogin(code);
 		String redirectUrl = String.format(
-			"https://cheongyakplanet.vercel.app?state=%s", stateCode);
+			"http://localhost:3000?state=%s", stateCode);
+			//"https://cheongyakplanet.vercel.app?state=%s", stateCode);
 		response.sendRedirect(redirectUrl);
 	}
 
