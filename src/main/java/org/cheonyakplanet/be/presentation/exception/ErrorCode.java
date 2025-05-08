@@ -8,11 +8,13 @@ import lombok.Getter;
 public enum ErrorCode {
 
 	// 계정
+	SIGN000("SIGN000", "로그인이 필요한 서비스입니다."),
 	SIGN001("SIGN001", "일치하는 이메일 없음"),
 	SIGN002("SIGN002", "중복된 이메일 존재"),
 	SIGN003("SIGN003", "관리자 가입 토큰 불일치"),
 	SIGN004("SIGN004", "로그인 정보 불일치"),
 	SIGN005("SIGN005", "사용자를 찾을 수 없음"),
+	SIGN006("SIGN006", "탈퇴한 회원"),
 
 	// JWT
 	AUTH001("AUTH001", "유효하지 않은 JWT 서명"),
@@ -34,6 +36,8 @@ public enum ErrorCode {
 	INFO003("INFO003", "위치 정보가 없는 청약건입니다."),
 
 	INFO005("INFO005", "지역 테이블 없음, DB확인"),
+	INFO006("INFO006", "관심지역 아님"),
+	INFO007("INFO007", "이미 추가한 관심 청약"),
 
 	// Other
 	OTHER001("OTHER001", "필터 부분 에러"),

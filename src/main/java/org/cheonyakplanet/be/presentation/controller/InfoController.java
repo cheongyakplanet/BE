@@ -4,12 +4,17 @@ import java.util.List;
 
 import org.cheonyakplanet.be.application.dto.ApiResponse;
 import org.cheonyakplanet.be.application.dto.infra.InfraResponseDTO;
+import org.cheonyakplanet.be.application.dto.infra.PublicFacilityDTO;
+import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionInfoSimpleDTO;
+import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionLikeDTO;
 import org.cheonyakplanet.be.application.service.InfoService;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -512,6 +517,47 @@ public class InfoController {
 	}
 
 	/**
+	 * 청약의 주변 공공시설을 불러오는 메서드
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/subscription/{id}/detail/facilities")
+	@Operation(summary = "청약 물건의 주변 공공시설", description = "반경 1km내의 주변 공공시설 조회",
+		responses = {
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json",
+				schema = @Schema(implementation = ApiResponse.class),
+				examples = @ExampleObject(value = """
+					{
+					  "status": "success",
+					  "data": [
+					       {
+					         "dgmNm": "서문여자중,고등학교",
+					         "longitude": 126.9850997358138,
+					         "latitude": 37.48889848416472
+					       },
+					       {
+					         "dgmNm": "사회복지시설",
+					         "longitude": 126.9877484286745,
+					         "latitude": 37.48983331692146
+					       },
+					       {
+					         "dgmNm": "사당제2동사무소",
+					         "longitude": 126.97757856778836,
+					         "latitude": 37.48838552736948
+					       }
+					       ]
+					}
+					
+					"""))
+			)
+		})
+	public ResponseEntity<?> getSubscriptionDetailFacilities(
+		@PathVariable(name = "id") Long id) {
+		List<PublicFacilityDTO> response = infoService.getNearbyPublicFacility(id);
+		return ResponseEntity.ok(new ApiResponse("success", response));
+	}
+
+	/**
 	 * 대한민국의 특별시,도 리스트
 	 *
 	 * @return
@@ -648,5 +694,74 @@ public class InfoController {
 		})
 	public ResponseEntity<?> getMySubscriptions(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		return ResponseEntity.ok(new ApiResponse<>("success", infoService.getMySubscriptions(userDetails)));
+	}
+
+	@Operation(summary = "관심 청약 추가")
+	@PostMapping("/subscription/like/{subscriptionId}")
+	public ResponseEntity<?> createSubscriptionLike(@AuthenticationPrincipal UserDetailsImpl userDetails,
+		@PathVariable("subscriptionId") Long id) {
+		infoService.createSubscriptionLike(userDetails, id);
+		return ResponseEntity.ok(new ApiResponse<>("success", "관심지역 추가 성공"));
+	}
+
+	@Operation(summary = "관심 청약 삭제")
+	@DeleteMapping("/subscription/like/{subscriptionLikeId}")
+	public ResponseEntity<?> updateSubscriptionLike(@AuthenticationPrincipal UserDetailsImpl userDetails,
+		@PathVariable("subscriptionLikeId") Long id) {
+		infoService.deleteSubscriptionLike(userDetails, id);
+		return ResponseEntity.ok(new ApiResponse<>("success", "관심지역 삭제 성공"));
+	}
+
+	@Operation(summary = "관심 청약 조회")
+	@GetMapping("subscription/like")
+	public ResponseEntity<?> getLikeSubscription(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		List<SubscriptionLikeDTO> result = infoService.getLikeSubscription(userDetails);
+		return ResponseEntity.ok(new ApiResponse("success", result));
+	}
+
+	@Operation(summary = "관심 청약 여부")
+	@GetMapping("subscription/islike")
+	public ResponseEntity<?> isLikeSubscription(@AuthenticationPrincipal UserDetailsImpl userDetails,
+		@RequestParam("id") Long id) {
+		boolean reslut = infoService.isLikeSubscription(id, userDetails);
+		return ResponseEntity.ok(new ApiResponse("success", reslut));
+	}
+
+	@Operation(summary = "1주일 이내 청약 시작")
+	@GetMapping("/subscription/like/upcoming")
+	public ResponseEntity<?> getUpcomingSubscriptions(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		List<SubscriptionLikeDTO> result = infoService.getUpcomingSubscriptionLikes(userDetails);
+		return ResponseEntity.ok(new ApiResponse("success", result));
+	}
+
+	@Operation(summary = "1주일 이내 청약 종료")
+	@GetMapping("/subscription/like/closing")
+	public ResponseEntity<?> getClosingSoonSubscriptions(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		List<SubscriptionLikeDTO> result = infoService.getClosingSoonSubscriptionLikes(userDetails);
+		return ResponseEntity.ok(new ApiResponse("success", result));
+	}
+
+	@Operation(summary = "년,월로 청약 검색")
+	@GetMapping("/subscription/bymonth")
+	public ResponseEntity<?> getByMonth(
+		@Parameter(description = "년", example = "2025")
+		@RequestParam("year") int year,
+		@Parameter(description = "월", example = "4")
+		@RequestParam("month") int month) {
+		List<SubscriptionInfoSimpleDTO> result = infoService.getSubscriptionsByYearMonth(year, month);
+		return ResponseEntity.ok(new ApiResponse("success", result));
+	}
+
+	@Operation(summary = "년,월, 지역으로 실거래가 검색")
+	@GetMapping("/subscription/PriceSummary")
+	public ResponseEntity<?> getPriceSummary(
+		@Parameter(description = "시도", example = "서울특별시")
+		@RequestParam("region") String region,
+		@Parameter(description = "군구", example = "노원구")
+		@RequestParam("city") String city,
+		@Parameter(description = "동", example = "하계동")
+		@RequestParam("umdNm") String umdNm) {
+		Object result = infoService.getRealEstateSummary(region, city, umdNm);
+		return ResponseEntity.ok(new ApiResponse<>("success", result));
 	}
 }

@@ -4,8 +4,8 @@ import org.cheonyakplanet.be.application.dto.ApiResponse;
 import org.cheonyakplanet.be.application.dto.community.CommentDTO;
 import org.cheonyakplanet.be.application.dto.community.PostCreateDTO;
 import org.cheonyakplanet.be.application.dto.community.PostDTO;
+import org.cheonyakplanet.be.application.dto.community.PostDetailDTO;
 import org.cheonyakplanet.be.application.service.CommunityService;
-import org.cheonyakplanet.be.domain.entity.comunity.Post;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -49,8 +49,9 @@ public class CommunityController {
 
 	@GetMapping("/post/{id}")
 	@Operation(summary = "게시글 한 건 조회")
-	public ResponseEntity<?> getPost(@PathVariable("id") Long id) {
-		Post result = communityService.getPostById(id);
+	public ResponseEntity<?> getPost(@PathVariable("id") Long id,
+		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		PostDetailDTO result = communityService.getPostById(id, userDetails);
 		return ResponseEntity.ok(new ApiResponse("success", result));
 	}
 
@@ -68,6 +69,16 @@ public class CommunityController {
 		@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		communityService.likePost(id, userDetails);
 		return ResponseEntity.ok(new ApiResponse<>("success", "좋아요 +1"));
+	}
+
+	@GetMapping("/post/my")
+	@Operation(summary = "내가 쓴 글 확인")
+	public ResponseEntity<?> getMyPosts(@RequestParam(value = "sort", defaultValue = "time") String sort,
+		@RequestParam(value = "page", defaultValue = "0") int page,
+		@RequestParam(value = "size", defaultValue = "10") int size,
+		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		Page<PostDTO> result = communityService.getMyPosts(sort, page, size, userDetails);
+		return ResponseEntity.ok(new ApiResponse<>("success", result));
 	}
 
 	@PostMapping("/post/dislike/{id}")

@@ -4,8 +4,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
-import org.cheonyakplanet.be.domain.entity.HouseLoan;
-import org.cheonyakplanet.be.domain.entity.Mortgage;
+import org.cheonyakplanet.be.domain.entity.finance.HouseLoan;
+import org.cheonyakplanet.be.domain.entity.finance.Mortgage;
 import org.cheonyakplanet.be.domain.repository.HouseLoanRepository;
 import org.cheonyakplanet.be.domain.repository.MortgageRepository;
 import org.springframework.beans.factory.annotation.Value;

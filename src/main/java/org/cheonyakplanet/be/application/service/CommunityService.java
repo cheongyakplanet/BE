@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.cheonyakplanet.be.application.dto.community.CommentDTO;
 import org.cheonyakplanet.be.application.dto.community.PostCreateDTO;
 import org.cheonyakplanet.be.application.dto.community.PostDTO;
+import org.cheonyakplanet.be.application.dto.community.PostDetailDTO;
 import org.cheonyakplanet.be.domain.entity.comunity.Comment;
 import org.cheonyakplanet.be.domain.entity.comunity.Post;
 import org.cheonyakplanet.be.domain.entity.comunity.PostReaction;
@@ -47,7 +48,9 @@ public class CommunityService {
 			.content(postCreateDTO.getContent())
 			.likes(0)
 			.build();
-		return postRepository.save(post);
+
+		postRepository.save(post);
+		return post;
 	}
 
 	public void deletePost(Long postId, UserDetailsImpl userDetails) {
@@ -61,8 +64,7 @@ public class CommunityService {
 		if (!post.getUsername().equals(user.getUsername())) {
 			throw new CustomException(ErrorCode.COMU002, "게시글 삭제 권한이 없습니다.");
 		}
-
-		postRepository.delete(post);
+		post.setDeletedBy(user.getUsername());
 	}
 
 	/**
@@ -91,11 +93,17 @@ public class CommunityService {
 	}
 
 	@Transactional
-	public Post getPostById(Long id) {
+	public PostDetailDTO getPostById(Long id, UserDetailsImpl userDetails) {
 		try {
-			Post post = postRepository.findPostById(id);
+			Post post = postRepository.findPostByIdAndDeletedAtIsNull(id);
 			post.countViews();
-			return post;
+
+			String email = userDetails.getUsername();
+			PostReaction myReaction = reactionRepository
+				.findByPostAndEmail(post, email)
+				.orElse(null);
+
+			return PostDetailDTO.fromEntity(post, myReaction);
 
 		} catch (Exception e) {
 			throw new CustomException(ErrorCode.COMU001, e.getMessage());
@@ -103,7 +111,27 @@ public class CommunityService {
 	}
 
 	public List<Post> getPopularPosts() {
-		return postRepository.findPostsOrderByLikes(PageRequest.of(0, 5)); // 상위 5개
+		return postRepository.findPostsOrderByLikesAndDeletedAtIsNull(PageRequest.of(0, 5)); // 상위 5개
+	}
+
+	public Page<PostDTO> getMyPosts(String sort, int page, int size, UserDetailsImpl userDetails) {
+		Sort sortOrder;
+		if ("likes".equalsIgnoreCase(sort)) {
+			sortOrder = Sort.by("likes").descending();
+		} else if ("views".equalsIgnoreCase(sort)) {
+			sortOrder = Sort.by(Sort.Direction.DESC, "views");
+		} else {
+			sortOrder = Sort.by(Sort.Direction.DESC, "createdAt");
+		}
+
+		Pageable pageable = PageRequest.of(page, size, sortOrder);
+
+		// 현재 로그인한 사용자의 username으로 필터링
+		String username = userDetails.getUser().getUsername();
+		Page<Post> postPage = postRepository.findByUsernameAndDeletedAtIsNullAndBlindIsFalse(username, pageable);
+
+		return postPage.map(Post::ToDTO);
+
 	}
 
 	/**
@@ -113,7 +141,7 @@ public class CommunityService {
 	 */
 	@Transactional
 	public void likePost(Long id, UserDetailsImpl userDetails) {
-		Post post = postRepository.findPostById(id);
+		Post post = postRepository.findPostByIdAndDeletedAtIsNull(id);
 		String email = userDetails.getUsername();
 		Optional<PostReaction> existingReaction = reactionRepository.findByPostAndEmail(post, email);
 
@@ -134,7 +162,7 @@ public class CommunityService {
 	}
 
 	public void dislikePost(Long id, UserDetailsImpl userDetails) {
-		Post post = postRepository.findPostById(id);
+		Post post = postRepository.findPostByIdAndDeletedAtIsNull(id);
 		String email = userDetails.getUsername();
 		Optional<PostReaction> existingReaction = reactionRepository.findByPostAndEmail(post, email);
 
@@ -153,16 +181,18 @@ public class CommunityService {
 	}
 
 	public void addComment(Long postId, CommentDTO commentDTO, UserDetailsImpl userDetails) {
-		Post post = postRepository.findPostById(postId);
+		Post post = postRepository.findPostByIdAndDeletedAtIsNull(postId);
+		User user = userDetails.getUser();
 		Comment comment = Comment.builder()
 			.content(commentDTO.getContent())
+			.username(user.getUsername())
 			.post(post)
 			.build();
 		commentRepository.save(comment);
 	}
 
 	public List<Comment> getCommentsByPostId(Long postId) {
-		Post post = postRepository.findPostById(postId);
+		Post post = postRepository.findPostByIdAndDeletedAtIsNull(postId);
 		return post.getComments();
 	}
 
@@ -173,10 +203,14 @@ public class CommunityService {
 
 	public Reply addReply(Long commentId, CommentDTO commentDTO, UserDetailsImpl userDetails) {
 		Comment comment = getCommentById(commentId);
+		User user = userDetails.getUser();
 		Reply reply = Reply.builder()
 			.content(commentDTO.getContent())
 			.comment(comment)
+			.username(user.getUsername())
 			.build();
 		return replyRepository.save(reply);
 	}
+
+	// TODO : 작성자 별칭 등록및 보이는 기능 추가
 }
