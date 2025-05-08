@@ -1,6 +1,7 @@
 package org.cheonyakplanet.be.domain.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.cheonyakplanet.be.domain.entity.comunity.Post;
 import org.springframework.data.domain.Page;
@@ -31,4 +32,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 		@Param("oldUsername") String oldUsername,
 		@Param("newUsername") String newUsername
 	);
+
+	@Query("SELECT p FROM Post p WHERE p.id = :id AND p.deletedAt IS NULL AND p.isBlind = false")
+	Optional<Post> findByIdAndDeletedAtIsNullAndBlindIsFalse(Long id);
 }

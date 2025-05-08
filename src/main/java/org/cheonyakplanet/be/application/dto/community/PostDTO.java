@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+import org.cheonyakplanet.be.domain.entity.comunity.PostCategory;
+
 @Builder
 @Getter @Setter
 @AllArgsConstructor
@@ -26,6 +28,8 @@ public class PostDTO {
 
     private int likes;
 
-    private LocalDateTime createdAt;
+    private PostCategory category;
 
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

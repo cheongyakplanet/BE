@@ -5,6 +5,7 @@ import org.cheonyakplanet.be.application.dto.community.CommentDTO;
 import org.cheonyakplanet.be.application.dto.community.PostCreateDTO;
 import org.cheonyakplanet.be.application.dto.community.PostDTO;
 import org.cheonyakplanet.be.application.dto.community.PostDetailDTO;
+import org.cheonyakplanet.be.application.dto.community.PostUpdateRequestDTO;
 import org.cheonyakplanet.be.application.service.CommunityService;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -103,5 +105,16 @@ public class CommunityController {
 		@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		communityService.addReply(commentId, commentDTO, userDetails);
 		return ResponseEntity.ok(new ApiResponse<>("success", "대댓글 작성 완료"));
+	}
+
+	@PatchMapping("/post/{id}")
+	@Operation(summary = "게시글 수정", description = "작성자가 본인 글을 수정합니다.")
+	public ResponseEntity<ApiResponse<PostDTO>> updatePost(
+		@PathVariable("id") Long postId,
+		@RequestBody PostUpdateRequestDTO request,
+		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+		PostDTO updated = communityService.updatePost(postId, request, userDetails);
+		return ResponseEntity.ok(new ApiResponse<>("success", updated));
 	}
 }
