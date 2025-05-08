@@ -7,6 +7,7 @@ import org.cheonyakplanet.be.application.dto.community.CommentDTO;
 import org.cheonyakplanet.be.application.dto.community.PostCreateDTO;
 import org.cheonyakplanet.be.application.dto.community.PostDTO;
 import org.cheonyakplanet.be.application.dto.community.PostDetailDTO;
+import org.cheonyakplanet.be.application.dto.community.PostUpdateRequestDTO;
 import org.cheonyakplanet.be.domain.entity.comunity.Comment;
 import org.cheonyakplanet.be.domain.entity.comunity.Post;
 import org.cheonyakplanet.be.domain.entity.comunity.PostReaction;
@@ -210,6 +211,33 @@ public class CommunityService {
 			.username(user.getUsername())
 			.build();
 		return replyRepository.save(reply);
+	}
+
+	@Transactional
+	public PostDTO updatePost(Long postId,
+		PostUpdateRequestDTO request,
+		UserDetailsImpl userDetails) {
+
+		Post post = postRepository
+			.findByIdAndDeletedAtIsNullAndBlindIsFalse(postId)
+			.orElseThrow(() ->
+				new CustomException(ErrorCode.COMU001, "게시글이 존재하지 않습니다.")
+			);
+
+		String currentUsername = userDetails.getUser().getUsername();
+		if (!post.getUsername().equals(currentUsername)) {
+			throw new CustomException(
+				ErrorCode.COMU002,
+				"작성한 게시글만 수정 가능합니다."
+			);
+		}
+
+		String newTitle   = request.title()   != null ? request.title()   : post.getTitle();
+		String newContent = request.content() != null ? request.content() : post.getContent();
+
+		post.updateContent(newTitle, newContent);
+
+		return Post.ToDTO(post);
 	}
 
 	// TODO : 작성자 별칭 등록및 보이는 기능 추가
