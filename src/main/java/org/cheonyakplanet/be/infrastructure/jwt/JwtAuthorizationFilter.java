@@ -47,7 +47,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 				// "Bearer " 접두어 포함해서 DB 조회
 				Optional<UserToken> tokenEntityOpt = tokenRepository.findByAccessToken(
 					JwtUtil.BEARER_PREFIX + tokenValue);
-				if (tokenEntityOpt.isPresent() && tokenEntityOpt.get().isBlacklisted()) {
+
+				if (tokenEntityOpt.isEmpty()) {
+					throw new CustomException(ErrorCode.AUTH005, "유효하지 않은 토큰");
+				}
+
+				if (tokenEntityOpt.get().isBlacklisted()) {
 					log.error("Token is blacklisted");
 					throw new CustomException(ErrorCode.AUTH006, "로그아웃된 토큰");
 				}
