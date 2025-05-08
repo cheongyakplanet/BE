@@ -10,6 +10,7 @@ import org.cheonyakplanet.be.application.dto.community.PostDetailDTO;
 import org.cheonyakplanet.be.application.dto.community.PostUpdateRequestDTO;
 import org.cheonyakplanet.be.domain.entity.comunity.Comment;
 import org.cheonyakplanet.be.domain.entity.comunity.Post;
+import org.cheonyakplanet.be.domain.entity.comunity.PostCategory;
 import org.cheonyakplanet.be.domain.entity.comunity.PostReaction;
 import org.cheonyakplanet.be.domain.entity.comunity.ReactionType;
 import org.cheonyakplanet.be.domain.entity.comunity.Reply;
@@ -234,8 +235,9 @@ public class CommunityService {
 
 		String newTitle   = request.title()   != null ? request.title()   : post.getTitle();
 		String newContent = request.content() != null ? request.content() : post.getContent();
+		PostCategory newCategory = request.category() != null ? request.category() : post.getCategory();
 
-		post.updateContent(newTitle, newContent);
+		post.updateContent(newTitle, newContent, newCategory);
 
 		return Post.ToDTO(post);
 	}
