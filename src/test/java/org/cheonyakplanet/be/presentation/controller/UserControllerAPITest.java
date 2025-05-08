@@ -18,6 +18,7 @@ import org.cheonyakplanet.be.application.dto.user.MyPageDTO;
 import org.cheonyakplanet.be.application.dto.user.SignupRequestDTO;
 import org.cheonyakplanet.be.application.dto.user.UserDTO;
 import org.cheonyakplanet.be.application.dto.user.UserUpdateRequestDTO;
+import org.cheonyakplanet.be.application.dto.user.UserUpdateResponseDTO;
 import org.cheonyakplanet.be.application.service.UserService;
 import org.cheonyakplanet.be.domain.entity.user.User;
 import org.cheonyakplanet.be.domain.entity.user.UserRoleEnum;
@@ -234,8 +235,14 @@ class UserControllerAPITest {
 			.numChild(2)
 			.status(UserStatusEnum.ACTIVE)
 			.build();
-		given(userService.updateUserInfo(any(UserDetailsImpl.class), any(UserUpdateRequestDTO.class)))
-			.willReturn(updatedUser);
+
+		UserUpdateResponseDTO mockResponse =
+			new UserUpdateResponseDTO(updatedUser, "dummy-token");
+
+		given(userService.updateUserInfo(
+			any(UserDetailsImpl.class),
+			any(UserUpdateRequestDTO.class))
+		).willReturn(mockResponse);
 
 		// when & then
 		mockMvc.perform(patch("/api/member/mypage")

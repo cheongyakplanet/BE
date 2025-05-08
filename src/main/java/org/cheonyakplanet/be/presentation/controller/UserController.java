@@ -11,9 +11,11 @@ import org.cheonyakplanet.be.application.dto.user.SignupRequestDTO;
 import org.cheonyakplanet.be.application.dto.user.TokenResponse;
 import org.cheonyakplanet.be.application.dto.user.UserDTO;
 import org.cheonyakplanet.be.application.dto.user.UserUpdateRequestDTO;
+import org.cheonyakplanet.be.application.dto.user.UserUpdateResponseDTO;
 import org.cheonyakplanet.be.application.service.TokenCacheService;
 import org.cheonyakplanet.be.application.service.UserService;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -150,11 +152,15 @@ public class UserController {
 
 	@PatchMapping("/mypage")
 	@Operation(summary = "마이페이지 수정", description = "사용자 정보를 업데이트")
-	public ResponseEntity<?> updateUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails,
+	public ResponseEntity<?> updateUserInfo(
+		@AuthenticationPrincipal UserDetailsImpl userDetails,
 		@RequestBody UserUpdateRequestDTO updateRequestDTO) {
 
-		UserDTO updatedUser = userService.updateUserInfo(userDetails, updateRequestDTO);
-		return ResponseEntity.ok(new ApiResponse("success", updatedUser));
+		UserUpdateResponseDTO updatedUser = userService.updateUserInfo(userDetails, updateRequestDTO);
+
+		return ResponseEntity.ok()
+			.header(HttpHeaders.AUTHORIZATION, updatedUser.token())
+			.body(new ApiResponse<>("success", updatedUser.user()));
 	}
 
 	@DeleteMapping("/mypage")
