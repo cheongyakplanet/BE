@@ -20,9 +20,11 @@ import org.cheonyakplanet.be.application.dto.user.SignupRequestDTO;
 import org.cheonyakplanet.be.application.dto.user.TokenResponse;
 import org.cheonyakplanet.be.application.dto.user.UserDTO;
 import org.cheonyakplanet.be.application.dto.user.UserUpdateRequestDTO;
+import org.cheonyakplanet.be.application.dto.user.UserUpdateResponseDTO;
 import org.cheonyakplanet.be.domain.entity.user.User;
 import org.cheonyakplanet.be.domain.entity.user.UserRoleEnum;
 import org.cheonyakplanet.be.domain.entity.user.UserToken;
+import org.cheonyakplanet.be.domain.repository.PostRepository;
 import org.cheonyakplanet.be.domain.repository.UserRepository;
 import org.cheonyakplanet.be.domain.repository.UserTokenRepository;
 import org.cheonyakplanet.be.infrastructure.jwt.JwtUtil;
@@ -66,6 +68,8 @@ public class UserService {
 	private final JwtUtil jwtUtil;
 	private final EmailService emailService;
 	private final TokenCacheService tokenCacheService;
+	private final PostRepository postRepository;
+
 
 	private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
@@ -289,16 +293,41 @@ public class UserService {
 	}
 
 	@Transactional
-	public UserDTO updateUserInfo(UserDetailsImpl userDetails, UserUpdateRequestDTO updateRequest) {
+	public UserUpdateResponseDTO updateUserInfo(UserDetailsImpl userDetails, UserUpdateRequestDTO updateRequest) {
 
 		User user = userRepository.findByEmailAndDeletedAtIsNull(userDetails.getUsername())
 			.orElseThrow(() -> new CustomException(ErrorCode.USER001, "사용자를 찾을 수 없습니다."));
 
-		user.update(updateRequest);
+		String oldUsername = user.getUsername();
 
+		user.update(updateRequest);
 		userRepository.save(user);
 
-		return new UserDTO(user);
+		String newUsername = user.getUsername();
+		if (!oldUsername.equals(newUsername)) {
+			postRepository.updateUsernameForPosts(oldUsername, newUsername);
+		}
+
+		String newAccessToken =
+			jwtUtil.createAccessToken(
+				user.getEmail(),
+				user.getRole()
+			);
+
+		String newRefreshToken
+			= jwtUtil.createRefreshToken(
+				user.getEmail(),
+				user.getRole()
+			);
+
+		jwtUtil.storeTokens(
+			user.getEmail(),
+			newAccessToken,
+			newRefreshToken
+		);
+
+		UserDTO userDTO = new UserDTO(user);
+		return new UserUpdateResponseDTO(userDTO, newAccessToken);
 	}
 
 	@Transactional
