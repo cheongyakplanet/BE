@@ -78,4 +78,8 @@ public class Post extends Stamped {
 			.build();
 	}
 
+	public void updateContent(String newTitle, String newContent) {
+		this.title = newTitle;
+		this.content = newContent;
+	}
 }
