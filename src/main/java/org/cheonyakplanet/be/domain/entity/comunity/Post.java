@@ -11,6 +11,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -46,6 +48,10 @@ public class Post extends Stamped {
 	private int likes; // 추천 수
 	private int dislikes; //싫어요 수
 
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private PostCategory category;
+
 	@Builder.Default
 	@JsonManagedReference
 	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -74,12 +80,15 @@ public class Post extends Stamped {
 			.content(post.getContent())
 			.views(post.getViews())
 			.likes(post.getLikes())
+			.category(post.getCategory())
 			.createdAt(post.getCreatedAt())
+			.updatedAt(post.getUpdatedAt())
 			.build();
 	}
 
-	public void updateContent(String newTitle, String newContent) {
-		this.title = newTitle;
-		this.content = newContent;
+	public void updateContent(String newTitle, String newContent, PostCategory newCategory) {
+		this.title    = newTitle;
+		this.content  = newContent;
+		this.category = newCategory;
 	}
 }
