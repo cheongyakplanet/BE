@@ -64,6 +64,9 @@ public class SubscriptionService {
 	@Value("${kakao.latitude.url}")
 	private String kakaoLatitudeUrl;
 
+	// TODO : 데이터 불러오기 스케줄링 및 loss 없이 업데이트분 다 불러오도록 구현
+	//  https://api.odcloud.kr/api/ApplyhomeInfoDetailSvc/v1/getAPTLttotPblancDetail?page=1&perPage=50&serviceKey=h%2F59h8yR81rQmBElTC6qkCxg%2Bb9EvFngUKCA0YFLWzYxOZYuLUO023e2v9VxqYKdO7UGP9KO45gp%2BxcNtacCLg%3D%3D
+
 	public String updateSubAPT() {
 		String requestUrl = subAptApiUrl + "?page=1&perPage=50&" + "serviceKey=" + apiKey;
 
