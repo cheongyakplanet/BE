@@ -26,10 +26,12 @@ public interface RealEstatePriceSummaryRepository extends JpaRepository<RealEsta
 
 	@Query(
 		nativeQuery = true,
-		value = "SELECT region, sgg_cd_nm, umd_nm, deal_year, deal_month, deal_count, price_per_ar"
-			+ " FROM real_estate_price_summary"
-			+ " WHERE region = :region"
-			+ "   AND sgg_cd_nm = :sggCdNm"
+		value =
+			"SELECT region, sgg_cd_nm, deal_year, deal_month, sum(deal_count) as deal_count, sum(price_per_ar) as price_per_ar"
+				+ " FROM real_estate_price_summary"
+				+ " WHERE region = :region"
+				+ "   AND sgg_cd_nm = :sggCdNm"
+				+ " GROUP BY region, sgg_cd_nm, deal_year, deal_month"
 	)
 	List<Object[]> findByRegionAndSggCdNm(
 		@Param("region") String region,

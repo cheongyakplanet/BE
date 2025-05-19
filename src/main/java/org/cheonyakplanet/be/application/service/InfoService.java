@@ -3,6 +3,7 @@ package org.cheonyakplanet.be.application.service;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
@@ -733,13 +734,9 @@ public class InfoService {
 
 		return results.stream()
 			.map(row -> RealEstatePriceSummaryDTO.builder()
-				//.region((String)row[0])
-				//.sggCdNm((String)row[1])
-				//.umdNm((String)row[2])
-				.dealYearMonth(((Integer)row[3]) * 100 + ((Integer)row[4]))
-				// .dealMonth((Integer)row[4])
-				.dealCount((Integer)row[5])
-				.pricePerAr((Long)row[6])
+				.dealYearMonth(((Number)row[2]).intValue() * 100 + ((Number)row[3]).intValue())
+				.dealCount(((BigDecimal)row[4]).intValue())
+				.pricePerAr(((BigDecimal)row[5]).longValue())
 				.build())
 			.collect(Collectors.toList());
 	}
