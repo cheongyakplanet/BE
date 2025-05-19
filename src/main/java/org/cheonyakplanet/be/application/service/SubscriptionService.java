@@ -18,6 +18,7 @@ import org.cheonyakplanet.be.application.dto.subscriprtion.CoordinateResponseDTO
 import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionInfo;
 import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionLocationInfo;
 import org.cheonyakplanet.be.domain.repository.SubscriptionInfoRepository;
+import org.cheonyakplanet.be.domain.repository.SubscriptionLikeRepository;
 import org.cheonyakplanet.be.domain.repository.SubscriptionLocationInfoRepository;
 import org.cheonyakplanet.be.domain.repository.UserRepository;
 import org.cheonyakplanet.be.infrastructure.jwt.JwtUtil;
@@ -45,6 +46,7 @@ public class SubscriptionService {
 	private final SubscriptionLocationInfoRepository subscriptionLocationInfoRepository;
 	private final UserRepository userRepository;
 	private final JwtUtil jwtUtil;
+	private final SubscriptionLikeRepository subscriptionLikeRepository;
 
 	@Value("${public.api.key}")
 	private String apiKey;
@@ -282,6 +284,10 @@ public class SubscriptionService {
 
 		log.info("Processed interest locals: {}", interestLocals);
 		return interestLocals;
+	}
+
+	public long getPopularSubId() {
+		return subscriptionLikeRepository.findTopLikedSubscriptionId();
 	}
 
 }

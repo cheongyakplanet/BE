@@ -8,6 +8,7 @@ import org.cheonyakplanet.be.application.dto.infra.PublicFacilityDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionInfoSimpleDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionLikeDTO;
 import org.cheonyakplanet.be.application.service.InfoService;
+import org.cheonyakplanet.be.application.service.SubscriptionService;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 public class InfoController {
 
 	private final InfoService infoService;
+	private final SubscriptionService subscriptionService;
 
 	/**
 	 * 모든 청약 불러오기
@@ -762,6 +764,13 @@ public class InfoController {
 		@Parameter(description = "동", example = "하계동")
 		@RequestParam("umdNm") String umdNm) {
 		Object result = infoService.getRealEstateSummary(region, city, umdNm);
+		return ResponseEntity.ok(new ApiResponse<>("success", result));
+	}
+
+	@Operation(summary = "가장 인기있는 청약 물건 ID")
+	@GetMapping("subscription/popular")
+	public ResponseEntity<?> getPopularId() {
+		long result = subscriptionService.getPopularSubId();
 		return ResponseEntity.ok(new ApiResponse<>("success", result));
 	}
 }

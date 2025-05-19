@@ -729,7 +729,7 @@ public class InfoService {
 
 	@Transactional
 	public void refreshSummary() {
-		//priceSummaryRepository.deleteAll();
+		priceSummaryRepository.deleteAll();
 		priceSummaryRepository.insertSummary(); //TODO : 생성마다 모든 데이터 요약되는거 수정!!
 	}
 }
