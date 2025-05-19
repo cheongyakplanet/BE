@@ -727,6 +727,23 @@ public class InfoService {
 			.collect(Collectors.toList());
 	}
 
+	public List<RealEstatePriceSummaryDTO> getRealEstateSummary2(String region, String city) {
+
+		List<Object[]> results = priceSummaryRepository.findByRegionAndSggCdNm(region, city);
+
+		return results.stream()
+			.map(row -> RealEstatePriceSummaryDTO.builder()
+				//.region((String)row[0])
+				//.sggCdNm((String)row[1])
+				//.umdNm((String)row[2])
+				.dealYearMonth(((Integer)row[3]) * 100 + ((Integer)row[4]))
+				// .dealMonth((Integer)row[4])
+				.dealCount((Integer)row[5])
+				.pricePerAr((Long)row[6])
+				.build())
+			.collect(Collectors.toList());
+	}
+
 	@Transactional
 	public void refreshSummary() {
 		priceSummaryRepository.deleteAll();

@@ -24,6 +24,18 @@ public interface RealEstatePriceSummaryRepository extends JpaRepository<RealEsta
 		@Param("umdNm") String umdNm
 	);
 
+	@Query(
+		nativeQuery = true,
+		value = "SELECT region, sgg_cd_nm, umd_nm, deal_year, deal_month, deal_count, price_per_ar"
+			+ " FROM real_estate_price_summary"
+			+ " WHERE region = :region"
+			+ "   AND sgg_cd_nm = :sggCdNm"
+	)
+	List<Object[]> findByRegionAndSggCdNm(
+		@Param("region") String region,
+		@Param("sggCdNm") String sggCdNm
+	);
+
 	@Modifying
 	@Transactional
 	@Query(

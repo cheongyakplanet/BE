@@ -767,8 +767,19 @@ public class InfoController {
 		return ResponseEntity.ok(new ApiResponse<>("success", result));
 	}
 
+	@Operation(summary = "년,월, 지역(구)으로 실거래가 검색")
+	@GetMapping("/subscription/PriceSummary/Region")
+	public ResponseEntity<?> getPriceSummaryRegion(
+		@Parameter(description = "시도", example = "서울특별시")
+		@RequestParam("region") String region,
+		@Parameter(description = "군구", example = "노원구")
+		@RequestParam("city") String city) {
+		Object result = infoService.getRealEstateSummary2(region, city);
+		return ResponseEntity.ok(new ApiResponse<>("success", result));
+	}
+
 	@Operation(summary = "가장 인기있는 청약 물건 ID")
-	@GetMapping("subscription/popular")
+	@GetMapping("/subscription/popular")
 	public ResponseEntity<?> getPopularId() {
 		long result = subscriptionService.getPopularSubId();
 		return ResponseEntity.ok(new ApiResponse<>("success", result));
