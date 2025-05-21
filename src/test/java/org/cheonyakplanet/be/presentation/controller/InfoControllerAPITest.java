@@ -158,7 +158,7 @@ class InfoControllerAPITest {
 		response.put("currentPage", page.getNumber() + 1);
 		response.put("size", page.getSize());
 
-		given(infoService.getSubscriptions(anyInt(), anyInt())).willReturn(response);
+		given(infoService.getSubscriptions(anyInt(), anyInt(), anyString())).willReturn(response);
 
 		// when & then
 		mockMvc.perform(get("/api/info/subscription")

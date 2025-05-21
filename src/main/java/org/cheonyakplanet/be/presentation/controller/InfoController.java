@@ -70,8 +70,9 @@ public class InfoController {
 		}
 	)
 	public ResponseEntity<?> getSubscriptions(@RequestParam(name = "page", defaultValue = "0") int page,
-		@RequestParam(name = "size", defaultValue = "10") int size) {
-		return ResponseEntity.ok(new ApiResponse<>("success", infoService.getSubscriptions(page, size)));
+		@RequestParam(name = "size", defaultValue = "10") int size,
+		@RequestParam(name = "sort", defaultValue = "rceptEndde") String sort) {
+		return ResponseEntity.ok(new ApiResponse<>("success", infoService.getSubscriptions(page, size, sort)));
 	}
 
 	/**

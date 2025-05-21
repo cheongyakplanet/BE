@@ -166,8 +166,8 @@ public class InfoService {
 	 * @param size
 	 * @return
 	 */
-	public Object getSubscriptions(int page, int size) {
-		Pageable pageable = PageRequest.of(page, size, Sort.by("rceptEndde").descending());
+	public Object getSubscriptions(int page, int size, String sort) {
+		Pageable pageable = PageRequest.of(page, size, Sort.by(sort).descending());
 
 		Page<SubscriptionInfo> result = subscriptionInfoRepository.findAll(pageable);
 		List<SubscriptionDTO> subscriptionDTOList = result.stream()
