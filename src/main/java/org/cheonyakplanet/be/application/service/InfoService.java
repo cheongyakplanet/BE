@@ -711,7 +711,7 @@ public class InfoService {
 		log.error("Final failure after retries for {}", code.getSggCd5(), e);
 	}
 
-	public List<RealEstatePriceSummaryDTO> getRealEstateSummary(String region, String city, String umdNm) {
+	public List<RealEstatePriceSummaryDTO> getRealEstateSummaryDong(String region, String city, String umdNm) {
 
 		List<Object[]> results = priceSummaryRepository.findByRegionAndSggCdNmAndUmdNm(region, city, umdNm);
 
@@ -728,7 +728,7 @@ public class InfoService {
 			.collect(Collectors.toList());
 	}
 
-	public List<RealEstatePriceSummaryDTO> getRealEstateSummary2(String region, String city) {
+	public List<RealEstatePriceSummaryDTO> getRealEstateSummaryGu(String region, String city) {
 
 		List<Object[]> results = priceSummaryRepository.findByRegionAndSggCdNm(region, city);
 

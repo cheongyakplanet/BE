@@ -756,25 +756,25 @@ public class InfoController {
 
 	@Operation(summary = "년,월, 지역으로 실거래가 검색")
 	@GetMapping("/subscription/PriceSummary")
-	public ResponseEntity<?> getPriceSummary(
+	public ResponseEntity<?> getPriceSummaryDong(
 		@Parameter(description = "시도", example = "서울특별시")
 		@RequestParam("region") String region,
 		@Parameter(description = "군구", example = "노원구")
 		@RequestParam("city") String city,
 		@Parameter(description = "동", example = "하계동")
 		@RequestParam("umdNm") String umdNm) {
-		Object result = infoService.getRealEstateSummary(region, city, umdNm);
+		Object result = infoService.getRealEstateSummaryDong(region, city, umdNm);
 		return ResponseEntity.ok(new ApiResponse<>("success", result));
 	}
 
 	@Operation(summary = "년,월, 지역(구)으로 실거래가 검색")
 	@GetMapping("/subscription/PriceSummary/Region")
-	public ResponseEntity<?> getPriceSummaryRegion(
+	public ResponseEntity<?> getPriceSummaryGu(
 		@Parameter(description = "시도", example = "서울특별시")
 		@RequestParam("region") String region,
 		@Parameter(description = "군구", example = "노원구")
 		@RequestParam("city") String city) {
-		Object result = infoService.getRealEstateSummary2(region, city);
+		Object result = infoService.getRealEstateSummaryGu(region, city);
 		return ResponseEntity.ok(new ApiResponse<>("success", result));
 	}
 
