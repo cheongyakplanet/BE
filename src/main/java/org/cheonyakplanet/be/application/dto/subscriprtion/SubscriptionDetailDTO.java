@@ -161,7 +161,7 @@ public class SubscriptionDetailDTO {
 			.totSuplyHshldco(entity.getTotSuplyHshldco())
 			.region(entity.getRegion())
 			.city(entity.getCity())
-			.district(entity.getDistrict())
+			.district(entity.getDistrict() != null ? entity.getDistrict().trim() : null)
 			.detail(entity.getDetail())
 			.priceInfo(entity.getSubscriptionPriceInfo() == null ? null :
 				entity.getSubscriptionPriceInfo().stream()
