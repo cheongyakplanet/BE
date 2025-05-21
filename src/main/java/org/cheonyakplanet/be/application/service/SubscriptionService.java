@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,9 +67,6 @@ public class SubscriptionService {
 	@Value("${kakao.latitude.url}")
 	private String kakaoLatitudeUrl;
 
-	// TODO : 데이터 불러오기 스케줄링 및 loss 없이 업데이트분 다 불러오도록 구현
-	//  https://api.odcloud.kr/api/ApplyhomeInfoDetailSvc/v1/getAPTLttotPblancDetail?page=1&perPage=50&serviceKey=h%2F59h8yR81rQmBElTC6qkCxg%2Bb9EvFngUKCA0YFLWzYxOZYuLUO023e2v9VxqYKdO7UGP9KO45gp%2BxcNtacCLg%3D%3D
-
 	public String updateSubAPT() {
 		String requestUrl = subAptApiUrl + "?page=1&perPage=50&" + "serviceKey=" + apiKey;
 
@@ -95,7 +93,16 @@ public class SubscriptionService {
 
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
+			Set<String> existingHouseManageNos = subscriptionInfoRepository.findAllHouseManageNos();
+
 			for (JsonNode item : items) {
+
+				String houseManageNo = item.path("HOUSE_MANAGE_NO").asText();
+
+				// 이미 존재하면 skip
+				if (existingHouseManageNos.contains(houseManageNo))
+					continue;
+
 				SubscriptionInfo subscriptionInfo = new SubscriptionInfo();
 
 				String hssplyAdres = item.path("HSSPLY_ADRES").asText();
