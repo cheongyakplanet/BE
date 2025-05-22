@@ -8,6 +8,7 @@ import org.cheonyakplanet.be.application.dto.infra.PublicFacilityDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionInfoSimpleDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionLikeDTO;
 import org.cheonyakplanet.be.application.service.InfoService;
+import org.cheonyakplanet.be.application.service.SubscriptionService;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 public class InfoController {
 
 	private final InfoService infoService;
+	private final SubscriptionService subscriptionService;
 
 	/**
 	 * 모든 청약 불러오기
@@ -68,8 +70,9 @@ public class InfoController {
 		}
 	)
 	public ResponseEntity<?> getSubscriptions(@RequestParam(name = "page", defaultValue = "0") int page,
-		@RequestParam(name = "size", defaultValue = "10") int size) {
-		return ResponseEntity.ok(new ApiResponse<>("success", infoService.getSubscriptions(page, size)));
+		@RequestParam(name = "size", defaultValue = "10") int size,
+		@RequestParam(name = "sort", defaultValue = "rceptEndde") String sort) {
+		return ResponseEntity.ok(new ApiResponse<>("success", infoService.getSubscriptions(page, size, sort)));
 	}
 
 	/**
@@ -754,14 +757,32 @@ public class InfoController {
 
 	@Operation(summary = "년,월, 지역으로 실거래가 검색")
 	@GetMapping("/subscription/PriceSummary")
-	public ResponseEntity<?> getPriceSummary(
+	public ResponseEntity<?> getPriceSummaryDong(
 		@Parameter(description = "시도", example = "서울특별시")
 		@RequestParam("region") String region,
 		@Parameter(description = "군구", example = "노원구")
 		@RequestParam("city") String city,
 		@Parameter(description = "동", example = "하계동")
 		@RequestParam("umdNm") String umdNm) {
-		Object result = infoService.getRealEstateSummary(region, city, umdNm);
+		Object result = infoService.getRealEstateSummaryDong(region, city, umdNm);
+		return ResponseEntity.ok(new ApiResponse<>("success", result));
+	}
+
+	@Operation(summary = "년,월, 지역(구)으로 실거래가 검색")
+	@GetMapping("/subscription/PriceSummary/Region")
+	public ResponseEntity<?> getPriceSummaryGu(
+		@Parameter(description = "시도", example = "서울특별시")
+		@RequestParam("region") String region,
+		@Parameter(description = "군구", example = "노원구")
+		@RequestParam("city") String city) {
+		Object result = infoService.getRealEstateSummaryGu(region, city);
+		return ResponseEntity.ok(new ApiResponse<>("success", result));
+	}
+
+	@Operation(summary = "가장 인기있는 청약 물건 ID")
+	@GetMapping("/subscription/popular")
+	public ResponseEntity<?> getPopularId() {
+		long result = subscriptionService.getPopularSubId();
 		return ResponseEntity.ok(new ApiResponse<>("success", result));
 	}
 }

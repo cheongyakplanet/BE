@@ -3,6 +3,7 @@ package org.cheonyakplanet.be.application.service;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
@@ -165,8 +166,8 @@ public class InfoService {
 	 * @param size
 	 * @return
 	 */
-	public Object getSubscriptions(int page, int size) {
-		Pageable pageable = PageRequest.of(page, size, Sort.by("rceptEndde").descending());
+	public Object getSubscriptions(int page, int size, String sort) {
+		Pageable pageable = PageRequest.of(page, size, Sort.by(sort).descending());
 
 		Page<SubscriptionInfo> result = subscriptionInfoRepository.findAll(pageable);
 		List<SubscriptionDTO> subscriptionDTOList = result.stream()
@@ -710,7 +711,7 @@ public class InfoService {
 		log.error("Final failure after retries for {}", code.getSggCd5(), e);
 	}
 
-	public List<RealEstatePriceSummaryDTO> getRealEstateSummary(String region, String city, String umdNm) {
+	public List<RealEstatePriceSummaryDTO> getRealEstateSummaryDong(String region, String city, String umdNm) {
 
 		List<Object[]> results = priceSummaryRepository.findByRegionAndSggCdNmAndUmdNm(region, city, umdNm);
 
@@ -719,17 +720,30 @@ public class InfoService {
 				//.region((String)row[0])
 				//.sggCdNm((String)row[1])
 				//.umdNm((String)row[2])
-				.dealYear((Integer)row[3])
-				.dealMonth((Integer)row[4])
+				.dealYearMonth(((Integer)row[3]) * 100 + ((Integer)row[4]))
+				// .dealMonth((Integer)row[4])
 				.dealCount((Integer)row[5])
 				.pricePerAr((Long)row[6])
 				.build())
 			.collect(Collectors.toList());
 	}
 
+	public List<RealEstatePriceSummaryDTO> getRealEstateSummaryGu(String region, String city) {
+
+		List<Object[]> results = priceSummaryRepository.findByRegionAndSggCdNm(region, city);
+
+		return results.stream()
+			.map(row -> RealEstatePriceSummaryDTO.builder()
+				.dealYearMonth(((Number)row[2]).intValue() * 100 + ((Number)row[3]).intValue())
+				.dealCount(((BigDecimal)row[4]).intValue())
+				.pricePerAr(((BigDecimal)row[5]).longValue())
+				.build())
+			.collect(Collectors.toList());
+	}
+
 	@Transactional
 	public void refreshSummary() {
-		//priceSummaryRepository.deleteAll();
+		priceSummaryRepository.deleteAll();
 		priceSummaryRepository.insertSummary(); //TODO : 생성마다 모든 데이터 요약되는거 수정!!
 	}
 }

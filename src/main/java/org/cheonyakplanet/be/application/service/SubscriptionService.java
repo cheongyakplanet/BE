@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +19,7 @@ import org.cheonyakplanet.be.application.dto.subscriprtion.CoordinateResponseDTO
 import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionInfo;
 import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionLocationInfo;
 import org.cheonyakplanet.be.domain.repository.SubscriptionInfoRepository;
+import org.cheonyakplanet.be.domain.repository.SubscriptionLikeRepository;
 import org.cheonyakplanet.be.domain.repository.SubscriptionLocationInfoRepository;
 import org.cheonyakplanet.be.domain.repository.UserRepository;
 import org.cheonyakplanet.be.infrastructure.jwt.JwtUtil;
@@ -45,6 +47,7 @@ public class SubscriptionService {
 	private final SubscriptionLocationInfoRepository subscriptionLocationInfoRepository;
 	private final UserRepository userRepository;
 	private final JwtUtil jwtUtil;
+	private final SubscriptionLikeRepository subscriptionLikeRepository;
 
 	@Value("${public.api.key}")
 	private String apiKey;
@@ -90,7 +93,16 @@ public class SubscriptionService {
 
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
+			Set<String> existingHouseManageNos = subscriptionInfoRepository.findAllHouseManageNos();
+
 			for (JsonNode item : items) {
+
+				String houseManageNo = item.path("HOUSE_MANAGE_NO").asText();
+
+				// 이미 존재하면 skip
+				if (existingHouseManageNos.contains(houseManageNo))
+					continue;
+
 				SubscriptionInfo subscriptionInfo = new SubscriptionInfo();
 
 				String hssplyAdres = item.path("HSSPLY_ADRES").asText();
@@ -279,6 +291,10 @@ public class SubscriptionService {
 
 		log.info("Processed interest locals: {}", interestLocals);
 		return interestLocals;
+	}
+
+	public long getPopularSubId() {
+		return subscriptionLikeRepository.findTopLikedSubscriptionId();
 	}
 
 }
