@@ -2,6 +2,7 @@ package org.cheonyakplanet.be.infrastructure.scheduler;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.file.Paths;
 
 import org.cheonyakplanet.be.application.service.InfoService;
 import org.cheonyakplanet.be.application.service.SubscriptionService;
@@ -30,18 +31,23 @@ public class Scheduler {
 	public void runPythonSupplyScript() {
 		log.info("Python 스크립트 실행 시작");
 		try {
-			ProcessBuilder processBuilder = new ProcessBuilder("python3", "/home/ubuntu/BE/scripts/additional_info.py");
-			processBuilder.redirectErrorStream(true);
-			Process process = processBuilder.start();
+			String userDir = System.getProperty("user.dir");  // 보통 jar 가 실행되는 폴더
+			String scriptPath = Paths.get(userDir, "scripts", "additional_info.py")
+				.toAbsolutePath()
+				.toString();
+
+			ProcessBuilder pb = new ProcessBuilder("python3", scriptPath);
+			pb.redirectErrorStream(true);
+			Process p = pb.start();
 
 			// 결과 로그 출력
-			try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
 				String line;
 				while ((line = reader.readLine()) != null) {
 					log.info("[Python]: " + line);
 				}
 			}
-			int exitCode = process.waitFor();
+			int exitCode = p.waitFor();
 			log.info("Python 스크립트 종료 (exitCode={})", exitCode);
 		} catch (Exception e) {
 			log.error("Python 스크립트 실행 중 오류 발생", e);

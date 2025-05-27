@@ -29,6 +29,12 @@ repositories {
     mavenCentral()
 }
 
+processResources {
+    from('scripts') {
+        into 'scripts'
+    }
+}
+
 dependencies {
     // Spring Boot starters
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
