@@ -27,6 +27,13 @@ public class Scheduler {
 		log.info("Weekly APT subscription update 완료");
 	}
 
+	@Scheduled(cron = "0 15 3 ? * MON", zone = "Asia/Seoul")
+	public void weeklySubscriptionCoordinatesUpdate() {
+		log.info("Weekly Subscription Coordinates update 시작");
+		subscriptionService.updateAllSubscriptionCoordinates();
+		log.info("Weekly Subscription Coordinates update 완료");
+	}
+
 	@Scheduled(cron = "0 30 3 ? * MON", zone = "Asia/Seoul") // 매주 월요일 03:30
 	public void runPythonSupplyScript() {
 		log.info("Python 스크립트 실행 시작");
