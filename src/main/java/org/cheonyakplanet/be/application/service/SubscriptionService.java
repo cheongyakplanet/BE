@@ -14,6 +14,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.cheonyakplanet.be.application.dto.subscriprtion.CoordinateResponseDTO;
 import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionInfo;
@@ -202,6 +203,11 @@ public class SubscriptionService {
 		List<CoordinateResponseDTO> coordinateResponses = new ArrayList<>();
 		List<SubscriptionLocationInfo> locationInfos = new ArrayList<>();
 
+		Set<Long> existingIds = subscriptionLocationInfoRepository.findAll()
+			.stream()
+			.map(SubscriptionLocationInfo::getId)
+			.collect(Collectors.toSet());
+
 		// WebClient는 반복문 외부에서 한 번 생성해 재사용
 		WebClient webClient = WebClient.builder()
 			.baseUrl("https://dapi.kakao.com")
@@ -209,6 +215,13 @@ public class SubscriptionService {
 			.build();
 
 		for (SubscriptionInfo subscription : subscriptions) {
+			Long id = subscription.getId();
+
+			// 이미 위치정보가 있으면 스킵
+			if (existingIds.contains(id)) {
+				continue;
+			}
+
 			String addr = subscription.getHssplyAdres();
 			try {
 				Mono<String> responseMono = webClient.get()
