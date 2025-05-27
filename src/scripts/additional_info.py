@@ -233,9 +233,15 @@ def main():
     )
     try:
         with conn.cursor() as cursor:
-            # subscription_info 테이블에서 id, pblanc_url, house_manage_no 조회
-            sql = "SELECT id, pblanc_url, house_manage_no FROM subscription_info"
-            cursor.execute(sql)
+            # 1) subscription_price_info 에 이미 들어간 마지막 subscription_info_id 조회
+            cursor.execute("SELECT COALESCE(MAX(subscription_info_id), 0) FROM subscription_price_info")
+            max_processed_id = cursor.fetchone()[0] or 0
+            start_id = max_processed_id + 1
+            print(f"▶ 이미 처리된 마지막 ID: {max_processed_id} → 새로 처리할 ID >= {start_id}")
+
+            # 2) subscription_info 중 start_id 이상인 행만 가져오기
+            sql = ("SELECT id, pblanc_url, house_manage_no FROM subscription_info WHERE id >= %s")
+            cursor.execute(sql, (start_id,))
             rows = cursor.fetchall()
 
             for row in rows:
