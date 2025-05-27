@@ -8,6 +8,9 @@ import org.cheonyakplanet.be.application.dto.infra.PublicFacilityDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionInfoSimpleDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionLikeDTO;
 import org.cheonyakplanet.be.application.service.InfoService;
+import org.cheonyakplanet.be.application.service.InfrastructureService;
+import org.cheonyakplanet.be.application.service.SubscriptionLikeService;
+import org.cheonyakplanet.be.application.service.SubscriptionQueryService;
 import org.cheonyakplanet.be.application.service.SubscriptionService;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +37,9 @@ public class InfoController {
 
 	private final InfoService infoService;
 	private final SubscriptionService subscriptionService;
+	private final SubscriptionQueryService subscriptionQueryService;
+	private final InfrastructureService infrastructureService;
+	private final SubscriptionLikeService subscriptionLikeService;
 
 	/**
 	 * 모든 청약 불러오기
@@ -72,7 +78,8 @@ public class InfoController {
 	public ResponseEntity<?> getSubscriptions(@RequestParam(name = "page", defaultValue = "0") int page,
 		@RequestParam(name = "size", defaultValue = "10") int size,
 		@RequestParam(name = "sort", defaultValue = "rceptEndde") String sort) {
-		return ResponseEntity.ok(new ApiResponse<>("success", infoService.getSubscriptions(page, size, sort)));
+		return ResponseEntity.ok(
+			new ApiResponse<>("success", subscriptionQueryService.getSubscriptions(page, size, sort)));
 	}
 
 	/**
@@ -360,7 +367,7 @@ public class InfoController {
 			)
 		})
 	public ResponseEntity<ApiResponse> getSubscription(@PathVariable("id") Long id) {
-		Object result = infoService.getSubscriptionById(id);
+		Object result = subscriptionQueryService.getSubscriptionById(id);
 		return ResponseEntity.ok(new ApiResponse("success", result));
 	}
 
@@ -464,7 +471,7 @@ public class InfoController {
 		@RequestParam("region") String region,
 		@Parameter(description = "구", example = "서초구")
 		@RequestParam("city") String city) {
-		Object subscriptions = infoService.getSubscriptionsByRegion(region, city);
+		Object subscriptions = subscriptionQueryService.getSubscriptionsByRegion(region, city);
 
 		return ResponseEntity.ok(new ApiResponse("success", subscriptions));
 	}
@@ -515,7 +522,7 @@ public class InfoController {
 		})
 	public ResponseEntity<?> getSubscriptionDetailInfra(
 		@PathVariable(name = "id") Long id) {
-		InfraResponseDTO response = infoService.getNearbyInfrastructure(id);
+		InfraResponseDTO response = infrastructureService.getNearbyInfrastructure(id);
 		return ResponseEntity.ok(new ApiResponse("success", response));
 	}
 
@@ -556,7 +563,7 @@ public class InfoController {
 		})
 	public ResponseEntity<?> getSubscriptionDetailFacilities(
 		@PathVariable(name = "id") Long id) {
-		List<PublicFacilityDTO> response = infoService.getNearbyPublicFacility(id);
+		List<PublicFacilityDTO> response = infrastructureService.getNearbyPublicFacility(id);
 		return ResponseEntity.ok(new ApiResponse("success", response));
 	}
 
@@ -696,14 +703,15 @@ public class InfoController {
 			)
 		})
 	public ResponseEntity<?> getMySubscriptions(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-		return ResponseEntity.ok(new ApiResponse<>("success", infoService.getMySubscriptions(userDetails)));
+		return ResponseEntity.ok(
+			new ApiResponse<>("success", subscriptionQueryService.getMySubscriptions(userDetails)));
 	}
 
 	@Operation(summary = "관심 청약 추가")
 	@PostMapping("/subscription/like/{subscriptionId}")
 	public ResponseEntity<?> createSubscriptionLike(@AuthenticationPrincipal UserDetailsImpl userDetails,
 		@PathVariable("subscriptionId") Long id) {
-		infoService.createSubscriptionLike(userDetails, id);
+		subscriptionLikeService.createSubscriptionLike(userDetails, id);
 		return ResponseEntity.ok(new ApiResponse<>("success", "관심지역 추가 성공"));
 	}
 
@@ -711,14 +719,14 @@ public class InfoController {
 	@DeleteMapping("/subscription/like/{subscriptionLikeId}")
 	public ResponseEntity<?> updateSubscriptionLike(@AuthenticationPrincipal UserDetailsImpl userDetails,
 		@PathVariable("subscriptionLikeId") Long id) {
-		infoService.deleteSubscriptionLike(userDetails, id);
+		subscriptionLikeService.deleteSubscriptionLike(userDetails, id);
 		return ResponseEntity.ok(new ApiResponse<>("success", "관심지역 삭제 성공"));
 	}
 
 	@Operation(summary = "관심 청약 조회")
 	@GetMapping("subscription/like")
 	public ResponseEntity<?> getLikeSubscription(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-		List<SubscriptionLikeDTO> result = infoService.getLikeSubscription(userDetails);
+		List<SubscriptionLikeDTO> result = subscriptionLikeService.getLikeSubscription(userDetails);
 		return ResponseEntity.ok(new ApiResponse("success", result));
 	}
 
@@ -726,21 +734,21 @@ public class InfoController {
 	@GetMapping("subscription/islike")
 	public ResponseEntity<?> isLikeSubscription(@AuthenticationPrincipal UserDetailsImpl userDetails,
 		@RequestParam("id") Long id) {
-		boolean reslut = infoService.isLikeSubscription(id, userDetails);
+		boolean reslut = subscriptionLikeService.isLikeSubscription(id, userDetails);
 		return ResponseEntity.ok(new ApiResponse("success", reslut));
 	}
 
 	@Operation(summary = "1주일 이내 청약 시작")
 	@GetMapping("/subscription/like/upcoming")
 	public ResponseEntity<?> getUpcomingSubscriptions(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-		List<SubscriptionLikeDTO> result = infoService.getUpcomingSubscriptionLikes(userDetails);
+		List<SubscriptionLikeDTO> result = subscriptionLikeService.getUpcomingSubscriptionLikes(userDetails);
 		return ResponseEntity.ok(new ApiResponse("success", result));
 	}
 
 	@Operation(summary = "1주일 이내 청약 종료")
 	@GetMapping("/subscription/like/closing")
 	public ResponseEntity<?> getClosingSoonSubscriptions(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-		List<SubscriptionLikeDTO> result = infoService.getClosingSoonSubscriptionLikes(userDetails);
+		List<SubscriptionLikeDTO> result = subscriptionLikeService.getClosingSoonSubscriptionLikes(userDetails);
 		return ResponseEntity.ok(new ApiResponse("success", result));
 	}
 
@@ -751,7 +759,7 @@ public class InfoController {
 		@RequestParam("year") int year,
 		@Parameter(description = "월", example = "4")
 		@RequestParam("month") int month) {
-		List<SubscriptionInfoSimpleDTO> result = infoService.getSubscriptionsByYearMonth(year, month);
+		List<SubscriptionInfoSimpleDTO> result = subscriptionQueryService.getSubscriptionsByYearMonth(year, month);
 		return ResponseEntity.ok(new ApiResponse("success", result));
 	}
 
