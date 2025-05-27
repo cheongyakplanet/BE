@@ -49,7 +49,7 @@ public class Scheduler {
 	}
 
 	@Scheduled(cron = "0 0 2 L * ?", zone = "Asia/Seoul")
-	public void dailyJob() {
+	public void monthlyRealPriceUpdate() {
 		String callDate = java.time.format.DateTimeFormatter.ofPattern("yyyyMM").
 			format(java.time.LocalDate.now().minusMonths(1));
 		log.info("RealEstate batch start for {}", callDate);
