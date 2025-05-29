@@ -48,6 +48,7 @@ public class CommunityService {
 			.username(user.getUsername())
 			.title(postCreateDTO.getTitle())
 			.content(postCreateDTO.getContent())
+			.category(PostCategory.valueOf(postCreateDTO.getPostCategory()))
 			.likes(0)
 			.build();
 
@@ -233,7 +234,7 @@ public class CommunityService {
 			);
 		}
 
-		String newTitle   = request.title()   != null ? request.title()   : post.getTitle();
+		String newTitle = request.title() != null ? request.title() : post.getTitle();
 		String newContent = request.content() != null ? request.content() : post.getContent();
 		PostCategory newCategory = request.category() != null ? request.category() : post.getCategory();
 

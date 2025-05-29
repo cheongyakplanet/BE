@@ -210,7 +210,7 @@ public class UserService {
 		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 		body.add("grant_type", "authorization_code");
 		body.add("client_id", "b3ffa0766c60125572ebdc645fceb9c6");
-		body.add("redirect_uri", "http://localhost:8082/api/member/kakao/callback");
+		body.add("redirect_uri", "http://run.blu2print.site:8082/api/member/kakao/callback");
 		body.add("code", code);
 
 		RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity

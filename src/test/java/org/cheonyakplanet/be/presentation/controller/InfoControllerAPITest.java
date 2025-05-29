@@ -20,6 +20,8 @@ import org.cheonyakplanet.be.application.dto.infra.StationDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionDTO;
 import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionDetailDTO;
 import org.cheonyakplanet.be.application.service.InfoService;
+import org.cheonyakplanet.be.application.service.InfrastructureService;
+import org.cheonyakplanet.be.application.service.SubscriptionQueryService;
 import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionInfo;
 import org.cheonyakplanet.be.domain.entity.user.User;
 import org.cheonyakplanet.be.domain.entity.user.UserRoleEnum;
@@ -52,6 +54,12 @@ class InfoControllerAPITest {
 
 	@MockBean
 	private InfoService infoService;
+
+	@MockBean
+	private SubscriptionQueryService subscriptionQueryService;
+
+	@MockBean
+	private InfrastructureService infrastructureService;
 
 	private UserDetailsImpl userDetails;
 	private User user;
@@ -158,7 +166,7 @@ class InfoControllerAPITest {
 		response.put("currentPage", page.getNumber() + 1);
 		response.put("size", page.getSize());
 
-		given(infoService.getSubscriptions(anyInt(), anyInt())).willReturn(response);
+		given(subscriptionQueryService.getSubscriptions(anyInt(), anyInt(), anyString())).willReturn(response);
 
 		// when & then
 		mockMvc.perform(get("/api/info/subscription")
@@ -177,7 +185,7 @@ class InfoControllerAPITest {
 	@DisplayName("id로 1건의 청약 물건 조회 테스트")
 	void getSubscriptionTest() throws Exception {
 		// given
-		given(infoService.getSubscriptionById(anyLong())).willReturn(subscriptionDetailDTO);
+		given(subscriptionQueryService.getSubscriptionById(anyLong())).willReturn(subscriptionDetailDTO);
 
 		// when & then
 		mockMvc.perform(get("/api/info/subscription/{id}", 1L))
@@ -197,7 +205,7 @@ class InfoControllerAPITest {
 	void getSubscriptionsByRegionTest() throws Exception {
 		// given
 		List<SubscriptionInfo> subscriptions = List.of(subscriptionInfo);
-		given(infoService.getSubscriptionsByRegion(anyString(), anyString())).willReturn(subscriptions);
+		given(subscriptionQueryService.getSubscriptionsByRegion(anyString(), anyString())).willReturn(subscriptions);
 
 		// when & then
 		mockMvc.perform(get("/api/info/subscription/list")
@@ -216,7 +224,7 @@ class InfoControllerAPITest {
 	@DisplayName("청약 물건의 주변 인프라 조회 테스트")
 	void getSubscriptionDetailInfraTest() throws Exception {
 		// given
-		given(infoService.getNearbyInfrastructure(anyLong())).willReturn(infraResponseDTO);
+		given(infrastructureService.getNearbyInfrastructure(anyLong())).willReturn(infraResponseDTO);
 
 		// when & then
 		mockMvc.perform(get("/api/info/subscription/{id}/detail/infra", 1L))
@@ -248,7 +256,7 @@ class InfoControllerAPITest {
 				.build()
 		);
 
-		given(infoService.getNearbyPublicFacility(anyLong())).willReturn(facilities);
+		given(infrastructureService.getNearbyPublicFacility(anyLong())).willReturn(facilities);
 
 		// when & then
 		mockMvc.perform(get("/api/info/subscription/{id}/detail/facilities", 1L))
@@ -329,7 +337,7 @@ class InfoControllerAPITest {
 				.build()
 		);
 
-		given(infoService.getMySubscriptions(any(UserDetailsImpl.class))).willReturn(mySubscriptions);
+		given(subscriptionQueryService.getMySubscriptions(any(UserDetailsImpl.class))).willReturn(mySubscriptions);
 
 		// when & then
 		mockMvc.perform(get("/api/info/subscription/mysubscriptions")
