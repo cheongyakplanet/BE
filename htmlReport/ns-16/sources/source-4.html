@@ -1,0 +1,340 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > JwtUtil</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.cheonyakplanet.be.infrastructure.jwt</a>
+</div>
+
+<h1>Coverage Summary for Class: JwtUtil (org.cheonyakplanet.be.infrastructure.jwt)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">JwtUtil</td>
+<td class="coverageStat">
+  <span class="percent">
+    21.4%
+  </span>
+  <span class="absValue">
+    (3/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    10.6%
+  </span>
+  <span class="absValue">
+    (7/66)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">JwtUtil$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    21.4%
+  </span>
+  <span class="absValue">
+    (3/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    10.6%
+  </span>
+  <span class="absValue">
+    (7/66)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.cheonyakplanet.be.infrastructure.jwt;
+&nbsp;
+&nbsp;import java.security.Key;
+&nbsp;import java.util.Base64;
+&nbsp;import java.util.Date;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;import org.cheonyakplanet.be.domain.entity.user.UserRoleEnum;
+&nbsp;import org.cheonyakplanet.be.domain.entity.user.UserToken;
+&nbsp;import org.cheonyakplanet.be.domain.repository.UserTokenRepository;
+&nbsp;import org.cheonyakplanet.be.presentation.exception.CustomException;
+&nbsp;import org.cheonyakplanet.be.presentation.exception.ErrorCode;
+&nbsp;import org.springframework.beans.factory.annotation.Value;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;import org.springframework.transaction.annotation.Transactional;
+&nbsp;import org.springframework.util.StringUtils;
+&nbsp;
+&nbsp;import io.jsonwebtoken.Claims;
+&nbsp;import io.jsonwebtoken.ExpiredJwtException;
+&nbsp;import io.jsonwebtoken.Jwts;
+&nbsp;import io.jsonwebtoken.MalformedJwtException;
+&nbsp;import io.jsonwebtoken.SignatureAlgorithm;
+&nbsp;import io.jsonwebtoken.SignatureException;
+&nbsp;import io.jsonwebtoken.UnsupportedJwtException;
+&nbsp;import io.jsonwebtoken.security.Keys;
+&nbsp;import jakarta.annotation.PostConstruct;
+&nbsp;import jakarta.servlet.http.HttpServletRequest;
+&nbsp;import lombok.RequiredArgsConstructor;
+&nbsp;import lombok.extern.slf4j.Slf4j;
+&nbsp;
+<b class="fc">&nbsp;@Slf4j</b>
+&nbsp;@Component
+<b class="fc">&nbsp;@RequiredArgsConstructor</b>
+&nbsp;public class JwtUtil {
+&nbsp;
+&nbsp;	// Header Key
+&nbsp;	public static final String AUTHORIZATION_HEADER = &quot;Authorization&quot;;
+&nbsp;	// admin key
+&nbsp;	public static final String AUTHORIZATION_KEY = &quot;auth&quot;;
+&nbsp;	// token prefix
+&nbsp;	public static final String BEARER_PREFIX = &quot;Bearer &quot;;
+&nbsp;	// token exp
+<b class="fc">&nbsp;	private final long TOKEN_TIME = 60 * 60 * 1000L; // 60min</b>
+<b class="fc">&nbsp;	private final long REFRESH_TOKEN_TIME = 24 * 60 * 60 * 1000L; // 1 days</b>
+&nbsp;
+&nbsp;	@Value(&quot;${jwt.secret.key}&quot;)
+&nbsp;	private String secretKey;
+&nbsp;	private Key key;
+<b class="fc">&nbsp;	private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;</b>
+&nbsp;
+&nbsp;	private final UserTokenRepository userTokenRepository;
+&nbsp;
+&nbsp;	@PostConstruct
+&nbsp;	public void init() {
+<b class="fc">&nbsp;		byte[] bytes = Base64.getDecoder().decode(secretKey);</b>
+<b class="fc">&nbsp;		key = Keys.hmacShaKeyFor(bytes);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Access Token 생성
+&nbsp;	 */
+&nbsp;	public String createAccessToken(String email, UserRoleEnum role) {
+<b class="nc">&nbsp;		Date now = new Date();</b>
+<b class="nc">&nbsp;		return BEARER_PREFIX + Jwts.builder()</b>
+<b class="nc">&nbsp;			.setSubject(email)</b>
+<b class="nc">&nbsp;			.claim(AUTHORIZATION_KEY, role)</b>
+<b class="nc">&nbsp;			.setIssuedAt(now)</b>
+<b class="nc">&nbsp;			.setExpiration(new Date(now.getTime() + TOKEN_TIME))</b>
+<b class="nc">&nbsp;			.signWith(key, signatureAlgorithm)</b>
+<b class="nc">&nbsp;			.compact();</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Refresh Token 생성
+&nbsp;	 */
+&nbsp;	public String createRefreshToken(String email, UserRoleEnum role) {
+<b class="nc">&nbsp;		Date now = new Date();</b>
+<b class="nc">&nbsp;		return BEARER_PREFIX + Jwts.builder()</b>
+<b class="nc">&nbsp;			.setSubject(email)</b>
+<b class="nc">&nbsp;			.claim(AUTHORIZATION_KEY, role)</b>
+<b class="nc">&nbsp;			.setIssuedAt(now)</b>
+<b class="nc">&nbsp;			.setExpiration(new Date(now.getTime() + REFRESH_TOKEN_TIME))</b>
+<b class="nc">&nbsp;			.signWith(key, signatureAlgorithm)</b>
+<b class="nc">&nbsp;			.compact();</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Access Token과 Refresh Token 저장 (MySQL)
+&nbsp;	 */
+&nbsp;	@Transactional
+&nbsp;	public void storeTokens(String email, String accessToken, String refreshToken) {
+<b class="nc">&nbsp;		Date accessExpiry = new Date(System.currentTimeMillis() + TOKEN_TIME);</b>
+<b class="nc">&nbsp;		Date refreshExpiry = new Date(System.currentTimeMillis() + REFRESH_TOKEN_TIME);</b>
+&nbsp;
+<b class="nc">&nbsp;		Optional&lt;UserToken&gt; existingToken = userTokenRepository.findByEmail(email);</b>
+&nbsp;
+<b class="nc">&nbsp;		if (existingToken.isPresent()) {</b>
+<b class="nc">&nbsp;			UserToken token = existingToken.get();</b>
+<b class="nc">&nbsp;			token.setBlacklisted(false);</b>
+<b class="nc">&nbsp;			existingToken.get().updateTokens(accessToken, refreshToken, accessExpiry, refreshExpiry);</b>
+<b class="nc">&nbsp;			userTokenRepository.save(existingToken.get());</b>
+&nbsp;		} else {
+<b class="nc">&nbsp;			UserToken userToken = new UserToken(email, accessToken, refreshToken, accessExpiry, refreshExpiry);</b>
+<b class="nc">&nbsp;			userToken.setBlacklisted(false);</b>
+<b class="nc">&nbsp;			userTokenRepository.save(userToken);</b>
+&nbsp;		}
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Access Token 가져오기 (MySQL)
+&nbsp;	 */
+&nbsp;	public String getAccessToken(String email) {
+<b class="nc">&nbsp;		return userTokenRepository.findByEmail(email).map(UserToken::getAccessToken).orElse(null);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Refresh Token 가져오기 (MySQL)
+&nbsp;	 */
+&nbsp;	public String getRefreshToken(String email) {
+<b class="nc">&nbsp;		return userTokenRepository.findByEmail(email).map(UserToken::getRefreshToken).orElse(null);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Refresh Token을 사용하여 새로운 Access Token 발급
+&nbsp;	 */
+&nbsp;	public String refreshAccessToken(String refreshToken) {
+<b class="nc">&nbsp;		Optional&lt;UserToken&gt; userToken = userTokenRepository.findByRefreshToken(refreshToken);</b>
+&nbsp;
+<b class="nc">&nbsp;		if (userToken.isEmpty()) {</b>
+<b class="nc">&nbsp;			throw new CustomException(ErrorCode.AUTH005, &quot;Refresh Token이 유효하지 않습니다.&quot;);</b>
+&nbsp;		}
+&nbsp;
+<b class="nc">&nbsp;		String email = getUserInfoFromToken(refreshToken).getSubject();</b>
+<b class="nc">&nbsp;		String newAccessToken = createAccessToken(email, UserRoleEnum.USER);</b>
+&nbsp;
+&nbsp;		// 새로운 Access Token을 MySQL에 저장
+<b class="nc">&nbsp;		userToken.get().setAccessToken(newAccessToken);</b>
+<b class="nc">&nbsp;		userToken.get().setAccessTokenExpiry(new Date(System.currentTimeMillis() + TOKEN_TIME));</b>
+<b class="nc">&nbsp;		userTokenRepository.save(userToken.get());</b>
+&nbsp;
+<b class="nc">&nbsp;		return newAccessToken;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * 토큰 검증
+&nbsp;	 */
+&nbsp;	public boolean validateToken(String token) {
+&nbsp;		try {
+<b class="nc">&nbsp;			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);</b>
+<b class="nc">&nbsp;			return true;</b>
+<b class="nc">&nbsp;		} catch (SecurityException | MalformedJwtException | SignatureException e) {</b>
+<b class="nc">&nbsp;			throw new CustomException(ErrorCode.AUTH001, &quot;Invalid JWT signature&quot;);</b>
+<b class="nc">&nbsp;		} catch (ExpiredJwtException e) {</b>
+<b class="nc">&nbsp;			throw new CustomException(ErrorCode.AUTH002, &quot;Expired JWT token&quot;);</b>
+<b class="nc">&nbsp;		} catch (UnsupportedJwtException e) {</b>
+<b class="nc">&nbsp;			throw new CustomException(ErrorCode.AUTH003, &quot;Unsupported JWT token&quot;);</b>
+<b class="nc">&nbsp;		} catch (IllegalArgumentException e) {</b>
+<b class="nc">&nbsp;			throw new CustomException(ErrorCode.AUTH004, &quot;JWT claims is empty&quot;);</b>
+&nbsp;		}
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * 토큰에서 사용자 정보 가져오기
+&nbsp;	 */
+&nbsp;	public Claims getUserInfoFromToken(String token) {
+<b class="nc">&nbsp;		return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * 로그아웃 시 토큰 삭제
+&nbsp;	 */
+&nbsp;	public void deleteTokens(String email) {
+<b class="nc">&nbsp;		userTokenRepository.deleteByEmail(email);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * JWT 토큰 prefix 제거
+&nbsp;	 *
+&nbsp;	 * @param token
+&nbsp;	 * @return
+&nbsp;	 */
+&nbsp;	public String substringToken(String token) {
+<b class="nc">&nbsp;		if (StringUtils.hasText(token) &amp;&amp; token.startsWith(BEARER_PREFIX)) {</b>
+<b class="nc">&nbsp;			return token.substring(7);</b>
+&nbsp;		}
+<b class="nc">&nbsp;		throw new CustomException(ErrorCode.AUTH010, &quot;토큰 없음&quot;);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Header에사 JWT 가져오기
+&nbsp;	 *
+&nbsp;	 * @param request
+&nbsp;	 * @return
+&nbsp;	 */
+&nbsp;	public String getTokenFromRequest(HttpServletRequest request) {
+<b class="nc">&nbsp;		String header = request.getHeader(&quot;Authorization&quot;);</b>
+<b class="nc">&nbsp;		if (StringUtils.hasText(header) &amp;&amp; header.startsWith(&quot;Bearer &quot;)) {</b>
+<b class="nc">&nbsp;			if (!StringUtils.hasText(header.substring(7)) || !validateToken(header.substring(7))) {</b>
+<b class="nc">&nbsp;				throw new CustomException(ErrorCode.AUTH001, &quot;Invalid or missing token&quot;);</b>
+&nbsp;			}
+<b class="nc">&nbsp;			return header.substring(7); // &quot;Bearer &quot; 이후의 토큰 반환</b>
+&nbsp;		}
+<b class="nc">&nbsp;		return null;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-11 15:26</div>
+</div>
+</body>
+</html>

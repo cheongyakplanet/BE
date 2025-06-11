@@ -112,11 +112,14 @@ Follow the established commit message format:
 - `Docs`: Documentation updates
 
 ## Testing
-- JUnit 5 with Spring Boot Test
-- Jacoco for coverage reports
+- JUnit 5 with Spring Boot Test following Given-When-Then pattern
+- JaCoCo for coverage reports with 70% minimum coverage requirement
+- Service layer coverage: 80% line coverage, 75% branch coverage
 - Repository layer tested with `@DataJpaTest`
 - Controller layer tested with `@WebMvcTest`
-- Service layer with mocked dependencies
+- Service layer with mocked dependencies using Mockito with BDDMockito
+- Coverage analysis: `./gradlew test jacocoTestReport`
+- Coverage verification: `./gradlew jacocoTestCoverageVerification`
 
 ## Monitoring and Observability
 - Spring Boot Actuator enabled
