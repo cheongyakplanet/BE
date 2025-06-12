@@ -85,6 +85,9 @@ dependencies {
 
     implementation 'org.springframework.retry:spring-retry'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
+    
+    // dotenv support
+    implementation 'me.paulschwarz:spring-dotenv:4.0.0'
 
 }
 

@@ -38,3 +38,7 @@ out/
 gradle/wrapper/gradle-wrapper.properties
 src/main/resources/application.properties
 src/main/resources/properties/env.properties
+
+# Environment Variables
+.env
+.env.properties
