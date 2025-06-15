@@ -1,0 +1,344 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > InfrastructureService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.cheonyakplanet.be.application.service</a>
+</div>
+
+<h1>Coverage Summary for Class: InfrastructureService (org.cheonyakplanet.be.application.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">InfrastructureService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    16.7%
+  </span>
+  <span class="absValue">
+    (2/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    1.9%
+  </span>
+  <span class="absValue">
+    (2/106)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.cheonyakplanet.be.application.service;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;
+&nbsp;import org.cheonyakplanet.be.application.dto.infra.InfraResponseDTO;
+&nbsp;import org.cheonyakplanet.be.application.dto.infra.PublicFacilityDTO;
+&nbsp;import org.cheonyakplanet.be.application.dto.infra.SchoolDTO;
+&nbsp;import org.cheonyakplanet.be.application.dto.infra.SchoolListDTO;
+&nbsp;import org.cheonyakplanet.be.application.dto.infra.StationDTO;
+&nbsp;import org.cheonyakplanet.be.application.dto.infra.StationListDTO;
+&nbsp;import org.cheonyakplanet.be.domain.entity.infra.PublicFacility;
+&nbsp;import org.cheonyakplanet.be.domain.entity.infra.School;
+&nbsp;import org.cheonyakplanet.be.domain.entity.infra.Station;
+&nbsp;import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionLocationInfo;
+&nbsp;import org.cheonyakplanet.be.domain.repository.PublicFacilityRepository;
+&nbsp;import org.cheonyakplanet.be.domain.repository.SchoolRepository;
+&nbsp;import org.cheonyakplanet.be.domain.repository.StationRepository;
+&nbsp;import org.cheonyakplanet.be.domain.repository.SubscriptionLocationInfoRepository;
+&nbsp;import org.cheonyakplanet.be.presentation.exception.CustomException;
+&nbsp;import org.cheonyakplanet.be.presentation.exception.ErrorCode;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import lombok.RequiredArgsConstructor;
+&nbsp;import lombok.extern.slf4j.Slf4j;
+&nbsp;
+&nbsp;/**
+&nbsp; * 인프라 정보 조회 관련 비즈니스 로직을 담당하는 서비스
+&nbsp; */
+<b class="fc">&nbsp;@Slf4j</b>
+&nbsp;@Service
+<b class="fc">&nbsp;@RequiredArgsConstructor</b>
+&nbsp;public class InfrastructureService {
+&nbsp;
+&nbsp;	private final SubscriptionLocationInfoRepository subscriptionLocationInfoRepository;
+&nbsp;	private final StationRepository stationRepository;
+&nbsp;	private final SchoolRepository schoolRepository;
+&nbsp;	private final PublicFacilityRepository publicFacilityRepository;
+&nbsp;
+&nbsp;	// 하버사인 공식을 위한 Earth radius in kilometers
+&nbsp;	private static final double EARTH_RADIUS = 6371.0;
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * 청약 물건 주변 인프라 조회 (역, 학교)
+&nbsp;	 */
+&nbsp;	public InfraResponseDTO getNearbyInfrastructure(Long subscriptionId) {
+&nbsp;		// 청약 물건의 위치 정보 조회
+<b class="nc">&nbsp;		Optional&lt;SubscriptionLocationInfo&gt; locationOpt = subscriptionLocationInfoRepository.findById(subscriptionId);</b>
+&nbsp;
+<b class="nc">&nbsp;		if (locationOpt.isEmpty() || locationOpt.get().getLatitude() == null</b>
+<b class="nc">&nbsp;			|| locationOpt.get().getLongitude() == null) {</b>
+<b class="nc">&nbsp;			throw new CustomException(ErrorCode.INFO003, &quot;위치 정보가 없는 청약건입니다.&quot;);</b>
+&nbsp;		}
+&nbsp;
+<b class="nc">&nbsp;		SubscriptionLocationInfo location = locationOpt.get();</b>
+<b class="nc">&nbsp;		double latitude = Double.parseDouble(location.getLatitude());</b>
+<b class="nc">&nbsp;		double longitude = Double.parseDouble(location.getLongitude());</b>
+&nbsp;
+&nbsp;		// 주변 1km 내의 역과 학교 조회
+<b class="nc">&nbsp;		List&lt;Station&gt; nearbyStations = findNearbyStations(latitude, longitude, 1.0);</b>
+<b class="nc">&nbsp;		List&lt;School&gt; nearbySchools = findNearbySchools(latitude, longitude, 1.0);</b>
+&nbsp;
+<b class="nc">&nbsp;		List&lt;StationDTO&gt; stationDTOs = nearbyStations.stream()</b>
+<b class="nc">&nbsp;			.map(station -&gt; {</b>
+<b class="nc">&nbsp;				double distance = calculateDistance(latitude, longitude, station.getLatitude(), station.getLongitude());</b>
+<b class="nc">&nbsp;				return StationDTO.builder()</b>
+<b class="nc">&nbsp;					.number(station.getNumber())</b>
+<b class="nc">&nbsp;					.name(station.getNmKor())</b>
+<b class="nc">&nbsp;					.line(station.getLine())</b>
+<b class="nc">&nbsp;					.operator(station.getOperator())</b>
+<b class="nc">&nbsp;					.isTransfer(&quot;Y&quot;.equals(station.getIsTransfer()))</b>
+<b class="nc">&nbsp;					.latitude(station.getLatitude())</b>
+<b class="nc">&nbsp;					.longitude(station.getLongitude())</b>
+<b class="nc">&nbsp;					.distance(Math.round(distance * 100) / 100.0) // Round to 2 decimal places</b>
+<b class="nc">&nbsp;					.build();</b>
+&nbsp;			})
+<b class="nc">&nbsp;			.sorted((s1, s2) -&gt; Double.compare(s1.getDistance(), s2.getDistance()))</b>
+<b class="nc">&nbsp;			.collect(Collectors.toList());</b>
+&nbsp;
+<b class="nc">&nbsp;		List&lt;SchoolDTO&gt; schoolDTOs = nearbySchools.stream()</b>
+<b class="nc">&nbsp;			.map(school -&gt; {</b>
+<b class="nc">&nbsp;				double distance = calculateDistance(latitude, longitude, school.getLatitude(), school.getLongitude());</b>
+<b class="nc">&nbsp;				return SchoolDTO.builder()</b>
+<b class="nc">&nbsp;					.schoolId(school.getSchoolId())</b>
+<b class="nc">&nbsp;					.schoolName(school.getSchoolName())</b>
+<b class="nc">&nbsp;					.category(school.getCategory())</b>
+<b class="nc">&nbsp;					.type(school.getType1())</b>
+<b class="nc">&nbsp;					.address(school.getAddress())</b>
+<b class="nc">&nbsp;					.latitude(school.getLatitude())</b>
+<b class="nc">&nbsp;					.longitude(school.getLongitude())</b>
+<b class="nc">&nbsp;					.distance(Math.round(distance * 100) / 100.0) // Round to 2 decimal places</b>
+<b class="nc">&nbsp;					.build();</b>
+&nbsp;			})
+<b class="nc">&nbsp;			.sorted((s1, s2) -&gt; Double.compare(s1.getDistance(), s2.getDistance()))</b>
+<b class="nc">&nbsp;			.collect(Collectors.toList());</b>
+&nbsp;
+<b class="nc">&nbsp;		StationListDTO stationListDTO = StationListDTO.builder()</b>
+<b class="nc">&nbsp;			.stationList(stationDTOs)</b>
+<b class="nc">&nbsp;			.count(stationDTOs.size())</b>
+<b class="nc">&nbsp;			.build();</b>
+&nbsp;
+<b class="nc">&nbsp;		SchoolListDTO schoolListDTO = SchoolListDTO.builder()</b>
+<b class="nc">&nbsp;			.schoolList(schoolDTOs)</b>
+<b class="nc">&nbsp;			.count(schoolDTOs.size())</b>
+<b class="nc">&nbsp;			.build();</b>
+&nbsp;
+<b class="nc">&nbsp;		return InfraResponseDTO.builder()</b>
+<b class="nc">&nbsp;			.stations(stationListDTO.getStationList())</b>
+<b class="nc">&nbsp;			.schools(schoolListDTO.getSchoolList())</b>
+<b class="nc">&nbsp;			.build();</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * 청약 물건 주변 공공시설 조회
+&nbsp;	 */
+&nbsp;	public List&lt;PublicFacilityDTO&gt; getNearbyPublicFacility(Long subscriptionId) {
+&nbsp;		// 청약 물건의 위치 정보 조회
+<b class="nc">&nbsp;		Optional&lt;SubscriptionLocationInfo&gt; locationOpt = subscriptionLocationInfoRepository.findById(subscriptionId);</b>
+&nbsp;
+<b class="nc">&nbsp;		if (locationOpt.isEmpty() || locationOpt.get().getLatitude() == null</b>
+<b class="nc">&nbsp;			|| locationOpt.get().getLongitude() == null) {</b>
+<b class="nc">&nbsp;			throw new CustomException(ErrorCode.INFO003, &quot;위치 정보가 없는 청약건입니다.&quot;);</b>
+&nbsp;		}
+&nbsp;
+<b class="nc">&nbsp;		SubscriptionLocationInfo location = locationOpt.get();</b>
+<b class="nc">&nbsp;		double latitude = Double.parseDouble(location.getLatitude());</b>
+<b class="nc">&nbsp;		double longitude = Double.parseDouble(location.getLongitude());</b>
+&nbsp;
+&nbsp;		// 주변 1km 내의 공공시설 조회
+<b class="nc">&nbsp;		List&lt;PublicFacility&gt; facilities = findNearbyPublicFacility(latitude, longitude, 1.0);</b>
+&nbsp;
+&nbsp;		// DTO 생성
+<b class="nc">&nbsp;		return facilities.stream()</b>
+<b class="nc">&nbsp;			.map(facility -&gt; PublicFacilityDTO.builder()</b>
+<b class="nc">&nbsp;				.dgmNm(facility.getDgmNm())</b>
+<b class="nc">&nbsp;				.longitude(facility.getLongitude())</b>
+<b class="nc">&nbsp;				.latitude(facility.getLatitude())</b>
+<b class="nc">&nbsp;				.build())</b>
+<b class="nc">&nbsp;			.collect(Collectors.toList());</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * 위도, 경도를 기준으로 주변 역 조회
+&nbsp;	 */
+&nbsp;	private List&lt;Station&gt; findNearbyStations(double latitude, double longitude, double radiusInKm) {
+&nbsp;		// Calculate the approximate bounding box for pre-filtering
+<b class="nc">&nbsp;		double latDistance = radiusInKm / EARTH_RADIUS * (180.0 / Math.PI);</b>
+<b class="nc">&nbsp;		double lonDistance = radiusInKm / (EARTH_RADIUS * Math.cos(Math.toRadians(latitude))) * (180.0 / Math.PI);</b>
+&nbsp;
+<b class="nc">&nbsp;		double minLat = latitude - latDistance;</b>
+<b class="nc">&nbsp;		double maxLat = latitude + latDistance;</b>
+<b class="nc">&nbsp;		double minLon = longitude - lonDistance;</b>
+<b class="nc">&nbsp;		double maxLon = longitude + lonDistance;</b>
+&nbsp;
+&nbsp;		// Get stations within the bounding box
+<b class="nc">&nbsp;		List&lt;Station&gt; stationsInBox = stationRepository.findByLatitudeBetweenAndLongitudeBetween(</b>
+&nbsp;			minLat, maxLat, minLon, maxLon);
+&nbsp;
+&nbsp;		// Filter stations by exact distance using Haversine formula
+<b class="nc">&nbsp;		return stationsInBox.stream()</b>
+<b class="nc">&nbsp;			.filter(station -&gt; calculateDistance(latitude, longitude, station.getLatitude(), station.getLongitude())</b>
+&nbsp;				&lt;= radiusInKm)
+<b class="nc">&nbsp;			.collect(Collectors.toList());</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * 위도, 경도를 기준으로 주변 학교 조회
+&nbsp;	 */
+&nbsp;	private List&lt;School&gt; findNearbySchools(double latitude, double longitude, double radiusInKm) {
+&nbsp;		// Calculate the approximate bounding box for pre-filtering
+<b class="nc">&nbsp;		double latDistance = radiusInKm / EARTH_RADIUS * (180.0 / Math.PI);</b>
+<b class="nc">&nbsp;		double lonDistance = radiusInKm / (EARTH_RADIUS * Math.cos(Math.toRadians(latitude))) * (180.0 / Math.PI);</b>
+&nbsp;
+<b class="nc">&nbsp;		double minLat = latitude - latDistance;</b>
+<b class="nc">&nbsp;		double maxLat = latitude + latDistance;</b>
+<b class="nc">&nbsp;		double minLon = longitude - lonDistance;</b>
+<b class="nc">&nbsp;		double maxLon = longitude + lonDistance;</b>
+&nbsp;
+&nbsp;		// Get schools within the bounding box
+<b class="nc">&nbsp;		List&lt;School&gt; schoolsInBox = schoolRepository.findByLatitudeBetweenAndLongitudeBetween(</b>
+&nbsp;			minLat, maxLat, minLon, maxLon);
+&nbsp;
+&nbsp;		// Filter schools by exact distance using Haversine formula
+<b class="nc">&nbsp;		return schoolsInBox.stream()</b>
+<b class="nc">&nbsp;			.filter(school -&gt; calculateDistance(latitude, longitude, school.getLatitude(), school.getLongitude())</b>
+&nbsp;				&lt;= radiusInKm)
+<b class="nc">&nbsp;			.collect(Collectors.toList());</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * 위도, 경도를 기준으로 주변 공공시설 조회
+&nbsp;	 */
+&nbsp;	private List&lt;PublicFacility&gt; findNearbyPublicFacility(double latitude, double longitude, double radiusInKm) {
+<b class="nc">&nbsp;		double latDistance = radiusInKm / EARTH_RADIUS * (180.0 / Math.PI);</b>
+<b class="nc">&nbsp;		double lonDistance = radiusInKm / (EARTH_RADIUS * Math.cos(Math.toRadians(latitude))) * (180.0 / Math.PI);</b>
+&nbsp;
+<b class="nc">&nbsp;		double minLat = latitude - latDistance;</b>
+<b class="nc">&nbsp;		double maxLat = latitude + latDistance;</b>
+<b class="nc">&nbsp;		double minLon = longitude - lonDistance;</b>
+<b class="nc">&nbsp;		double maxLon = longitude + lonDistance;</b>
+&nbsp;
+<b class="nc">&nbsp;		List&lt;PublicFacility&gt; facilities = publicFacilityRepository.findByLatitudeBetweenAndLongitudeBetween(</b>
+&nbsp;			minLat, maxLat, minLon, maxLon);
+&nbsp;
+&nbsp;		// Filter facilities by exact distance using Haversine formula
+<b class="nc">&nbsp;		return facilities.stream()</b>
+<b class="nc">&nbsp;			.filter(publicFacility -&gt;</b>
+<b class="nc">&nbsp;				calculateDistance(latitude, longitude, publicFacility.getLatitude(), publicFacility.getLongitude())</b>
+&nbsp;					&lt;= radiusInKm)
+<b class="nc">&nbsp;			.collect(Collectors.toList());</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * 하버사인 공식으로 거리 계산
+&nbsp;	 */
+&nbsp;	private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+<b class="nc">&nbsp;		double dLat = Math.toRadians(lat2 - lat1);</b>
+<b class="nc">&nbsp;		double dLon = Math.toRadians(lon2 - lon1);</b>
+&nbsp;
+<b class="nc">&nbsp;		double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +</b>
+<b class="nc">&nbsp;			Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *</b>
+<b class="nc">&nbsp;				Math.sin(dLon / 2) * Math.sin(dLon / 2);</b>
+&nbsp;
+<b class="nc">&nbsp;		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));</b>
+<b class="nc">&nbsp;		return EARTH_RADIUS * c; // Distance in km</b>
+&nbsp;	}
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-11 15:26</div>
+</div>
+</body>
+</html>

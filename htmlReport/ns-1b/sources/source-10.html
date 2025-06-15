@@ -1,0 +1,92 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > SubscriptionInfoRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.cheonyakplanet.be.domain.repository</a>
+</div>
+
+<h1>Coverage Summary for Class: SubscriptionInfoRepository (org.cheonyakplanet.be.domain.repository)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">SubscriptionInfoRepository</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.cheonyakplanet.be.domain.repository;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Set;
+&nbsp;
+&nbsp;import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionInfo;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;import org.springframework.data.jpa.repository.Query;
+&nbsp;import org.springframework.stereotype.Repository;
+&nbsp;
+&nbsp;@Repository
+&nbsp;public interface SubscriptionInfoRepository extends JpaRepository&lt;SubscriptionInfo, Long&gt; {
+&nbsp;
+&nbsp;	// 특정 지역의 청약 리스트 조회
+&nbsp;	List&lt;SubscriptionInfo&gt; findByRegionAndCity(String region, String city);
+&nbsp;
+&nbsp;	List&lt;SubscriptionInfo&gt; findByRceptBgndeBetweenOrRceptEnddeBetween(
+&nbsp;		LocalDate start1, LocalDate end1, LocalDate start2, LocalDate end2
+&nbsp;	);
+&nbsp;
+&nbsp;	@Query(&quot;SELECT s.houseManageNo FROM SubscriptionInfo s&quot;)
+&nbsp;	Set&lt;String&gt; findAllHouseManageNos();
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-11 15:26</div>
+</div>
+</body>
+</html>

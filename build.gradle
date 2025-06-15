@@ -85,6 +85,9 @@ dependencies {
 
     implementation 'org.springframework.retry:spring-retry'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
+    
+    // dotenv support
+    implementation 'me.paulschwarz:spring-dotenv:4.0.0'
 
 }
 
@@ -101,5 +104,78 @@ jacocoTestReport {
     reports {
         xml.required = true
         html.required = true
+        csv.required = true
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                // Exclude configuration classes
+                '**/config/**',
+                '**/BeApplication.class',
+                // Exclude DTOs (data transfer objects)
+                '**/dto/**',
+                // Exclude exception classes
+                '**/exception/**',
+                // Exclude entity classes (data classes)
+                '**/entity/**',
+                // Exclude constants and enums
+                '**/UserRoleEnum.class',
+                '**/UserStatusEnum.class',
+                '**/PostCategory.class',
+                '**/ReactionType.class',
+                '**/ErrorCode.class',
+                // Exclude generated code and builders
+                '**/*Builder.class',
+                '**/*$*.class'
+            ])
+        }))
+    }
+    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+}
+
+jacocoTestCoverageVerification {
+    dependsOn jacocoTestReport
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.70 // 70% minimum coverage
+            }
+        }
+        rule {
+            element = 'CLASS'
+            excludes = [
+                '*.config.*',
+                '*.dto.*',
+                '*.entity.*',
+                '*.exception.*',
+                '*.*Application',
+                '*.UserRoleEnum',
+                '*.UserStatusEnum',
+                '*.PostCategory',
+                '*.ReactionType',
+                '*.ErrorCode'
+            ]
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.80 // 80% for service classes
+            }
+        }
+        rule {
+            element = 'METHOD'
+            excludes = [
+                '*.config.*',
+                '*.dto.*',
+                '*.entity.*',
+                '*.exception.*'
+            ]
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.75 // 75% branch coverage
+            }
+        }
     }
 }
+
+check.dependsOn jacocoTestCoverageVerification

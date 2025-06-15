@@ -1,0 +1,338 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > SubscriptionDetailDTO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.cheonyakplanet.be.application.dto.subscriprtion</a>
+</div>
+
+<h1>Coverage Summary for Class: SubscriptionDetailDTO (org.cheonyakplanet.be.application.dto.subscriprtion)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SubscriptionDetailDTO</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/66)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/504)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/144)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">SubscriptionDetailDTO$SubscriptionDetailDTOBuilder</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/67)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/504)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/145)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.cheonyakplanet.be.application.dto.subscriprtion;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.Collections;
+&nbsp;import java.util.List;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;
+&nbsp;import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionInfo;
+&nbsp;import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionLocationInfo;
+&nbsp;
+&nbsp;import lombok.AllArgsConstructor;
+&nbsp;import lombok.Builder;
+&nbsp;import lombok.Data;
+&nbsp;import lombok.NoArgsConstructor;
+&nbsp;
+<b class="nc">&nbsp;@Data</b>
+<b class="nc">&nbsp;@NoArgsConstructor</b>
+<b class="nc">&nbsp;@AllArgsConstructor</b>
+<b class="nc">&nbsp;@Builder</b>
+&nbsp;public class SubscriptionDetailDTO {
+<b class="nc">&nbsp;	private Long id;                              // PK</b>
+<b class="nc">&nbsp;	private String bsnsMbyNm;                     // 사업주체명 (시행사)</b>
+<b class="nc">&nbsp;	private String cnstrctEntrpsNm;               // 건설업체명 (시공사)</b>
+<b class="nc">&nbsp;	private LocalDate cntrctCnclsBgnde;           // 계약시작일</b>
+<b class="nc">&nbsp;	private LocalDate cntrctCnclsEndde;           // 계약종료일</b>
+&nbsp;
+<b class="nc">&nbsp;	private LocalDate gnrlRnk1CrspareaEndde;       // 1순위 해당지역 접수종료일</b>
+<b class="nc">&nbsp;	private LocalDate gnrlRnk1CrspareaRcptde;      // 1순위 해당지역 접수시작일</b>
+<b class="nc">&nbsp;	private LocalDate gnrlRnk1EtcAreaEndde;        // 1순위 기타지역 접수종료일</b>
+<b class="nc">&nbsp;	private LocalDate gnrlRnk1EtcAreaRcptde;       // 1순위 기타지역 접수시작일</b>
+<b class="nc">&nbsp;	private LocalDate gnrlRnk1EtcGgEndde;          // 1순위 경기지역 접수종료일</b>
+<b class="nc">&nbsp;	private LocalDate gnrlRnk1EtcGgRcptde;         // 1순위 경기지역 접수시작일</b>
+&nbsp;
+<b class="nc">&nbsp;	private LocalDate gnrlRnk2CrspareaEndde;       // 2순위 해당지역 접수종료일</b>
+<b class="nc">&nbsp;	private LocalDate gnrlRnk2CrspareaRcptde;      // 2순위 해당지역 접수시작일</b>
+<b class="nc">&nbsp;	private LocalDate gnrlRnk2EtcAreaEndde;        // 2순위 기타지역 접수종료일</b>
+<b class="nc">&nbsp;	private LocalDate gnrlRnk2EtcAreaRcptde;       // 2순위 기타지역 접수시작일</b>
+<b class="nc">&nbsp;	private LocalDate gnrlRnk2EtcGgEndde;          // 2순위 경기지역 접수종료일</b>
+<b class="nc">&nbsp;	private LocalDate gnrlRnk2EtcGgRcptde;         // 2순위 경기지역 접수시작일</b>
+&nbsp;
+<b class="nc">&nbsp;	private String hmpgAdres;                     // 홈페이지 주소</b>
+<b class="nc">&nbsp;	private String houseDtlSecd;                  // 주택상세구분코드</b>
+<b class="nc">&nbsp;	private String houseDtlSecdNm;                // 주택상세구분코드명</b>
+<b class="nc">&nbsp;	private String houseManageNo;                 // 주택관리번호</b>
+<b class="nc">&nbsp;	private String houseNm;                       // 주택명</b>
+<b class="nc">&nbsp;	private String houseSecd;                     // 주택구분코드</b>
+<b class="nc">&nbsp;	private String houseSecdNm;                   // 주택구분코드명</b>
+&nbsp;
+<b class="nc">&nbsp;	private String hssplyAdres;                   // 공급위치</b>
+<b class="nc">&nbsp;	private String hssplyZip;                     // 공급위치 우편번호</b>
+<b class="nc">&nbsp;	private String imprmnBsnsAt;                  // 정비사업 여부</b>
+<b class="nc">&nbsp;	private String lrsclBldlndAt;                 // 대규모 택지개발지구 여부</b>
+<b class="nc">&nbsp;	private String mdatTrgetAreaSecd;             // 조정대상지역 여부</b>
+<b class="nc">&nbsp;	private String mdhsTelno;                     // 문의처 전화번호</b>
+<b class="nc">&nbsp;	private String mvnPrearngeYm;                 // 입주예정월</b>
+<b class="nc">&nbsp;	private String nplnPrvoprPublicHouseAt;       // 수도권 내 민영 공공주택지구 여부</b>
+<b class="nc">&nbsp;	private String parcprcUlsAt;                  // 분양가상한제 적용 여부</b>
+&nbsp;
+<b class="nc">&nbsp;	private String pblancNo;                      // 공고번호</b>
+<b class="nc">&nbsp;	private String pblancUrl;                     // 모집공고 상세 URL</b>
+<b class="nc">&nbsp;	private LocalDate przwnerPresnatnDe;          // 당첨자 발표일</b>
+&nbsp;
+<b class="nc">&nbsp;	private String publicHouseEarthAt;            // 공공주택지구 여부</b>
+<b class="nc">&nbsp;	private String publicHouseSpclwApplcAt;         // 공공주택 특별법 적용 여부</b>
+&nbsp;
+<b class="nc">&nbsp;	private LocalDate rceptBgnde;                 // 청약 접수 시작일</b>
+<b class="nc">&nbsp;	private LocalDate rceptEndde;                 // 청약 접수 종료일</b>
+<b class="nc">&nbsp;	private LocalDate rcritPblancDe;              // 모집공고일</b>
+&nbsp;
+<b class="nc">&nbsp;	private String rentSecd;                      // 분양구분코드</b>
+<b class="nc">&nbsp;	private String rentSecdNm;                    // 분양구분코드명</b>
+<b class="nc">&nbsp;	private String specltRdnEarthAt;              // 투기과열지구 여부</b>
+&nbsp;
+<b class="nc">&nbsp;	private LocalDate spsplyRceptBgnde;            // 특별공급 접수 시작일</b>
+<b class="nc">&nbsp;	private LocalDate spsplyRceptEndde;            // 특별공급 접수 종료일</b>
+&nbsp;
+<b class="nc">&nbsp;	private String subscrptAreaCode;              // 공급지역코드</b>
+<b class="nc">&nbsp;	private String subscrptAreaCodeNm;            // 공급지역명</b>
+<b class="nc">&nbsp;	private Integer totSuplyHshldco;              // 공급규모 (총 공급 가구수)</b>
+&nbsp;
+<b class="nc">&nbsp;	private String region;                        // 예: 울산광역시</b>
+<b class="nc">&nbsp;	private String city;                          // 예: 울주군</b>
+<b class="nc">&nbsp;	private String district;                      // 예: 온양읍</b>
+<b class="nc">&nbsp;	private String detail;                        // 상세주소</b>
+&nbsp;
+<b class="nc">&nbsp;	private String latitude;                      // 위도</b>
+<b class="nc">&nbsp;	private String longitude;                     // 경도</b>
+&nbsp;
+<b class="nc">&nbsp;	private Integer totalSupplyCountNormal;</b>
+<b class="nc">&nbsp;	private Integer totalSupplyCountSpecial;</b>
+<b class="nc">&nbsp;	private Integer totalSupplyCountTotal;</b>
+&nbsp;
+&nbsp;	// 추가된 관계 세부정보
+<b class="nc">&nbsp;	private List&lt;SubscriptionPriceInfoDTO&gt; priceInfo;</b>
+<b class="nc">&nbsp;	private List&lt;SubscriptionSpecialSupplyTargetDTO&gt; specialSupplyTarget;</b>
+<b class="nc">&nbsp;	private List&lt;SubscriptionSupplyTargetDTO&gt; supplyTarget;</b>
+&nbsp;
+&nbsp;	public static SubscriptionDetailDTO fromEntity(SubscriptionInfo entity, SubscriptionLocationInfo locationInfo) {
+&nbsp;
+&nbsp;		// 1) 공급대상 DTO 리스트로 변환
+<b class="nc">&nbsp;		List&lt;SubscriptionSupplyTargetDTO&gt; supplyTargetList = entity.getSubscriptionSupplyTarget() == null</b>
+<b class="nc">&nbsp;			? Collections.emptyList()</b>
+<b class="nc">&nbsp;			: entity.getSubscriptionSupplyTarget().stream()</b>
+<b class="nc">&nbsp;			.map(SubscriptionSupplyTargetDTO::fromEntity)</b>
+<b class="nc">&nbsp;			.collect(Collectors.toList());</b>
+&nbsp;
+&nbsp;		// 2) 합계 계산
+<b class="nc">&nbsp;		int sumNormal = supplyTargetList.stream().mapToInt(SubscriptionSupplyTargetDTO::getSupplyCountNormal).sum();</b>
+<b class="nc">&nbsp;		int sumSpecial = supplyTargetList.stream().mapToInt(SubscriptionSupplyTargetDTO::getSupplyCountSpecial).sum();</b>
+<b class="nc">&nbsp;		int sumTotal = supplyTargetList.stream().mapToInt(SubscriptionSupplyTargetDTO::getSupplyCountTotal).sum();</b>
+&nbsp;
+<b class="nc">&nbsp;		SubscriptionDetailDTO dto = SubscriptionDetailDTO.builder()</b>
+<b class="nc">&nbsp;			.id(entity.getId())</b>
+<b class="nc">&nbsp;			.bsnsMbyNm(entity.getBsnsMbyNm())</b>
+<b class="nc">&nbsp;			.cnstrctEntrpsNm(entity.getCnstrctEntrpsNm())</b>
+<b class="nc">&nbsp;			.cntrctCnclsBgnde(entity.getCntrctCnclsBgnde())</b>
+<b class="nc">&nbsp;			.cntrctCnclsEndde(entity.getCntrctCnclsEndde())</b>
+<b class="nc">&nbsp;			.gnrlRnk1CrspareaEndde(entity.getGnrlRnk1CrspareaEndde())</b>
+<b class="nc">&nbsp;			.gnrlRnk1CrspareaRcptde(entity.getGnrlRnk1CrspareaRcptde())</b>
+<b class="nc">&nbsp;			.gnrlRnk1EtcAreaEndde(entity.getGnrlRnk1EtcAreaEndde())</b>
+<b class="nc">&nbsp;			.gnrlRnk1EtcAreaRcptde(entity.getGnrlRnk1EtcAreaRcptde())</b>
+<b class="nc">&nbsp;			.gnrlRnk1EtcGgEndde(entity.getGnrlRnk1EtcGgEndde())</b>
+<b class="nc">&nbsp;			.gnrlRnk1EtcGgRcptde(entity.getGnrlRnk1EtcGgRcptde())</b>
+<b class="nc">&nbsp;			.gnrlRnk2CrspareaEndde(entity.getGnrlRnk2CrspareaEndde())</b>
+<b class="nc">&nbsp;			.gnrlRnk2CrspareaRcptde(entity.getGnrlRnk2CrspareaRcptde())</b>
+<b class="nc">&nbsp;			.gnrlRnk2EtcAreaEndde(entity.getGnrlRnk2EtcAreaEndde())</b>
+<b class="nc">&nbsp;			.gnrlRnk2EtcAreaRcptde(entity.getGnrlRnk2EtcAreaRcptde())</b>
+<b class="nc">&nbsp;			.gnrlRnk2EtcGgEndde(entity.getGnrlRnk2EtcGgEndde())</b>
+<b class="nc">&nbsp;			.gnrlRnk2EtcGgRcptde(entity.getGnrlRnk2EtcGgRcptde())</b>
+<b class="nc">&nbsp;			.hmpgAdres(entity.getHmpgAdres())</b>
+<b class="nc">&nbsp;			.houseDtlSecd(entity.getHouseDtlSecd())</b>
+<b class="nc">&nbsp;			.houseDtlSecdNm(entity.getHouseDtlSecdNm())</b>
+<b class="nc">&nbsp;			.houseManageNo(entity.getHouseManageNo())</b>
+<b class="nc">&nbsp;			.houseNm(entity.getHouseNm())</b>
+<b class="nc">&nbsp;			.houseSecd(entity.getHouseSecd())</b>
+<b class="nc">&nbsp;			.houseSecdNm(entity.getHouseSecdNm())</b>
+<b class="nc">&nbsp;			.hssplyAdres(entity.getHssplyAdres())</b>
+<b class="nc">&nbsp;			.hssplyZip(entity.getHssplyZip())</b>
+<b class="nc">&nbsp;			.imprmnBsnsAt(entity.getImprmnBsnsAt())</b>
+<b class="nc">&nbsp;			.lrsclBldlndAt(entity.getLrsclBldlndAt())</b>
+<b class="nc">&nbsp;			.mdatTrgetAreaSecd(entity.getMdatTrgetAreaSecd())</b>
+<b class="nc">&nbsp;			.mdhsTelno(entity.getMdhsTelno())</b>
+<b class="nc">&nbsp;			.mvnPrearngeYm(entity.getMvnPrearngeYm())</b>
+<b class="nc">&nbsp;			.nplnPrvoprPublicHouseAt(entity.getNplnPrvoprPublicHouseAt())</b>
+<b class="nc">&nbsp;			.parcprcUlsAt(entity.getParcprcUlsAt())</b>
+<b class="nc">&nbsp;			.pblancNo(entity.getPblancNo())</b>
+<b class="nc">&nbsp;			.pblancUrl(entity.getPblancUrl())</b>
+<b class="nc">&nbsp;			.przwnerPresnatnDe(entity.getPrzwnerPresnatnDe())</b>
+<b class="nc">&nbsp;			.publicHouseEarthAt(entity.getPublicHouseEarthAt())</b>
+<b class="nc">&nbsp;			.publicHouseSpclwApplcAt(entity.getPublicHouseSpclwApplcAt())</b>
+<b class="nc">&nbsp;			.rceptBgnde(entity.getRceptBgnde())</b>
+<b class="nc">&nbsp;			.rceptEndde(entity.getRceptEndde())</b>
+<b class="nc">&nbsp;			.rcritPblancDe(entity.getRcritPblancDe())</b>
+<b class="nc">&nbsp;			.rentSecd(entity.getRentSecd())</b>
+<b class="nc">&nbsp;			.rentSecdNm(entity.getRentSecdNm())</b>
+<b class="nc">&nbsp;			.specltRdnEarthAt(entity.getSpecltRdnEarthAt())</b>
+<b class="nc">&nbsp;			.spsplyRceptBgnde(entity.getSpsplyRceptBgnde())</b>
+<b class="nc">&nbsp;			.spsplyRceptEndde(entity.getSpsplyRceptEndde())</b>
+<b class="nc">&nbsp;			.subscrptAreaCode(entity.getSubscrptAreaCode())</b>
+<b class="nc">&nbsp;			.subscrptAreaCodeNm(entity.getSubscrptAreaCodeNm())</b>
+<b class="nc">&nbsp;			.totSuplyHshldco(entity.getTotSuplyHshldco())</b>
+<b class="nc">&nbsp;			.region(entity.getRegion())</b>
+<b class="nc">&nbsp;			.city(entity.getCity())</b>
+<b class="nc">&nbsp;			.district(entity.getDistrict() != null ? entity.getDistrict().trim() : null)</b>
+<b class="nc">&nbsp;			.detail(entity.getDetail())</b>
+<b class="nc">&nbsp;			.priceInfo(entity.getSubscriptionPriceInfo() == null ? null :</b>
+<b class="nc">&nbsp;				entity.getSubscriptionPriceInfo().stream()</b>
+<b class="nc">&nbsp;					.map(SubscriptionPriceInfoDTO::fromEntity)</b>
+<b class="nc">&nbsp;					.collect(Collectors.toList()))</b>
+<b class="nc">&nbsp;			.specialSupplyTarget(entity.getSubscriptionSpecialSupplyTarget() == null ? null :</b>
+<b class="nc">&nbsp;				entity.getSubscriptionSpecialSupplyTarget().stream()</b>
+<b class="nc">&nbsp;					.map(SubscriptionSpecialSupplyTargetDTO::fromEntity)</b>
+<b class="nc">&nbsp;					.collect(Collectors.toList()))</b>
+<b class="nc">&nbsp;			.supplyTarget(supplyTargetList)</b>
+<b class="nc">&nbsp;			.totalSupplyCountNormal(sumNormal)</b>
+<b class="nc">&nbsp;			.totalSupplyCountSpecial(sumSpecial)</b>
+<b class="nc">&nbsp;			.totalSupplyCountTotal(sumTotal)</b>
+<b class="nc">&nbsp;			.build();</b>
+&nbsp;
+&nbsp;		// 위치 정보가 있으면 위도/경도 설정
+<b class="nc">&nbsp;		if (locationInfo != null) {</b>
+<b class="nc">&nbsp;			dto.setLatitude(locationInfo.getLatitude());</b>
+<b class="nc">&nbsp;			dto.setLongitude(locationInfo.getLongitude());</b>
+&nbsp;		}
+&nbsp;
+<b class="nc">&nbsp;		return dto;</b>
+&nbsp;	}
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-11 15:26</div>
+</div>
+</body>
+</html>

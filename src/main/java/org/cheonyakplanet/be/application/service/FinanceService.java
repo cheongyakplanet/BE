@@ -29,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 public class FinanceService {
 
 	private final RestTemplate restTemplate;
-
 	private final MortgageRepository mortgageRepository;
 	private final HouseLoanRepository houseLoanRepository;
 
@@ -105,10 +104,10 @@ public class FinanceService {
 			log.error("Error updating deposit data", e);
 			return "API 데이터 처리 중 오류 발생: " + e.getMessage();
 		}
-		return "API 불러오기 및 DB저장 성공";
+		return "주택담보대출 정보가 업데이트되었습니다";
 	}
 
-	public String updateRenthouse() {
+	public String updateRentHouseLoan() {
 		try {
 			String requestUrl = rentHouseLoanApiUrl + "?auth=" + fssApiKey + "&topFinGrpNo=050000&pageNo=1";
 			log.info("requestUrl : {}", requestUrl);
@@ -164,11 +163,35 @@ public class FinanceService {
 					}
 				}
 			}
-			return "API 불러오기 및 DB저장 성공";
+			return "전세자금대출 정보가 업데이트되었습니다";
 
 		} catch (Exception e) {
 			log.error("Error updating deposit data", e);
 			return "API 데이터 처리 중 오류 발생: " + e.getMessage();
 		}
 	}
+
+	// /** 저장된 주택담보대출 전체를 DTO로 반환 */
+	// public List<MortgageDTO> getMortgageList() {
+	// 	return mortgageRepository.findAll().stream()
+	// 		.map(m -> new MortgageDTO(
+	// 			m.getKorCoNm(),
+	// 			m.getFinPrdtNm(),
+	// 			m.getLendRateType(),
+	// 			m.getLendRateMin(),
+	// 			m.getLendRateMax()))
+	// 		.collect(Collectors.toList());
+	// }
+	//
+	// /** 저장된 전세자금대출 전체를 DTO로 반환 */
+	// public List<HouseLoanDTO> getHouseLoanList() {
+	// 	return houseLoanRepository.findAll().stream()
+	// 		.map(h -> new HouseLoanDTO(
+	// 			h.getKorCoNm(),
+	// 			h.getFinPrdtNm(),
+	// 			h.getLendRateType(),
+	// 			(float) h.getLendRateMin(),
+	// 			(float) h.getLendRateMax()))
+	// 		.collect(Collectors.toList());
+	// }
 }

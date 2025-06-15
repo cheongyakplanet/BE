@@ -1,0 +1,250 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > HomeController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.cheonyakplanet.be.presentation.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: HomeController (org.cheonyakplanet.be.presentation.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">HomeController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    40%
+  </span>
+  <span class="absValue">
+    (2/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (2/8)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.cheonyakplanet.be.presentation.controller;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import org.cheonyakplanet.be.application.dto.ApiResponse;
+&nbsp;import org.cheonyakplanet.be.application.service.CommunityService;
+&nbsp;import org.cheonyakplanet.be.application.service.SubscriptionService;
+&nbsp;import org.cheonyakplanet.be.domain.entity.comunity.Post;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.stereotype.Controller;
+&nbsp;import org.springframework.web.bind.annotation.GetMapping;
+&nbsp;import org.springframework.web.bind.annotation.RequestMapping;
+&nbsp;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.media.Content;
+&nbsp;import io.swagger.v3.oas.annotations.media.ExampleObject;
+&nbsp;import io.swagger.v3.oas.annotations.media.Schema;
+&nbsp;import jakarta.servlet.http.HttpServletRequest;
+&nbsp;import lombok.RequiredArgsConstructor;
+&nbsp;import lombok.extern.slf4j.Slf4j;
+&nbsp;
+<b class="fc">&nbsp;@Slf4j</b>
+&nbsp;@Controller
+<b class="fc">&nbsp;@RequiredArgsConstructor</b>
+&nbsp;@RequestMapping(&quot;/api/main&quot;)
+&nbsp;public class HomeController {
+&nbsp;
+&nbsp;	private final SubscriptionService subscriptionService;
+&nbsp;	private final CommunityService communityService;
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * 가장 인기 있는 지역
+&nbsp;	 * @return
+&nbsp;	 */
+&nbsp;	@GetMapping(&quot;/popular-locations&quot;)
+&nbsp;	@Operation(summary = &quot;가장 인기 있는 지역&quot;, description = &quot;회원들이 가장 많이 관심 설정한 지역&quot;,
+&nbsp;		responses = {
+&nbsp;			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;성공&quot;, content = @Content(mediaType = &quot;application/json&quot;,
+&nbsp;				schema = @Schema(implementation = ApiResponse.class),
+&nbsp;				examples = @ExampleObject(value = &quot;&quot;&quot;
+&nbsp;					{
+&nbsp;					    &quot;status&quot;: &quot;success&quot;,
+&nbsp;					    &quot;data&quot;: [
+&nbsp;					        &quot;서울특별시 동대문구&quot;,
+&nbsp;					        &quot;서울 강동구&quot;
+&nbsp;					    ]
+&nbsp;					}
+&nbsp;					&quot;&quot;&quot;))
+&nbsp;			)
+&nbsp;		}
+&nbsp;	)
+&nbsp;	public ResponseEntity&lt;?&gt; getPopularLocations() {
+<b class="nc">&nbsp;		Object result = subscriptionService.getPopularLocationList();</b>
+<b class="nc">&nbsp;		return ResponseEntity.ok(new ApiResponse&lt;&gt;(&quot;success&quot;, result));</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * 내 관심 지역
+&nbsp;	 * @param request
+&nbsp;	 * @return
+&nbsp;	 */
+&nbsp;	@GetMapping(&quot;/my-locations&quot;)
+&nbsp;	@Operation(summary = &quot;내 관심 지역&quot;, description = &quot;로그인 후 설정한 관심지역&quot;,
+&nbsp;		responses = {
+&nbsp;			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;성공&quot;, content = @Content(mediaType = &quot;application/json&quot;,
+&nbsp;				schema = @Schema(implementation = ApiResponse.class),
+&nbsp;				examples = @ExampleObject(value = &quot;&quot;&quot;
+&nbsp;					{
+&nbsp;					  	   &quot;status&quot;: &quot;sucess&quot;,
+&nbsp;					  	   &quot;data&quot;: [
+&nbsp;					  	     &quot;서울특별시 동대문구&quot;,
+&nbsp;					  	     &quot;서울특별시 서대문구&quot;,
+&nbsp;					  	     &quot;서울특별시 서초구&quot;,
+&nbsp;					  	     &quot;서울특별시 강북구&quot;,
+&nbsp;					  	     &quot;서울시 용산구&quot;
+&nbsp;					  	   ]
+&nbsp;					  	 }
+&nbsp;					&quot;&quot;&quot;))
+&nbsp;			)
+&nbsp;		})
+&nbsp;	public ResponseEntity&lt;?&gt; getMyLocations(HttpServletRequest request) {
+<b class="nc">&nbsp;		List&lt;String&gt; interestLocals = subscriptionService.getInterestLocalsByEmail(request);</b>
+<b class="nc">&nbsp;		return ResponseEntity.ok(new ApiResponse&lt;&gt;(&quot;success&quot;, interestLocals));</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * 인기 있는 게시글
+&nbsp;	 * @return
+&nbsp;	 */
+&nbsp;	@GetMapping(&quot;/popular-content&quot;)
+&nbsp;	@Operation(summary = &quot;인기있는 게시글&quot;, description = &quot;좋아요 많은 게시글&quot;,
+&nbsp;		responses = {
+&nbsp;			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;성공&quot;, content = @Content(mediaType = &quot;application/json&quot;,
+&nbsp;				schema = @Schema(implementation = ApiResponse.class),
+&nbsp;				examples = @ExampleObject(value = &quot;&quot;&quot;
+&nbsp;					{
+&nbsp;					   &quot;status&quot;: &quot;success&quot;,
+&nbsp;					   &quot;data&quot;: [
+&nbsp;					     {
+&nbsp;					       &quot;createdAt&quot;: &quot;2025-02-15T11:49:13.190185&quot;,
+&nbsp;					       &quot;createdBy&quot;: null,
+&nbsp;					       &quot;updatedAt&quot;: &quot;2025-03-26T08:59:46.649097&quot;,
+&nbsp;					       &quot;updatedBy&quot;: &quot;test@test&quot;,
+&nbsp;					       &quot;deletedAt&quot;: null,
+&nbsp;					       &quot;deletedBy&quot;: null,
+&nbsp;					       &quot;id&quot;: 6,
+&nbsp;					       &quot;username&quot;: &quot;tester&quot;,
+&nbsp;					       &quot;title&quot;: &quot;예제 제목&quot;,
+&nbsp;					       &quot;content&quot;: &quot;예제 내용&quot;,
+&nbsp;					       &quot;views&quot;: 506,
+&nbsp;					       &quot;likes&quot;: 80,
+&nbsp;					       &quot;comments&quot;: [
+&nbsp;					         {
+&nbsp;					           &quot;createdAt&quot;: &quot;2025-03-13T01:12:00.308858&quot;,
+&nbsp;					           &quot;createdBy&quot;: &quot;test@test&quot;,
+&nbsp;					           &quot;updatedAt&quot;: &quot;2025-03-13T01:12:00.308858&quot;,
+&nbsp;					           &quot;updatedBy&quot;: &quot;test@test&quot;,
+&nbsp;					           &quot;deletedAt&quot;: null,
+&nbsp;					           &quot;deletedBy&quot;: null,
+&nbsp;					           &quot;id&quot;: 7,
+&nbsp;					           &quot;content&quot;: &quot;댓글 내용&quot;,
+&nbsp;					           &quot;replies&quot;: [
+&nbsp;					             {
+&nbsp;					               &quot;createdAt&quot;: &quot;2025-03-13T01:12:20.88548&quot;,
+&nbsp;					               &quot;createdBy&quot;: &quot;test@test&quot;,
+&nbsp;					               &quot;updatedAt&quot;: &quot;2025-03-13T01:12:20.88548&quot;,
+&nbsp;					               &quot;updatedBy&quot;: &quot;test@test&quot;,
+&nbsp;					               &quot;deletedAt&quot;: null,
+&nbsp;					               &quot;deletedBy&quot;: null,
+&nbsp;					               &quot;id&quot;: 4,
+&nbsp;					               &quot;content&quot;: &quot;댓글 내용&quot;
+&nbsp;					             }
+&nbsp;					           ]
+&nbsp;					         }
+&nbsp;					       ]
+&nbsp;					     }
+&nbsp;					   ]
+&nbsp;					 }
+&nbsp;					&quot;&quot;&quot;))
+&nbsp;			)
+&nbsp;		})
+&nbsp;	public ResponseEntity&lt;?&gt; getPopularPosts() {
+<b class="nc">&nbsp;		List&lt;Post&gt; posts = communityService.getPopularPosts();</b>
+<b class="nc">&nbsp;		return ResponseEntity.ok(new ApiResponse&lt;&gt;(&quot;success&quot;, posts));</b>
+&nbsp;	}
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-11 15:26</div>
+</div>
+</body>
+</html>
