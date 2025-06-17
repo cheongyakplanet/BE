@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Paths;
 
 import org.cheonyakplanet.be.application.service.InfoService;
+import org.cheonyakplanet.be.application.service.NewsService;
 import org.cheonyakplanet.be.application.service.SubscriptionService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ public class Scheduler {
 
 	private final InfoService infoService;
 	private final SubscriptionService subscriptionService;
+	private final NewsService newsService;
 
 	@Scheduled(cron = "0 0 3 ? * MON", zone = "Asia/Seoul")
 	public void weeklySubscriptionAPTUpdate() {
@@ -68,5 +70,16 @@ public class Scheduler {
 		log.info("RealEstate batch start for {}", callDate);
 		infoService.collectRealPrice(callDate);
 		log.info("APT 실거래가 갱신 완료");
+	}
+
+	@Scheduled(cron = "0 0 9 * * ?", zone = "Asia/Seoul") // 매일 오전 9시
+	public void dailyNewsUpdate() {
+		log.info("일일 부동산 뉴스 수집 시작");
+		try {
+			newsService.crawlAndCreateNewsPosts();
+			log.info("일일 부동산 뉴스 수집 완료");
+		} catch (Exception e) {
+			log.error("부동산 뉴스 수집 중 오류 발생", e);
+		}
 	}
 }
