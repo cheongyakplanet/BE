@@ -6,9 +6,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.cheonyakplanet.be.domain.entity.comunity.Post;
@@ -47,27 +49,47 @@ public class NewsService {
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	private static final String NAVER_NEWS_API_URL = "https://openapi.naver.com/v1/search/news.json";
+
+	// 부동산 관련 키워드를 더 세분화하고 확장
 	private static final List<String> REAL_ESTATE_KEYWORDS = List.of(
-		"부동산 정책", "주택 청약", "청약 당첨", "분양", "아파트 청약",
-		"주택공급", "LH청약", "SH청약", "공공분양", "민간분양"
+		"부동산", "주택", "아파트", "오피스텔", "상가", "토지",
+		"청약", "분양", "임대", "전세", "월세", "매매",
+		"부동산정책", "주택정책", "임대차", "전월세", "재건축", "재개발",
+		"LH", "SH", "한국토지주택공사", "주택도시보증공사",
+		"부동산시장", "주택시장", "아파트값", "집값", "주택가격"
 	);
 
-	private static final Set<String> FILTER_OUT_KEYWORDS = Set.of(
-		"광고", "홍보", "이벤트", "할인", "쿠폰", "프로모션", "상품권",
-		"마케팅", "브랜드", "론칭", "오픈", "카페", "맛집", "쇼핑",
-		"패션", "뷰티", "여행", "펜션", "호텔", "리조트"
+	// 강한 광고성 키워드 (반드시 제외)
+	private static final Set<String> STRONG_AD_KEYWORDS = Set.of(
+		"할인", "쿠폰", "이벤트", "프로모션", "무료체험", "가입하면",
+		"당첨자발표", "추첨", "경품", "선착순", "한정판매",
+		"최대할인", "특가", "세일", "런칭기념", "오픈기념"
 	);
 
+	// 약한 광고성 키워드 (점수 기반으로 판단)
+	private static final Set<String> WEAK_AD_KEYWORDS = Set.of(
+		"광고", "홍보", "마케팅", "브랜드", "론칭", "오픈",
+		"카페", "맛집", "쇼핑", "패션", "뷰티", "여행",
+		"펜션", "호텔", "리조트", "상품권"
+	);
+
+	// 신뢰할 수 있는 뉴스 도메인을 확장
 	private static final Set<String> ALLOWED_NEWS_DOMAINS = Set.of(
-		"news.naver.com",
-		"land.naver.com",
-		"mk.co.kr",
-		"chosun.com",
-		"joongang.co.kr",
-		"hani.co.kr",
-		"donga.com",
-		"etnews.com",
-		"yna.co.kr"
+		"news.naver.com", "land.naver.com", "realty.chosun.com",
+		"mk.co.kr", "chosun.com", "joongang.co.kr", "hani.co.kr", "donga.com",
+		"etnews.com", "yna.co.kr", "newsis.com", "ytn.co.kr", "sbs.co.kr",
+		"kbs.co.kr", "mbc.co.kr", "jtbc.co.kr", "hankyung.com", "mt.co.kr",
+		"edaily.co.kr", "news1.kr", "newspim.com", "biz.chosun.com",
+		"realestate.daum.net", "land.seoul.go.kr", "molit.go.kr"
+	);
+
+	// 광고성 URL 패턴
+	private static final List<Pattern> AD_URL_PATTERNS = Arrays.asList(
+		Pattern.compile(".*promotion.*", Pattern.CASE_INSENSITIVE),
+		Pattern.compile(".*event.*", Pattern.CASE_INSENSITIVE),
+		Pattern.compile(".*ad.*", Pattern.CASE_INSENSITIVE),
+		Pattern.compile(".*banner.*", Pattern.CASE_INSENSITIVE),
+		Pattern.compile(".*campaign.*", Pattern.CASE_INSENSITIVE)
 	);
 
 	@Transactional
@@ -91,12 +113,24 @@ public class NewsService {
 				}
 			}
 
-			List<NewsItem> filteredNews = filterAndDeduplicateNews(allNewsItems);
+			log.info("총 수집된 기사 수: {}", allNewsItems.size());
+
+			List<NewsItem> filteredNews = filterAndDeduplicateNewsImproved(allNewsItems);
+			log.info("필터링 후 기사 수: {}", filteredNews.size());
+
 			if (!filteredNews.isEmpty()) {
 				createDailySummaryPost(filteredNews);
 				log.info("일간 부동산 뉴스 요약 포스트 생성 완료 - {} 개 기사 요약", filteredNews.size());
 			} else {
-				log.info("오늘은 요약할 만한 부동산 뉴스가 없습니다.");
+				// 필터링이 너무 엄격한 경우 대안 제공
+				log.warn("필터링 후 기사가 없습니다. 완화된 조건으로 재시도합니다.");
+				List<NewsItem> relaxedFilteredNews = filterWithRelaxedConditions(allNewsItems);
+				if (!relaxedFilteredNews.isEmpty()) {
+					createDailySummaryPost(relaxedFilteredNews);
+					log.info("완화된 조건으로 요약 포스트 생성 완료 - {} 개 기사 요약", relaxedFilteredNews.size());
+				} else {
+					log.info("완화된 조건으로도 요약할 만한 부동산 뉴스가 없습니다.");
+				}
 			}
 
 		} finally {
@@ -106,6 +140,164 @@ public class NewsService {
 		log.info("부동산 뉴스 크롤링 및 일간 요약 생성 완료");
 	}
 
+	// 개선된 필터링 로직
+	private List<NewsItem> filterAndDeduplicateNewsImproved(List<NewsItem> newsItems) {
+		Set<String> seenTitles = new HashSet<>();
+		List<NewsItem> filtered = new ArrayList<>();
+
+		for (NewsItem item : newsItems) {
+			// 1단계: 기본 유효성 검사
+			if (item.title == null || item.description == null) {
+				continue;
+			}
+
+			String cleanTitle = cleanHtmlTags(item.title);
+			String cleanDesc = cleanHtmlTags(item.description);
+			String combinedText = (cleanTitle + " " + cleanDesc).toLowerCase();
+
+			// 2단계: 중복 제거 (제목 기준)
+			if (seenTitles.contains(cleanTitle)) {
+				continue;
+			}
+
+			// 3단계: 강한 광고성 키워드 제거 (절대 제외)
+			if (containsStrongAdKeywords(combinedText)) {
+				log.debug("강한 광고성 키워드로 인해 제외: {}", cleanTitle);
+				continue;
+			}
+
+			// 4단계: URL 기반 광고 필터링
+			if (isAdUrl(item.originallink) || isAdUrl(item.link)) {
+				log.debug("광고성 URL로 인해 제외: {}", cleanTitle);
+				continue;
+			}
+
+			// 5단계: 도메인 검증
+			String domain = extractDomain(item.originallink != null ? item.originallink : item.link);
+			if (!ALLOWED_NEWS_DOMAINS.contains(domain)) {
+				log.debug("허용되지 않은 도메인으로 인해 제외: {} ({})", cleanTitle, domain);
+				continue;
+			}
+
+			// 6단계: 부동산 관련성 검사
+			if (!isRealEstateRelated(combinedText)) {
+				log.debug("부동산 관련성 부족으로 인해 제외: {}", cleanTitle);
+				continue;
+			}
+
+			// 7단계: 콘텐츠 품질 검사
+			if (cleanDesc.length() < 30) {
+				log.debug("내용이 너무 짧아서 제외: {}", cleanTitle);
+				continue;
+			}
+
+			// 8단계: 광고 점수 계산 (약한 광고성 키워드)
+			int adScore = calculateAdScore(combinedText);
+			int relevanceScore = calculateRelevanceScore(combinedText);
+
+			// 관련성 점수가 광고 점수보다 높으면 포함
+			if (relevanceScore > adScore) {
+				seenTitles.add(cleanTitle);
+				filtered.add(item);
+				log.debug("포함된 기사: {} (관련성: {}, 광고성: {})", cleanTitle, relevanceScore, adScore);
+			} else {
+				log.debug("광고성 점수가 높아서 제외: {} (관련성: {}, 광고성: {})", cleanTitle, relevanceScore, adScore);
+			}
+		}
+
+		return filtered.stream()
+			.limit(newsConfig.getScheduling().getMaxDailyPosts())
+			.collect(Collectors.toList());
+	}
+
+	// 완화된 조건으로 필터링
+	private List<NewsItem> filterWithRelaxedConditions(List<NewsItem> newsItems) {
+		Set<String> seenTitles = new HashSet<>();
+		List<NewsItem> filtered = new ArrayList<>();
+
+		for (NewsItem item : newsItems) {
+			if (item.title == null || item.description == null) {
+				continue;
+			}
+
+			String cleanTitle = cleanHtmlTags(item.title);
+			String cleanDesc = cleanHtmlTags(item.description);
+			String combinedText = (cleanTitle + " " + cleanDesc).toLowerCase();
+
+			// 중복 제거
+			if (seenTitles.contains(cleanTitle)) {
+				continue;
+			}
+
+			// 강한 광고성 키워드만 제외 (약한 광고성 키워드는 허용)
+			if (containsStrongAdKeywords(combinedText)) {
+				continue;
+			}
+
+			// 최소한의 부동산 관련성 검사
+			if (hasMinimalRealEstateRelevance(combinedText)) {
+				seenTitles.add(cleanTitle);
+				filtered.add(item);
+			}
+		}
+
+		return filtered.stream()
+			.limit(Math.max(3, newsConfig.getScheduling().getMaxDailyPosts() / 2)) // 최소 3개는 확보
+			.collect(Collectors.toList());
+	}
+
+	// 강한 광고성 키워드 포함 여부
+	private boolean containsStrongAdKeywords(String text) {
+		return STRONG_AD_KEYWORDS.stream()
+			.anyMatch(keyword -> text.contains(keyword.toLowerCase()));
+	}
+
+	// URL이 광고성인지 검사
+	private boolean isAdUrl(String url) {
+		if (url == null)
+			return false;
+		return AD_URL_PATTERNS.stream()
+			.anyMatch(pattern -> pattern.matcher(url).matches());
+	}
+
+	// 부동산 관련성 검사 (강화)
+	private boolean isRealEstateRelated(String text) {
+		long matchCount = REAL_ESTATE_KEYWORDS.stream()
+			.filter(keyword -> text.contains(keyword.toLowerCase()))
+			.count();
+		return matchCount >= 1; // 최소 1개 키워드 포함
+	}
+
+	// 최소한의 부동산 관련성 검사 (완화된 조건용)
+	private boolean hasMinimalRealEstateRelevance(String text) {
+		List<String> basicKeywords = Arrays.asList("부동산", "주택", "아파트", "청약", "분양", "임대", "전세");
+		return basicKeywords.stream()
+			.anyMatch(keyword -> text.contains(keyword.toLowerCase()));
+	}
+
+	// 광고 점수 계산
+	private int calculateAdScore(String text) {
+		int score = 0;
+		for (String keyword : WEAK_AD_KEYWORDS) {
+			if (text.contains(keyword.toLowerCase())) {
+				score += 1;
+			}
+		}
+		return score;
+	}
+
+	// 관련성 점수 계산
+	private int calculateRelevanceScore(String text) {
+		int score = 0;
+		for (String keyword : REAL_ESTATE_KEYWORDS) {
+			if (text.contains(keyword.toLowerCase())) {
+				score += 2; // 부동산 키워드는 높은 점수
+			}
+		}
+		return score;
+	}
+
+	// 기존 메서드들은 동일하게 유지...
 	private List<NewsItem> fetchNewsFromNaver(String query) {
 		try {
 			String clientId = getNaverClientId().trim();
@@ -154,43 +346,6 @@ public class NewsService {
 			log.error("뉴스 응답 파싱 실패", e);
 			return List.of();
 		}
-	}
-
-	private List<NewsItem> filterAndDeduplicateNews(List<NewsItem> newsItems) {
-		Set<String> seenTitles = new HashSet<>();
-
-		return newsItems.stream()
-			// 키워드 포함
-			.filter(item -> {
-				String txt = (cleanHtmlTags(item.title) + " " + cleanHtmlTags(item.description))
-					.toLowerCase();
-				return REAL_ESTATE_KEYWORDS.stream()
-					.anyMatch(k -> txt.contains(k.toLowerCase()));
-			})
-			// 본문 길이 체크
-			.filter(item -> cleanHtmlTags(item.description).length() > 30)
-			// 허용 도메인 체크
-			.filter(item -> {
-				String domain = extractDomain(item.originallink != null ? item.originallink : item.link);
-				return ALLOWED_NEWS_DOMAINS.contains(domain);
-			})
-			// 블락 키워드 제외
-			.filter(item -> {
-				String txt = (cleanHtmlTags(item.title) + " " + cleanHtmlTags(item.description))
-					.toLowerCase();
-				return FILTER_OUT_KEYWORDS.stream()
-					.noneMatch(k -> txt.contains(k.toLowerCase()));
-			})
-			// 중복 제거
-			.filter(item -> {
-				String cleanTitle = cleanHtmlTags(item.title);
-				if (seenTitles.contains(cleanTitle))
-					return false;
-				seenTitles.add(cleanTitle);
-				return true;
-			})
-			.limit(newsConfig.getScheduling().getMaxDailyPosts())
-			.collect(Collectors.toList());
 	}
 
 	private String extractDomain(String url) {
