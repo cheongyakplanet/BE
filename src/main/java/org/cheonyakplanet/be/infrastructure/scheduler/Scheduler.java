@@ -2,6 +2,7 @@ package org.cheonyakplanet.be.infrastructure.scheduler;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.cheonyakplanet.be.application.service.InfoService;
@@ -36,17 +37,14 @@ public class Scheduler {
 		log.info("Weekly Subscription Coordinates update 완료");
 	}
 
-	// @Scheduled(cron = "0 30 3 ? * MON", zone = "Asia/Seoul") // 매주 월요일 03:30
-	@Scheduled(cron = "0 */5 * * * *", zone = "Asia/Seoul")
+	@Scheduled(cron = "0 30 3 ? * MON", zone = "Asia/Seoul") // 매주 월요일 03:30
+	//@Scheduled(cron = "0 */5 * * * *", zone = "Asia/Seoul")
 	public void runPythonSupplyScript() {
 		log.info("Python 스크립트 실행 시작");
 		try {
-			String userDir = System.getProperty("user.dir");  // 보통 jar 가 실행되는 폴더
-			String scriptPath = Paths.get(userDir, "scripts", "additional_info.py")
-				.toAbsolutePath()
-				.toString();
-
-			ProcessBuilder pb = new ProcessBuilder("python3", scriptPath);
+			Path path = Paths.get("scripts", "additional_info.py").toAbsolutePath();
+			log.info("📂 Python 스크립트 경로: {}", path);  // 로그로 경로 출력
+			ProcessBuilder pb = new ProcessBuilder("python", path.toString());
 			pb.redirectErrorStream(true);
 			Process p = pb.start();
 
@@ -73,7 +71,7 @@ public class Scheduler {
 		log.info("APT 실거래가 갱신 완료");
 	}
 
-	@Scheduled(cron = "0 0 9 * * ?", zone = "Asia/Seoul") // 매일 오전 9시
+	@Scheduled(cron = "0 0 1 * * ?", zone = "Asia/Seoul") // 매일 오전 9시
 	public void dailyNewsUpdate() {
 		log.info("일일 부동산 뉴스 요약 생성 시작");
 		try {
