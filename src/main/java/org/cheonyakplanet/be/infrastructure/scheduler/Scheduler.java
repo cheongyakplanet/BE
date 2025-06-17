@@ -36,7 +36,8 @@ public class Scheduler {
 		log.info("Weekly Subscription Coordinates update 완료");
 	}
 
-	@Scheduled(cron = "0 30 3 ? * MON", zone = "Asia/Seoul") // 매주 월요일 03:30
+	// @Scheduled(cron = "0 30 3 ? * MON", zone = "Asia/Seoul") // 매주 월요일 03:30
+	@Scheduled(cron = "0 */5 * * * *", zone = "Asia/Seoul")
 	public void runPythonSupplyScript() {
 		log.info("Python 스크립트 실행 시작");
 		try {
@@ -74,12 +75,12 @@ public class Scheduler {
 
 	@Scheduled(cron = "0 0 9 * * ?", zone = "Asia/Seoul") // 매일 오전 9시
 	public void dailyNewsUpdate() {
-		log.info("일일 부동산 뉴스 수집 시작");
+		log.info("일일 부동산 뉴스 요약 생성 시작");
 		try {
 			newsService.crawlAndCreateNewsPosts();
-			log.info("일일 부동산 뉴스 수집 완료");
+			log.info("일일 부동산 뉴스 요약 생성 완료");
 		} catch (Exception e) {
-			log.error("부동산 뉴스 수집 중 오류 발생", e);
+			log.error("부동산 뉴스 요약 생성 중 오류 발생", e);
 		}
 	}
 }
