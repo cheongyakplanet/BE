@@ -1,0 +1,429 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > SubscriptionService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.cheonyakplanet.be.application.service</a>
+</div>
+
+<h1>Coverage Summary for Class: SubscriptionService (org.cheonyakplanet.be.application.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SubscriptionService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (2/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/34)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    1.4%
+  </span>
+  <span class="absValue">
+    (2/142)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.cheonyakplanet.be.application.service;
+&nbsp;
+&nbsp;import java.io.BufferedReader;
+&nbsp;import java.io.InputStreamReader;
+&nbsp;import java.net.HttpURLConnection;
+&nbsp;import java.net.URL;
+&nbsp;import java.text.SimpleDateFormat;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.time.ZoneId;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.Date;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Objects;
+&nbsp;import java.util.Set;
+&nbsp;import java.util.regex.Matcher;
+&nbsp;import java.util.regex.Pattern;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;
+&nbsp;import org.cheonyakplanet.be.application.dto.subscriprtion.CoordinateResponseDTO;
+&nbsp;import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionInfo;
+&nbsp;import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionLocationInfo;
+&nbsp;import org.cheonyakplanet.be.domain.repository.SubscriptionInfoRepository;
+&nbsp;import org.cheonyakplanet.be.domain.repository.SubscriptionLikeRepository;
+&nbsp;import org.cheonyakplanet.be.domain.repository.SubscriptionLocationInfoRepository;
+&nbsp;import org.cheonyakplanet.be.domain.repository.UserRepository;
+&nbsp;import org.cheonyakplanet.be.infrastructure.jwt.JwtUtil;
+&nbsp;import org.json.JSONArray;
+&nbsp;import org.json.JSONObject;
+&nbsp;import org.springframework.beans.factory.annotation.Value;
+&nbsp;import org.springframework.data.domain.PageRequest;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.web.reactive.function.client.WebClient;
+&nbsp;
+&nbsp;import com.fasterxml.jackson.databind.JsonNode;
+&nbsp;import com.fasterxml.jackson.databind.ObjectMapper;
+&nbsp;
+&nbsp;import jakarta.servlet.http.HttpServletRequest;
+&nbsp;import lombok.RequiredArgsConstructor;
+&nbsp;import lombok.extern.slf4j.Slf4j;
+&nbsp;import reactor.core.publisher.Mono;
+&nbsp;
+<b class="fc">&nbsp;@Slf4j</b>
+&nbsp;@Service
+<b class="fc">&nbsp;@RequiredArgsConstructor</b>
+&nbsp;public class SubscriptionService {
+&nbsp;
+&nbsp;	private final SubscriptionInfoRepository subscriptionInfoRepository;
+&nbsp;	private final SubscriptionLocationInfoRepository subscriptionLocationInfoRepository;
+&nbsp;	private final UserRepository userRepository;
+&nbsp;	private final JwtUtil jwtUtil;
+&nbsp;	private final SubscriptionLikeRepository subscriptionLikeRepository;
+&nbsp;
+&nbsp;	@Value(&quot;${public.api.key}&quot;)
+&nbsp;	private String apiKey;
+&nbsp;
+&nbsp;	@Value(&quot;${sub.apt.api.url}&quot;)
+&nbsp;	private String subAptApiUrl;
+&nbsp;
+&nbsp;	@Value(&quot;${sub.apt2.api.url}&quot;)
+&nbsp;	private String subApt2ApiUrl;
+&nbsp;
+&nbsp;	@Value(&quot;${sub.other.api.url}&quot;)
+&nbsp;	private String subOtherApiUrl;
+&nbsp;
+&nbsp;	@Value(&quot;${kakao.rest.api.key}&quot;)
+&nbsp;	private String kakaoRestApiKey;
+&nbsp;
+&nbsp;	@Value(&quot;${kakao.latitude.url}&quot;)
+&nbsp;	private String kakaoLatitudeUrl;
+&nbsp;
+&nbsp;	public String updateSubAPT() {
+<b class="nc">&nbsp;		String requestUrl = subAptApiUrl + &quot;?page=1&amp;perPage=50&amp;&quot; + &quot;serviceKey=&quot; + apiKey;</b>
+&nbsp;
+&nbsp;		try {
+<b class="nc">&nbsp;			URL url = new URL(requestUrl);</b>
+<b class="nc">&nbsp;			HttpURLConnection conn = (HttpURLConnection)url.openConnection();</b>
+<b class="nc">&nbsp;			conn.setRequestMethod(&quot;GET&quot;);</b>
+<b class="nc">&nbsp;			conn.setRequestProperty(&quot;Content-Type&quot;, &quot;application/json; charset=UTF-8&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;			BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), &quot;UTF-8&quot;));</b>
+<b class="nc">&nbsp;			StringBuilder response = new StringBuilder();</b>
+&nbsp;			String line;
+&nbsp;
+<b class="nc">&nbsp;			while ((line = reader.readLine()) != null) {</b>
+<b class="nc">&nbsp;				response.append(line);</b>
+&nbsp;			}
+<b class="nc">&nbsp;			reader.close();</b>
+<b class="nc">&nbsp;			log.info(&quot;API url: {}&quot;, url);</b>
+<b class="nc">&nbsp;			log.info(&quot;API Response: {}&quot;, response.toString());</b>
+&nbsp;
+<b class="nc">&nbsp;			ObjectMapper objectMapper = new ObjectMapper();</b>
+<b class="nc">&nbsp;			JsonNode rootNode = objectMapper.readTree(response.toString());</b>
+<b class="nc">&nbsp;			JsonNode items = rootNode.path(&quot;data&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;			SimpleDateFormat dateFormat = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;			Set&lt;String&gt; existingHouseManageNos = subscriptionInfoRepository.findAllHouseManageNos();</b>
+&nbsp;
+<b class="nc">&nbsp;			for (JsonNode item : items) {</b>
+&nbsp;
+<b class="nc">&nbsp;				String houseManageNo = item.path(&quot;HOUSE_MANAGE_NO&quot;).asText();</b>
+&nbsp;
+&nbsp;				// 이미 존재하면 skip
+<b class="nc">&nbsp;				if (existingHouseManageNos.contains(houseManageNo))</b>
+&nbsp;					continue;
+&nbsp;
+<b class="nc">&nbsp;				SubscriptionInfo subscriptionInfo = new SubscriptionInfo();</b>
+&nbsp;
+<b class="nc">&nbsp;				String hssplyAdres = item.path(&quot;HSSPLY_ADRES&quot;).asText();</b>
+<b class="nc">&nbsp;				String[] addressParts = parseAddress(hssplyAdres);</b>
+&nbsp;
+<b class="nc">&nbsp;				if (addressParts != null) {</b>
+<b class="nc">&nbsp;					subscriptionInfo.setRegion(addressParts[0]); // 예: &quot;울산광역시&quot;</b>
+<b class="nc">&nbsp;					subscriptionInfo.setCity(addressParts[1]);   // 예: &quot;중구&quot;</b>
+<b class="nc">&nbsp;					subscriptionInfo.setDistrict(addressParts[2]); // 예: &quot;우정동&quot;</b>
+<b class="nc">&nbsp;					subscriptionInfo.setDetail(addressParts[3]);   // 예: &quot;286-1번지&quot;</b>
+&nbsp;				}
+<b class="nc">&nbsp;				subscriptionInfo.setBsnsMbyNm(item.path(&quot;BSNS_MBY_NM&quot;).asText()); // 사업주체명</b>
+<b class="nc">&nbsp;				subscriptionInfo.setCnstrctEntrpsNm(item.path(&quot;CNSTRCT_ENTRPS_NM&quot;).asText()); // 건설업체명</b>
+&nbsp;
+<b class="nc">&nbsp;				subscriptionInfo.setHouseNm(item.path(&quot;HOUSE_NM&quot;).asText()); // 주택명</b>
+<b class="nc">&nbsp;				subscriptionInfo.setHouseManageNo(item.path(&quot;HOUSE_MANAGE_NO&quot;).asText()); // 주택관리번호</b>
+<b class="nc">&nbsp;				subscriptionInfo.setHouseDtlSecd(item.path(&quot;HOUSE_DTL_SECD&quot;).asText()); // 주택상세구분코드</b>
+<b class="nc">&nbsp;				subscriptionInfo.setHouseDtlSecdNm(item.path(&quot;HOUSE_DTL_SECD_NM&quot;).asText()); // 주택상세구분코드명</b>
+<b class="nc">&nbsp;				subscriptionInfo.setRentSecd(item.path(&quot;RENT_SECD&quot;).asText()); // 분양구분코드</b>
+<b class="nc">&nbsp;				subscriptionInfo.setRentSecdNm(item.path(&quot;RENT_SECD_NM&quot;).asText()); // 분양구분코드명</b>
+&nbsp;
+<b class="nc">&nbsp;				subscriptionInfo.setSubscrptAreaCode(item.path(&quot;SUBSCRPT_AREA_CODE&quot;).asText()); // 공급지역코드</b>
+<b class="nc">&nbsp;				subscriptionInfo.setSubscrptAreaCodeNm(item.path(&quot;SUBSCRPT_AREA_CODE_NM&quot;).asText()); // 공급지역명</b>
+<b class="nc">&nbsp;				subscriptionInfo.setHssplyAdres(hssplyAdres); // 공급위치</b>
+<b class="nc">&nbsp;				subscriptionInfo.setHssplyZip(item.path(&quot;HSSPLY_ZIP&quot;).asText()); // 공급위치 우편번호</b>
+&nbsp;
+<b class="nc">&nbsp;				subscriptionInfo.setRceptBgnde(parseDate(item.path(&quot;RCEPT_BGNDE&quot;).asText(), dateFormat)); // 청약 접수 시작일</b>
+<b class="nc">&nbsp;				subscriptionInfo.setRceptEndde(parseDate(item.path(&quot;RCEPT_ENDDE&quot;).asText(), dateFormat)); // 청약 접수 종료일</b>
+<b class="nc">&nbsp;				subscriptionInfo.setSpsplyRceptBgnde(</b>
+<b class="nc">&nbsp;					parseDate(item.path(&quot;SPSPLY_RCEPT_BGNDE&quot;).asText(), dateFormat)); // 특별공급 접수 시작일</b>
+<b class="nc">&nbsp;				subscriptionInfo.setSpsplyRceptEndde(</b>
+<b class="nc">&nbsp;					parseDate(item.path(&quot;SPSPLY_RCEPT_ENDDE&quot;).asText(), dateFormat)); // 특별공급 접수 종료일</b>
+&nbsp;
+<b class="nc">&nbsp;				subscriptionInfo.setGnrlRnk1CrspareaRcptde(</b>
+<b class="nc">&nbsp;					parseDate(item.path(&quot;GNRL_RNK1_CRSPAREA_RCPTDE&quot;).asText(), dateFormat)); // 1순위 해당지역 접수 시작일</b>
+<b class="nc">&nbsp;				subscriptionInfo.setGnrlRnk1CrspareaEndde(</b>
+<b class="nc">&nbsp;					parseDate(item.path(&quot;GNRL_RNK1_CRSPAREA_ENDDE&quot;).asText(), dateFormat)); // 1순위 해당지역 접수 종료일</b>
+&nbsp;
+<b class="nc">&nbsp;				subscriptionInfo.setGnrlRnk1EtcAreaRcptde(</b>
+<b class="nc">&nbsp;					parseDate(item.path(&quot;GNRL_RNK1_ETC_AREA_RCPTDE&quot;).asText(), dateFormat)); // 1순위 기타지역 접수 시작일</b>
+<b class="nc">&nbsp;				subscriptionInfo.setGnrlRnk1EtcAreaEndde(</b>
+<b class="nc">&nbsp;					parseDate(item.path(&quot;GNRL_RNK1_ETC_AREA_ENDDE&quot;).asText(), dateFormat)); // 1순위 기타지역 접수 종료일</b>
+&nbsp;
+<b class="nc">&nbsp;				subscriptionInfo.setPrzwnerPresnatnDe(</b>
+<b class="nc">&nbsp;					parseDate(item.path(&quot;PRZWNER_PRESNATN_DE&quot;).asText(), dateFormat)); // 당첨자 발표일</b>
+<b class="nc">&nbsp;				subscriptionInfo.setCntrctCnclsBgnde(</b>
+<b class="nc">&nbsp;					parseDate(item.path(&quot;CNTRCT_CNCLS_BGNDE&quot;).asText(), dateFormat)); // 계약 시작일</b>
+<b class="nc">&nbsp;				subscriptionInfo.setCntrctCnclsEndde(</b>
+<b class="nc">&nbsp;					parseDate(item.path(&quot;CNTRCT_CNCLS_ENDDE&quot;).asText(), dateFormat)); // 계약 종료일</b>
+&nbsp;
+<b class="nc">&nbsp;				subscriptionInfo.setPblancUrl(item.path(&quot;PBLANC_URL&quot;).asText()); // 모집공고 상세 URL</b>
+&nbsp;
+<b class="nc">&nbsp;				subscriptionInfoRepository.save(subscriptionInfo);</b>
+&nbsp;			}
+<b class="nc">&nbsp;		} catch (Exception e) {</b>
+<b class="nc">&nbsp;			log.error(e.getMessage());</b>
+&nbsp;		}
+<b class="nc">&nbsp;		return &quot;API 불러오기 및 DB저장 성공&quot;;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	private LocalDate parseDate(String dateStr, SimpleDateFormat dateFormat) {
+&nbsp;		try {
+<b class="nc">&nbsp;			Date date = dateFormat.parse(dateStr);</b>
+&nbsp;			// Date를 Instant로 변환하고 LocalDate로 변환
+<b class="nc">&nbsp;			return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();</b>
+<b class="nc">&nbsp;		} catch (Exception e) {</b>
+<b class="nc">&nbsp;			log.warn(&quot;날짜 파싱 실패: {}&quot;, dateStr, e);</b>
+<b class="nc">&nbsp;			return null;</b>
+&nbsp;		}
+&nbsp;	}
+&nbsp;
+&nbsp;	private String[] parseAddress(String address) {
+&nbsp;		// 시도 (특별시, 광역시, 도) + (구/군/시) + (동/가/도로명 등) + 나머지 주소를 파싱
+<b class="nc">&nbsp;		Pattern pattern = Pattern.compile(</b>
+&nbsp;			&quot;^(\\S+시|\\S+도|\\S+특별자치시)\\s?&quot; + // 시도: 서울특별시, 경기도, 세종특별자치시 등
+&nbsp;				&quot;(\\S+구|\\S+군|\\S+시)?\\s?&quot; +          // 시군구: 영등포구, 아산시 등 (선택적)
+&nbsp;				&quot;((?:\\S+동(?:\\d*가)?|\\S+읍|\\S+면|.+로|.+길)\\s?(?:\\d+번지)?)?\\s?&quot; + // 읍면동/도로명, 번지 포함
+&nbsp;				&quot;(.+)?$&quot;                                // 나머지 주소
+&nbsp;		);
+<b class="nc">&nbsp;		Matcher matcher = pattern.matcher(address);</b>
+&nbsp;
+<b class="nc">&nbsp;		if (matcher.find()) {</b>
+&nbsp;			// 각 그룹을 확인하며 null인 경우를 빈 문자열로 처리
+<b class="nc">&nbsp;			String region1 = matcher.group(1) != null ? matcher.group(1) : &quot;&quot;; // 시도</b>
+<b class="nc">&nbsp;			String region2 = matcher.group(2) != null ? matcher.group(2) : &quot;&quot;; // 시군구</b>
+<b class="nc">&nbsp;			String region3 = matcher.group(3) != null ? matcher.group(3) : &quot;&quot;; // 읍면동/도로명</b>
+<b class="nc">&nbsp;			String restAddress = matcher.group(4) != null ? matcher.group(4) : &quot;&quot;; // 나머지 주소</b>
+&nbsp;
+<b class="nc">&nbsp;			return new String[] {region1, region2, region3, restAddress};</b>
+&nbsp;		}
+<b class="nc">&nbsp;		return null; // 주소 형식이 맞지 않으면 null 반환</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	//    subscriptionLocationInfoRepository
+&nbsp;	public List&lt;CoordinateResponseDTO&gt; updateAllSubscriptionCoordinates() {
+<b class="nc">&nbsp;		List&lt;SubscriptionInfo&gt; subscriptions = subscriptionInfoRepository.findAll();</b>
+<b class="nc">&nbsp;		List&lt;CoordinateResponseDTO&gt; coordinateResponses = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;		List&lt;SubscriptionLocationInfo&gt; locationInfos = new ArrayList&lt;&gt;();</b>
+&nbsp;
+<b class="nc">&nbsp;		Set&lt;Long&gt; existingIds = subscriptionLocationInfoRepository.findAll()</b>
+<b class="nc">&nbsp;			.stream()</b>
+<b class="nc">&nbsp;			.map(SubscriptionLocationInfo::getId)</b>
+<b class="nc">&nbsp;			.collect(Collectors.toSet());</b>
+&nbsp;
+&nbsp;		// WebClient는 반복문 외부에서 한 번 생성해 재사용
+<b class="nc">&nbsp;		WebClient webClient = WebClient.builder()</b>
+<b class="nc">&nbsp;			.baseUrl(&quot;https://dapi.kakao.com&quot;)</b>
+<b class="nc">&nbsp;			.defaultHeader(&quot;Authorization&quot;, &quot;KakaoAK &quot; + kakaoRestApiKey)</b>
+<b class="nc">&nbsp;			.build();</b>
+&nbsp;
+<b class="nc">&nbsp;		for (SubscriptionInfo subscription : subscriptions) {</b>
+<b class="nc">&nbsp;			Long id = subscription.getId();</b>
+&nbsp;
+&nbsp;			// 이미 위치정보가 있으면 스킵
+<b class="nc">&nbsp;			if (existingIds.contains(id)) {</b>
+&nbsp;				continue;
+&nbsp;			}
+&nbsp;
+<b class="nc">&nbsp;			String addr = subscription.getHssplyAdres();</b>
+&nbsp;			try {
+<b class="nc">&nbsp;				Mono&lt;String&gt; responseMono = webClient.get()</b>
+<b class="nc">&nbsp;					.uri(uriBuilder -&gt; uriBuilder</b>
+<b class="nc">&nbsp;						.path(&quot;/v2/local/search/address.json&quot;)</b>
+<b class="nc">&nbsp;						.queryParam(&quot;query&quot;, addr)</b>
+<b class="nc">&nbsp;						.build()</b>
+&nbsp;					)
+<b class="nc">&nbsp;					.retrieve()</b>
+<b class="nc">&nbsp;					.bodyToMono(String.class);</b>
+&nbsp;
+<b class="nc">&nbsp;				String responseBody = responseMono.block();</b>
+<b class="nc">&nbsp;				if (responseBody != null) {</b>
+<b class="nc">&nbsp;					JSONObject jsonObject = new JSONObject(responseBody);</b>
+<b class="nc">&nbsp;					JSONArray documents = jsonObject.getJSONArray(&quot;documents&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;					if (documents.length() &gt; 0) {</b>
+<b class="nc">&nbsp;						JSONObject firstDoc = documents.getJSONObject(0);</b>
+<b class="nc">&nbsp;						String x = firstDoc.getString(&quot;x&quot;); // 경도</b>
+<b class="nc">&nbsp;						String y = firstDoc.getString(&quot;y&quot;); // 위도</b>
+&nbsp;
+&nbsp;						// 새로운 SubscriptionLocationInfo 생성 (id, 위도, 경도)
+<b class="nc">&nbsp;						SubscriptionLocationInfo locationInfo = SubscriptionLocationInfo.builder()</b>
+<b class="nc">&nbsp;							.id(subscription.getId())</b>
+<b class="nc">&nbsp;							.latitude(y)</b>
+<b class="nc">&nbsp;							.longitude(x)</b>
+<b class="nc">&nbsp;							.build();</b>
+<b class="nc">&nbsp;						locationInfos.add(locationInfo);</b>
+&nbsp;
+<b class="nc">&nbsp;						coordinateResponses.add(new CoordinateResponseDTO(x, y));</b>
+&nbsp;					} else {
+<b class="nc">&nbsp;						coordinateResponses.add(new CoordinateResponseDTO(&quot;NotFound&quot;, &quot;NotFound&quot;));</b>
+&nbsp;					}
+&nbsp;				} else {
+<b class="nc">&nbsp;					coordinateResponses.add(new CoordinateResponseDTO(&quot;NoResponse&quot;, &quot;NoResponse&quot;));</b>
+&nbsp;				}
+<b class="nc">&nbsp;			} catch (Exception e) {</b>
+<b class="nc">&nbsp;				e.printStackTrace();</b>
+<b class="nc">&nbsp;				coordinateResponses.add(new CoordinateResponseDTO(&quot;Error&quot;, &quot;Error&quot;));</b>
+&nbsp;			}
+&nbsp;		}
+<b class="nc">&nbsp;		subscriptionLocationInfoRepository.saveAll(locationInfos);</b>
+&nbsp;
+<b class="nc">&nbsp;		return coordinateResponses;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	public Object getPopularLocationList() {
+<b class="nc">&nbsp;		List&lt;String&gt; popularLocal = userRepository.findInterestLocal1TopByInterestLocal1(PageRequest.of(0, 5));</b>
+<b class="nc">&nbsp;		popularLocal.removeIf(Objects::isNull);</b>
+<b class="nc">&nbsp;		return popularLocal;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * 내 관심 지역 리턴
+&nbsp;	 *
+&nbsp;	 * @param
+&nbsp;	 * @return
+&nbsp;	 */
+&nbsp;	public List&lt;String&gt; getInterestLocalsByEmail(HttpServletRequest request) {
+<b class="nc">&nbsp;		String token = jwtUtil.getTokenFromRequest(request);</b>
+<b class="nc">&nbsp;		String email = jwtUtil.getUserInfoFromToken(token).getSubject();</b>
+<b class="nc">&nbsp;		log.info(&quot;Extracted email: {}&quot;, email);</b>
+&nbsp;
+&nbsp;		// 이메일 기반 관심 지역 조회
+<b class="nc">&nbsp;		List&lt;Object[]&gt; rawInterestLocals = userRepository.myInterestLocals(email);</b>
+&nbsp;
+<b class="nc">&nbsp;		if (rawInterestLocals.isEmpty()) {</b>
+<b class="nc">&nbsp;			return new ArrayList&lt;&gt;(Integer.parseInt(&quot;로그인이 필요합니다!&quot;));</b>
+&nbsp;		}
+&nbsp;
+&nbsp;		// Object[] 데이터를 List&lt;String&gt;으로 변환
+<b class="nc">&nbsp;		List&lt;String&gt; interestLocals = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;		for (Object[] locals : rawInterestLocals) {</b>
+<b class="nc">&nbsp;			for (Object local : locals) {</b>
+<b class="nc">&nbsp;				if (local != null) { // null 값 필터링</b>
+<b class="nc">&nbsp;					interestLocals.add(local.toString());</b>
+&nbsp;				}
+&nbsp;			}
+&nbsp;		}
+&nbsp;
+<b class="nc">&nbsp;		log.info(&quot;Processed interest locals: {}&quot;, interestLocals);</b>
+<b class="nc">&nbsp;		return interestLocals;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	public long getPopularSubId() {
+<b class="nc">&nbsp;		return subscriptionLikeRepository.findTopLikedSubscriptionId();</b>
+&nbsp;	}
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-11 15:26</div>
+</div>
+</body>
+</html>
