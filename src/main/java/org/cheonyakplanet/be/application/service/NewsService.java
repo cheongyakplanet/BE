@@ -56,7 +56,8 @@ public class NewsService {
 		"청약", "분양", "임대", "전세", "월세", "매매",
 		"부동산정책", "주택정책", "임대차", "전월세", "재건축", "재개발",
 		"LH", "SH", "한국토지주택공사", "주택도시보증공사",
-		"부동산시장", "주택시장", "아파트값", "집값", "주택가격"
+		"부동산시장", "주택시장", "아파트값", "집값", "주택가격",
+		"국토교통부", "가계대출", "주담대"
 	);
 
 	// 강한 광고성 키워드 (반드시 제외)
@@ -76,11 +77,11 @@ public class NewsService {
 	// 신뢰할 수 있는 뉴스 도메인을 확장
 	private static final Set<String> ALLOWED_NEWS_DOMAINS = Set.of(
 		"news.naver.com", "land.naver.com", "realty.chosun.com",
-		"mk.co.kr", "chosun.com", "joongang.co.kr", "hani.co.kr", "donga.com",
-		"etnews.com", "yna.co.kr", "newsis.com", "ytn.co.kr", "sbs.co.kr",
+		"mk.co.kr", "chosun.com", "joongang.co.kr", "hani.co.kr", "donga.com", "ebn.co.kr", "ibabynews.com",
+		"etnews.com", "yna.co.kr", "newsis.com", "ytn.co.kr", "sbs.co.kr", "seoul.co.kr",
 		"kbs.co.kr", "mbc.co.kr", "jtbc.co.kr", "hankyung.com", "mt.co.kr",
-		"edaily.co.kr", "news1.kr", "newspim.com", "biz.chosun.com",
-		"realestate.daum.net", "land.seoul.go.kr", "molit.go.kr"
+		"edaily.co.kr", "news1.kr", "newspim.com", "biz.chosun.com", "widedaily.com",
+		"realestate.daum.net", "land.seoul.go.kr", "molit.go.kr", "news.sbs.co.kr", "sedaily.com", "enewstoday.co.kr"
 	);
 
 	// 광고성 URL 패턴
@@ -89,7 +90,9 @@ public class NewsService {
 		Pattern.compile(".*event.*", Pattern.CASE_INSENSITIVE),
 		Pattern.compile(".*ad.*", Pattern.CASE_INSENSITIVE),
 		Pattern.compile(".*banner.*", Pattern.CASE_INSENSITIVE),
-		Pattern.compile(".*campaign.*", Pattern.CASE_INSENSITIVE)
+		Pattern.compile(".*campaign.*", Pattern.CASE_INSENSITIVE),
+		Pattern.compile(".*allurekorea.*", Pattern.CASE_INSENSITIVE)
+
 	);
 
 	@Transactional
