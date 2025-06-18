@@ -37,15 +37,21 @@ public class Scheduler {
 		log.info("Weekly Subscription Coordinates update 완료");
 	}
 
-	@Scheduled(cron = "0 30 3 ? * MON", zone = "Asia/Seoul") // 매주 월요일 03:30
-	//@Scheduled(cron = "0 */5 * * * *", zone = "Asia/Seoul")
+	//@Scheduled(cron = "0 30 3 ? * MON", zone = "Asia/Seoul") // 매주 월요일 03:30
+	@Scheduled(cron = "0 */5 * * * *", zone = "Asia/Seoul")
 	public void runPythonSupplyScript() {
 		log.info("Python 스크립트 실행 시작");
 		try {
-			Path path = Paths.get("scripts", "additional_info.py").toAbsolutePath();
-			log.info("📂 Python 스크립트 경로: {}", path);  // 로그로 경로 출력
-			ProcessBuilder pb = new ProcessBuilder("python", path.toString());
-			pb.redirectErrorStream(true);
+			// 가상환경 Python 실행 파일 경로 (리눅스/우분투 기준)
+			Path pythonPath = Paths.get("venv", "bin", "python").toAbsolutePath();
+			// 실행할 Python 스크립트 경로
+			Path scriptPath = Paths.get("scripts", "additional_info.py").toAbsolutePath();
+
+			log.info("📍 Python 실행 경로: {}", pythonPath);
+			log.info("📍 Python 스크립트 경로: {}", scriptPath);
+			
+			ProcessBuilder pb = new ProcessBuilder(pythonPath.toString(), scriptPath.toString());
+			pb.redirectErrorStream(true); // stderr → stdout
 			Process p = pb.start();
 
 			// 결과 로그 출력
