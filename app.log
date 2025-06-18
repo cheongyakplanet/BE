@@ -4849,3 +4849,193 @@ Hibernate:
 2025-06-18T07:47:53.102Z DEBUG 1664698 --- [BE] [nio-8082-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /
 2025-06-18T07:47:53.104Z  INFO 1664698 --- [BE] [nio-8082-exec-6] JWT 검증 및 인가                              : Extracted Token: null
 2025-06-18T07:47:53.104Z DEBUG 1664698 --- [BE] [nio-8082-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:48:10.798Z DEBUG 1664698 --- [BE] [nio-8082-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:48:10.799Z  INFO 1664698 --- [BE] [nio-8082-exec-7] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:48:10.799Z DEBUG 1664698 --- [BE] [nio-8082-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:48:12.845Z DEBUG 1664698 --- [BE] [nio-8082-exec-9] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:48:12.846Z  INFO 1664698 --- [BE] [nio-8082-exec-9] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:48:12.846Z DEBUG 1664698 --- [BE] [nio-8082-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:48:23.134Z DEBUG 1664698 --- [BE] [io-8082-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:48:23.136Z  INFO 1664698 --- [BE] [io-8082-exec-10] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:48:23.138Z DEBUG 1664698 --- [BE] [io-8082-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:48:40.827Z DEBUG 1664698 --- [BE] [nio-8082-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:48:40.829Z  INFO 1664698 --- [BE] [nio-8082-exec-3] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:48:40.829Z DEBUG 1664698 --- [BE] [nio-8082-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:48:42.857Z DEBUG 1664698 --- [BE] [nio-8082-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:48:42.858Z  INFO 1664698 --- [BE] [nio-8082-exec-4] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:48:42.858Z DEBUG 1664698 --- [BE] [nio-8082-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:48:53.164Z DEBUG 1664698 --- [BE] [nio-8082-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:48:53.170Z  INFO 1664698 --- [BE] [nio-8082-exec-5] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:48:53.170Z DEBUG 1664698 --- [BE] [nio-8082-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:49:10.845Z DEBUG 1664698 --- [BE] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:49:10.846Z  INFO 1664698 --- [BE] [nio-8082-exec-2] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:49:10.846Z DEBUG 1664698 --- [BE] [nio-8082-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:49:12.876Z DEBUG 1664698 --- [BE] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:49:12.878Z  INFO 1664698 --- [BE] [nio-8082-exec-1] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:49:12.879Z DEBUG 1664698 --- [BE] [nio-8082-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:49:23.174Z DEBUG 1664698 --- [BE] [nio-8082-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:49:23.175Z  INFO 1664698 --- [BE] [nio-8082-exec-8] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:49:23.176Z DEBUG 1664698 --- [BE] [nio-8082-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:49:40.873Z DEBUG 1664698 --- [BE] [nio-8082-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:49:40.874Z  INFO 1664698 --- [BE] [nio-8082-exec-6] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:49:40.877Z DEBUG 1664698 --- [BE] [nio-8082-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:49:42.906Z DEBUG 1664698 --- [BE] [nio-8082-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:49:42.909Z  INFO 1664698 --- [BE] [nio-8082-exec-7] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:49:42.909Z DEBUG 1664698 --- [BE] [nio-8082-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:49:53.194Z DEBUG 1664698 --- [BE] [nio-8082-exec-9] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:49:53.195Z  INFO 1664698 --- [BE] [nio-8082-exec-9] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:49:53.198Z DEBUG 1664698 --- [BE] [nio-8082-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:50:00.000Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : Python 스크립트 실행 시작
+2025-06-18T07:50:00.001Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : 📍 Python 실행 경로: /home/ubuntu/BE/venv/bin/python
+2025-06-18T07:50:00.001Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : 📍 Python 스크립트 경로: /home/ubuntu/BE/scripts/additional_info.py
+2025-06-18T07:50:00.645Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]: 🔍 .env 파일 경로: /home/ubuntu/BE/.env
+2025-06-18T07:50:00.647Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]: 🔍 .env 파일 존재 여부: True
+2025-06-18T07:50:00.647Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]: 📊 DB 연결 정보:
+2025-06-18T07:50:00.647Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]:    Host: portfolio.ch002swc6i0v.ap-northeast-2.rds.amazonaws.com
+2025-06-18T07:50:00.647Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]:    Port: 3306
+2025-06-18T07:50:00.648Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]:    Database: planet
+2025-06-18T07:50:00.648Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]:    Username: planet
+2025-06-18T07:50:00.648Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]:    Password: ***
+2025-06-18T07:50:00.648Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]: 🚀 청약 상세 정보 크롤링 시작
+2025-06-18T07:50:00.648Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]: ✅ MySQL 연결 성공
+2025-06-18T07:50:00.648Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]: ▶ 이미 처리된 마지막 ID: 219 → 새로 처리할 ID >= 220
+2025-06-18T07:50:00.648Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]: 📋 처리할 청약 건수: 0건
+2025-06-18T07:50:00.648Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]: 🔚 MySQL 연결 종료
+2025-06-18T07:50:00.696Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : Python 스크립트 종료 (exitCode=0)
+2025-06-18T07:50:10.884Z DEBUG 1664698 --- [BE] [io-8082-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:50:10.885Z  INFO 1664698 --- [BE] [io-8082-exec-10] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:50:10.887Z DEBUG 1664698 --- [BE] [io-8082-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:50:12.920Z DEBUG 1664698 --- [BE] [nio-8082-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:50:12.921Z  INFO 1664698 --- [BE] [nio-8082-exec-3] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:50:12.922Z DEBUG 1664698 --- [BE] [nio-8082-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:50:23.206Z DEBUG 1664698 --- [BE] [nio-8082-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:50:23.208Z  INFO 1664698 --- [BE] [nio-8082-exec-4] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:50:23.209Z DEBUG 1664698 --- [BE] [nio-8082-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:50:40.914Z DEBUG 1664698 --- [BE] [nio-8082-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:50:40.916Z  INFO 1664698 --- [BE] [nio-8082-exec-5] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:50:40.917Z DEBUG 1664698 --- [BE] [nio-8082-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:50:42.948Z DEBUG 1664698 --- [BE] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:50:42.949Z  INFO 1664698 --- [BE] [nio-8082-exec-2] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:50:42.949Z DEBUG 1664698 --- [BE] [nio-8082-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:50:53.214Z DEBUG 1664698 --- [BE] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:50:53.216Z  INFO 1664698 --- [BE] [nio-8082-exec-1] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:50:53.217Z DEBUG 1664698 --- [BE] [nio-8082-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:51:10.945Z DEBUG 1664698 --- [BE] [nio-8082-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:51:10.946Z  INFO 1664698 --- [BE] [nio-8082-exec-8] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:51:10.947Z DEBUG 1664698 --- [BE] [nio-8082-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:51:12.963Z DEBUG 1664698 --- [BE] [nio-8082-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:51:12.966Z  INFO 1664698 --- [BE] [nio-8082-exec-6] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:51:12.966Z DEBUG 1664698 --- [BE] [nio-8082-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:51:23.244Z DEBUG 1664698 --- [BE] [nio-8082-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:51:23.246Z  INFO 1664698 --- [BE] [nio-8082-exec-7] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:51:23.246Z DEBUG 1664698 --- [BE] [nio-8082-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:51:40.977Z DEBUG 1664698 --- [BE] [nio-8082-exec-9] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:51:40.978Z  INFO 1664698 --- [BE] [nio-8082-exec-9] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:51:40.978Z DEBUG 1664698 --- [BE] [nio-8082-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:51:42.975Z DEBUG 1664698 --- [BE] [io-8082-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:51:42.976Z  INFO 1664698 --- [BE] [io-8082-exec-10] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:51:42.976Z DEBUG 1664698 --- [BE] [io-8082-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:51:53.246Z DEBUG 1664698 --- [BE] [nio-8082-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:51:53.247Z  INFO 1664698 --- [BE] [nio-8082-exec-3] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:51:53.247Z DEBUG 1664698 --- [BE] [nio-8082-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:52:11.006Z DEBUG 1664698 --- [BE] [nio-8082-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:52:11.007Z  INFO 1664698 --- [BE] [nio-8082-exec-4] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:52:11.007Z DEBUG 1664698 --- [BE] [nio-8082-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:52:13.004Z DEBUG 1664698 --- [BE] [nio-8082-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:52:13.006Z  INFO 1664698 --- [BE] [nio-8082-exec-5] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:52:13.007Z DEBUG 1664698 --- [BE] [nio-8082-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:52:23.249Z DEBUG 1664698 --- [BE] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:52:23.250Z  INFO 1664698 --- [BE] [nio-8082-exec-2] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:52:23.251Z DEBUG 1664698 --- [BE] [nio-8082-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:52:41.037Z DEBUG 1664698 --- [BE] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:52:41.038Z  INFO 1664698 --- [BE] [nio-8082-exec-1] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:52:41.038Z DEBUG 1664698 --- [BE] [nio-8082-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:52:43.035Z DEBUG 1664698 --- [BE] [nio-8082-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:52:43.036Z  INFO 1664698 --- [BE] [nio-8082-exec-8] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:52:43.036Z DEBUG 1664698 --- [BE] [nio-8082-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:52:53.279Z DEBUG 1664698 --- [BE] [nio-8082-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:52:53.281Z  INFO 1664698 --- [BE] [nio-8082-exec-6] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:52:53.281Z DEBUG 1664698 --- [BE] [nio-8082-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:53:11.066Z DEBUG 1664698 --- [BE] [nio-8082-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:53:11.067Z  INFO 1664698 --- [BE] [nio-8082-exec-7] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:53:11.068Z DEBUG 1664698 --- [BE] [nio-8082-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:53:13.065Z DEBUG 1664698 --- [BE] [nio-8082-exec-9] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:53:13.066Z  INFO 1664698 --- [BE] [nio-8082-exec-9] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:53:13.067Z DEBUG 1664698 --- [BE] [nio-8082-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:53:23.285Z DEBUG 1664698 --- [BE] [io-8082-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:53:23.287Z  INFO 1664698 --- [BE] [io-8082-exec-10] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:53:23.287Z DEBUG 1664698 --- [BE] [io-8082-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:53:41.068Z DEBUG 1664698 --- [BE] [nio-8082-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:53:41.069Z  INFO 1664698 --- [BE] [nio-8082-exec-3] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:53:41.070Z DEBUG 1664698 --- [BE] [nio-8082-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:53:43.096Z DEBUG 1664698 --- [BE] [nio-8082-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:53:43.097Z  INFO 1664698 --- [BE] [nio-8082-exec-4] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:53:43.097Z DEBUG 1664698 --- [BE] [nio-8082-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:53:53.310Z DEBUG 1664698 --- [BE] [nio-8082-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:53:53.312Z  INFO 1664698 --- [BE] [nio-8082-exec-5] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:53:53.313Z DEBUG 1664698 --- [BE] [nio-8082-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:54:11.099Z DEBUG 1664698 --- [BE] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:54:11.101Z  INFO 1664698 --- [BE] [nio-8082-exec-2] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:54:11.102Z DEBUG 1664698 --- [BE] [nio-8082-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:54:13.124Z DEBUG 1664698 --- [BE] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:54:13.127Z  INFO 1664698 --- [BE] [nio-8082-exec-1] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:54:13.128Z DEBUG 1664698 --- [BE] [nio-8082-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:54:23.340Z DEBUG 1664698 --- [BE] [nio-8082-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:54:23.343Z  INFO 1664698 --- [BE] [nio-8082-exec-8] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:54:23.343Z DEBUG 1664698 --- [BE] [nio-8082-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:54:41.128Z DEBUG 1664698 --- [BE] [nio-8082-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:54:41.130Z  INFO 1664698 --- [BE] [nio-8082-exec-6] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:54:41.131Z DEBUG 1664698 --- [BE] [nio-8082-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:54:43.153Z DEBUG 1664698 --- [BE] [nio-8082-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:54:43.155Z  INFO 1664698 --- [BE] [nio-8082-exec-7] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:54:43.155Z DEBUG 1664698 --- [BE] [nio-8082-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:54:53.354Z DEBUG 1664698 --- [BE] [nio-8082-exec-9] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:54:53.357Z  INFO 1664698 --- [BE] [nio-8082-exec-9] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:54:53.358Z DEBUG 1664698 --- [BE] [nio-8082-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:55:00.000Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : Python 스크립트 실행 시작
+2025-06-18T07:55:00.001Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : 📍 Python 실행 경로: /home/ubuntu/BE/venv/bin/python
+2025-06-18T07:55:00.001Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : 📍 Python 스크립트 경로: /home/ubuntu/BE/scripts/additional_info.py
+2025-06-18T07:55:00.335Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]: 🔍 .env 파일 경로: /home/ubuntu/BE/.env
+2025-06-18T07:55:00.335Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]: 🔍 .env 파일 존재 여부: True
+2025-06-18T07:55:00.335Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]: 📊 DB 연결 정보:
+2025-06-18T07:55:00.335Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]:    Host: portfolio.ch002swc6i0v.ap-northeast-2.rds.amazonaws.com
+2025-06-18T07:55:00.335Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]:    Port: 3306
+2025-06-18T07:55:00.335Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]:    Database: planet
+2025-06-18T07:55:00.335Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]:    Username: planet
+2025-06-18T07:55:00.335Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]:    Password: ***
+2025-06-18T07:55:00.335Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]: 🚀 청약 상세 정보 크롤링 시작
+2025-06-18T07:55:00.335Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]: ✅ MySQL 연결 성공
+2025-06-18T07:55:00.335Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]: ▶ 이미 처리된 마지막 ID: 219 → 새로 처리할 ID >= 220
+2025-06-18T07:55:00.335Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]: 📋 처리할 청약 건수: 0건
+2025-06-18T07:55:00.335Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : [Python]: 🔚 MySQL 연결 종료
+2025-06-18T07:55:00.369Z  INFO 1664698 --- [BE] [taskScheduler-1] o.c.b.i.scheduler.Scheduler              : Python 스크립트 종료 (exitCode=0)
+2025-06-18T07:55:11.144Z DEBUG 1664698 --- [BE] [io-8082-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:55:11.145Z  INFO 1664698 --- [BE] [io-8082-exec-10] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:55:11.145Z DEBUG 1664698 --- [BE] [io-8082-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:55:13.160Z DEBUG 1664698 --- [BE] [nio-8082-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:55:13.161Z  INFO 1664698 --- [BE] [nio-8082-exec-3] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:55:13.161Z DEBUG 1664698 --- [BE] [nio-8082-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:55:23.384Z DEBUG 1664698 --- [BE] [nio-8082-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:55:23.386Z  INFO 1664698 --- [BE] [nio-8082-exec-4] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:55:23.387Z DEBUG 1664698 --- [BE] [nio-8082-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:55:41.151Z DEBUG 1664698 --- [BE] [nio-8082-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:55:41.153Z  INFO 1664698 --- [BE] [nio-8082-exec-5] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:55:41.153Z DEBUG 1664698 --- [BE] [nio-8082-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:55:43.189Z DEBUG 1664698 --- [BE] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:55:43.191Z  INFO 1664698 --- [BE] [nio-8082-exec-2] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:55:43.192Z DEBUG 1664698 --- [BE] [nio-8082-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:55:53.415Z DEBUG 1664698 --- [BE] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:55:53.416Z  INFO 1664698 --- [BE] [nio-8082-exec-1] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:55:53.416Z DEBUG 1664698 --- [BE] [nio-8082-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:56:11.160Z DEBUG 1664698 --- [BE] [nio-8082-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:56:11.160Z  INFO 1664698 --- [BE] [nio-8082-exec-8] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:56:11.161Z DEBUG 1664698 --- [BE] [nio-8082-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:56:13.206Z DEBUG 1664698 --- [BE] [nio-8082-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:56:13.208Z  INFO 1664698 --- [BE] [nio-8082-exec-6] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:56:13.208Z DEBUG 1664698 --- [BE] [nio-8082-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:56:41.184Z DEBUG 1664698 --- [BE] [nio-8082-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:56:41.185Z  INFO 1664698 --- [BE] [nio-8082-exec-7] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:56:41.185Z DEBUG 1664698 --- [BE] [nio-8082-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-06-18T07:56:43.238Z DEBUG 1664698 --- [BE] [nio-8082-exec-9] o.s.security.web.FilterChainProxy        : Securing GET /
+2025-06-18T07:56:43.240Z  INFO 1664698 --- [BE] [nio-8082-exec-9] JWT 검증 및 인가                              : Extracted Token: null
+2025-06-18T07:56:43.241Z DEBUG 1664698 --- [BE] [nio-8082-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
