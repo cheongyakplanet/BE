@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>기여 가이드 | 청약플래닛</title>
+    <link rel="stylesheet" href="./styles.css"/>
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <h1>기여 가이드</h1>
+        <p class="subtitle">기여 가이드 문서</p>
+        <p class="description">CheonYakPlanet 백엔드 관련 문서입니다.</p>
+    </header>
+    <section class="quick-start">
+        <h2>Contributing Guidelines</h2>
+        <br>
+        <h3>🤝 Welcome Contributors</h3>
+        <br>
+        <p>Thank you for your interest in contributing to CheonYakPlanet! This guide will help you understand our
+            development process, coding standards, and how to submit quality contributions.</p>
+        <br>
+        <h3>📋 Table of Contents</h3>
+        <br>
+        <p>1. [Getting Started](#getting-started)</p>
+        <p>2. [Development Workflow](#development-workflow)</p>
+        <p>3. [Coding Standards](#coding-standards)</p>
+        <p>4. [Testing Requirements](#testing-requirements)</p>
+        <p>5. [Code Review Process](#code-review-process)</p>
+        <p>6. [Commit Message Guidelines](#commit-message-guidelines)</p>
+        <p>7. [Pull Request Guidelines](#pull-request-guidelines)</p>
+        <p>8. [Korean Business Domain Guidelines](#korean-business-domain-guidelines)</p>
+        <br>
+        <h3>🚀 Getting Started</h3>
+        <br>
+        <h4>Prerequisites</h4>
+        <li>Java 17+</li>
+        <li>MySQL 8.0+</li>
+        <li>Git 2.20+</li>
+        <li>IDE (IntelliJ IDEA recommended)</li>
+        <li>Basic understanding of Korean real estate domain</li>
+        <br>
+        <h4>Initial Setup</h4>
+        <p>1. **Fork the Repository**</p>
+        <p>```bash</p>
+        <p># Fork on GitHub, then clone your fork</p>
+        <p>git clone https://github.com/your-username/cheonyakplanet-be.git</p>
+        <p>cd cheonyakplanet-be</p>
+        <p>```</p>
+        <br>
+        <p>2. **Set Up Development Environment**</p>
+        <p>```bash</p>
+        <p># Add upstream remote</p>
+        <p>git remote add upstream https://github.com/original-org/cheonyakplanet-be.git</p>
+        <br>
+        <p># Install dependencies and run tests</p>
+        <p>./gradlew build</p>
+        <p>./gradlew test</p>
+        <p>```</p>
+        <br>
+        <p>3. **Configure Environment**</p>
+        <p>- Copy `.env.example` to `.env`</p>
+        <p>- Configure database connection</p>
+        <p>- Set up external API keys (see [Deployment Guide](./deployment-guide.md))</p>
+        <br>
+        <p>4. **Read Documentation**</p>
+        <p>- [Architecture Decisions](./architecture-decisions.md)</p>
+        <p>- [Korean Business Rules](./korean-business-rules.md)</p>
+        <p>- [Database Specifications](./database-specs.md)</p>
+        <br>
+        <h3>🔄 Development Workflow</h3>
+        <br>
+        <h4>Branch Strategy</h4>
+        <p>We follow **Git Flow** with Korean feature naming:</p>
+        <br>
+        <p>```bash</p>
+        <h2>Feature branches (Korean names encouraged)</h2>
+        <p>feature/청약-알림-시스템</p>
+        <p>feature/subscription-alert-system</p>
+        <br>
+        <h2>Bugfix branches</h2>
+        <p>bugfix/fix-duplicate-subscription-error</p>
+        <br>
+        <h2>Hotfix branches</h2>
+        <p>hotfix/security-jwt-vulnerability</p>
+        <br>
+        <h2>Release branches</h2>
+        <p>release/v1.1.0</p>
+        <p>```</p>
+        <br>
+        <h4>Development Process</h4>
+        <p>1. **Create Feature Branch**</p>
+        <p>```bash</p>
+        <p>git checkout develop</p>
+        <p>git pull upstream develop</p>
+        <p>git checkout -b feature/your-feature-name</p>
+        <p>```</p>
+        <br>
+        <p>2. **Develop with TDD**</p>
+        <p>- Write failing tests first</p>
+        <p>- Implement minimum code to pass tests</p>
+        <p>- Refactor while keeping tests green</p>
+        <br>
+        <p>3. **Follow Clean Architecture**</p>
+        <p>- Domain entities remain framework-agnostic</p>
+        <p>- Business logic in Application layer</p>
+        <p>- External concerns in Infrastructure layer</p>
+        <br>
+        <p>4. **Commit Frequently**</p>
+        <p>- Small, logical commits</p>
+        <p>- Clear commit messages</p>
+        <p>- Test before each commit</p>
+        <br>
+        <p>5. **Push and Create PR**</p>
+        <p>```bash</p>
+        <p>git push origin feature/your-feature-name</p>
+        <p># Create Pull Request on GitHub</p>
+        <p>```</p>
+        <br>
+        <h3>📝 Coding Standards</h3>
+        <br>
+        <h4>Java Code Style</h4>
+        <br>
+        <p>#### Class Structure</p>
+        <p>```java</p>
+        <p>@Entity</p>
+        <p>@Table(catalog = "planet", name = "example_entity")</p>
+        <p>@EntityListeners({AuditingEntityListener.class, SoftDeleteListener.class})</p>
+        <p>public class ExampleEntity extends Stamped {</p>
+        <br>
+        <p>// Static fields first</p>
+        <p>private static final String CONSTANT_VALUE = "value";</p>
+        <br>
+        <p>// Instance fields</p>
+        <p>@Id</p>
+        <p>@GeneratedValue(strategy = GenerationType.IDENTITY)</p>
+        <p>private Long id;</p>
+        <br>
+        <p>private String name;</p>
+        <br>
+        <p>// Constructors</p>
+        <p>public ExampleEntity() {}</p>
+        <br>
+        <p>public ExampleEntity(String name) {</p>
+        <p>this.name = name;</p>
+        <p>}</p>
+        <br>
+        <p>// Public methods</p>
+        <p>public void performBusinessOperation() {</p>
+        <p>validateBusinessRules();</p>
+        <p>// Business logic here</p>
+        <p>}</p>
+        <br>
+        <p>// Private methods</p>
+        <p>private void validateBusinessRules() {</p>
+        <p>if (name == null || name.trim().isEmpty()) {</p>
+        <p>throw new CustomException(ErrorCode.VALIDATION_ERROR, "Name is required");</p>
+        <p>}</p>
+        <p>}</p>
+        <br>
+        <p>// Getters and setters</p>
+        <p>public String getName() { return name; }</p>
+        <p>public void setName(String name) { this.name = name; }</p>
+        <p>}</p>
+        <p>```</p>
+        <br>
+        <p>#### Service Layer Standards</p>
+        <p>```java</p>
+        <p>@Service</p>
+        <p>@Transactional(readOnly = true) // Default to read-only</p>
+        <p>@Slf4j</p>
+        <p>public class ExampleService {</p>
+        <br>
+        <p>private final ExampleRepository repository;</p>
+        <br>
+        <p>public ExampleService(ExampleRepository repository) {</p>
+        <p>this.repository = repository;</p>
+        <p>}</p>
+        <br>
+        <p>@Transactional // Override for write operations</p>
+        <p>public ExampleDTO createExample(CreateExampleDTO dto, UserDetailsImpl userDetails) {</p>
+        <p>// 1. Validation</p>
+        <p>validateAuthentication(userDetails);</p>
+        <p>validateInput(dto);</p>
+        <br>
+        <p>// 2. Business logic</p>
+        <p>ExampleEntity entity = ExampleEntity.builder()</p>
+        <p>.name(dto.getName())</p>
+        <p>.build();</p>
+        <br>
+        <p>// 3. Persistence</p>
+        <p>ExampleEntity saved = repository.save(entity);</p>
+        <br>
+        <p>// 4. Return DTO</p>
+        <p>return ExampleDTO.fromEntity(saved);</p>
+        <p>}</p>
+        <br>
+        <p>private void validateAuthentication(UserDetailsImpl userDetails) {</p>
+        <p>if (userDetails == null) {</p>
+        <p>throw new CustomException(ErrorCode.AUTH001, "인증이 필요한 서비스입니다");</p>
+        <p>}</p>
+        <p>}</p>
+        <br>
+        <p>private void validateInput(CreateExampleDTO dto) {</p>
+        <p>if (dto.getName() == null || dto.getName().trim().isEmpty()) {</p>
+        <p>throw new CustomException(ErrorCode.VALIDATION_ERROR, "이름은 필수입니다");</p>
+        <p>}</p>
+        <p>}</p>
+        <p>}</p>
+        <p>```</p>
+        <br>
+        <p>#### Controller Standards</p>
+        <p>```java</p>
+        <p>@RestController</p>
+        <p>@RequestMapping("/api/examples")</p>
+        <p>@Tag(name = "Example API", description = "예제 관리 API")</p>
+        <p>public class ExampleController extends BaseController {</p>
+        <br>
+        <p>private final ExampleService service;</p>
+        <br>
+        <p>public ExampleController(ExampleService service) {</p>
+        <p>this.service = service;</p>
+        <p>}</p>
+        <br>
+        <p>@PostMapping</p>
+        <p>@Operation(summary = "예제 생성", description = "새로운 예제를 생성합니다")</p>
+        <p>public ResponseEntity<?> createExample(</p>
+        <p>@RequestBody @Valid CreateExampleDTO dto,</p>
+        <p>@AuthenticationPrincipal UserDetailsImpl userDetails) {</p>
+        <br>
+        <p>ExampleDTO result = service.createExample(dto, userDetails);</p>
+        <p>return ResponseEntity.ok(success(result));</p>
+        <p>}</p>
+        <p>}</p>
+        <p>```</p>
+        <br>
+        <h4>Naming Conventions</h4>
+        <br>
+        <p>#### Korean Business Terms</p>
+        <p>Use Korean terms for business concepts:</p>
+        <p>```java</p>
+        <p>// Good - Korean business terms</p>
+        <p>private String houseNm; // 주택명</p>
+        <p>private LocalDate rceptBgnde; // 접수시작일</p>
+        <p>private String spsplyType; // 특별공급유형</p>
+        <br>
+        <p>// Avoid - Direct English translation</p>
+        <p>private String houseName;</p>
+        <p>private LocalDate receptionStartDate;</p>
+        <p>private String specialSupplyType;</p>
+        <p>```</p>
+        <br>
+        <p>#### General Naming</p>
+        <li>**Classes**: PascalCase (`UserService`, `SubscriptionInfo`)</li>
+        <li>**Methods**: camelCase (`createUser`, `validateSubscription`)</li>
+        <li>**Variables**: camelCase (`userName`, `subscriptionCount`)</li>
+        <li>**Constants**: UPPER_SNAKE_CASE (`MAX_RETRY_ATTEMPTS`)</li>
+        <li>**Database Tables**: snake_case (`user_info`, `subscription_like`)</li>
+        <br>
+        <h4>Error Handling Standards</h4>
+        <br>
+        <p>#### Custom Exceptions</p>
+        <p>```java</p>
+        <p>// Always use specific error codes</p>
+        <p>throw new CustomException(ErrorCode.SUB001, "청약 정보를 찾을 수 없습니다");</p>
+        <br>
+        <p>// Include additional context when helpful</p>
+        <p>throw new CustomException(ErrorCode.AUTH002, "권한이 없습니다",</p>
+        <p>"Required role: ADMIN, Current role: " + userRole);</p>
+        <p>```</p>
+        <br>
+        <p>#### Error Codes</p>
+        <p>Follow the established pattern:</p>
+        <li>**AUTH001-010**: Authentication and authorization</li>
+        <li>**SIGN001-010**: User registration and login</li>
+        <li>**POST001-010**: Community posts and comments</li>
+        <li>**SUB001-010**: Subscription-related errors</li>
+        <br>
+        <h3>🧪 Testing Requirements</h3>
+        <br>
+        <h4>Test Coverage Standards</h4>
+        <li>**Overall Coverage**: 70% minimum</li>
+        <li>**Service Layer**: 80% line coverage, 75% branch coverage</li>
+        <li>**Critical Business Logic**: 90%+ coverage</li>
+        <li>**Error Paths**: All custom exception scenarios tested</li>
+        <br>
+        <h4>Test Structure (Given-When-Then)</h4>
+        <p>```java</p>
+        <p>@ExtendWith(MockitoExtension.class)</p>
+        <p>@DisplayName("구독 서비스 테스트")</p>
+        <p>class SubscriptionServiceTest {</p>
+        <br>
+        <p>@Mock</p>
+        <p>private SubscriptionRepository repository;</p>
+        <br>
+        <p>@InjectMocks</p>
+        <p>private SubscriptionService service;</p>
+        <br>
+        <p>@Test</p>
+        <p>@DisplayName("구독 생성 - 성공: 유효한 입력값")</p>
+        <p>void givenValidInput_whenCreateSubscription_thenReturnSubscriptionDTO() {</p>
+        <p>// Given</p>
+        <p>CreateSubscriptionDTO input = CreateSubscriptionDTO.builder()</p>
+        <p>.houseName("래미안 강남포레스트")</p>
+        <p>.region("서울특별시")</p>
+        <p>.city("강남구")</p>
+        <p>.build();</p>
+        <br>
+        <p>SubscriptionInfo entity = createTestSubscription();</p>
+        <p>given(repository.save(any(SubscriptionInfo.class))).willReturn(entity);</p>
+        <br>
+        <p>// When</p>
+        <p>SubscriptionDTO result = service.createSubscription(input);</p>
+        <br>
+        <p>// Then</p>
+        <p>assertThat(result).isNotNull();</p>
+        <p>assertThat(result.getHouseName()).isEqualTo("래미안 강남포레스트");</p>
+        <p>then(repository).should().save(any(SubscriptionInfo.class));</p>
+        <p>}</p>
+        <br>
+        <p>@Test</p>
+        <p>@DisplayName("구독 생성 - 실패: 중복된 주택관리번호")</p>
+        <p>void givenDuplicateHouseManageNo_whenCreateSubscription_thenThrowException() {</p>
+        <p>// Given</p>
+        <p>CreateSubscriptionDTO input = createDuplicateInput();</p>
+        <p>given(repository.existsByHouseManageNo(anyString())).willReturn(true);</p>
+        <br>
+        <p>// When & Then</p>
+        <p>CustomException exception = assertThrows(CustomException.class, () -> {</p>
+        <p>service.createSubscription(input);</p>
+        <p>});</p>
+        <br>
+        <p>assertThat(exception.getErrorCode()).isEqualTo(ErrorCode.SUB003);</p>
+        <p>then(repository).should(never()).save(any());</p>
+        <p>}</p>
+        <br>
+        <p>private SubscriptionInfo createTestSubscription() {</p>
+        <p>return SubscriptionInfo.builder()</p>
+        <p>.houseNm("래미안 강남포레스트")</p>
+        <p>.houseManageNo("2024000001")</p>
+        <p>.region("서울특별시")</p>
+        <p>.city("강남구")</p>
+        <p>.build();</p>
+        <p>}</p>
+        <p>}</p>
+        <p>```</p>
+        <br>
+        <h4>Korean Domain Test Data</h4>
+        <p>Use realistic Korean data in tests:</p>
+        <p>```java</p>
+        <p>private User createTestUser() {</p>
+        <p>return User.builder()</p>
+        <p>.email("test@cheonyakplanet.com")</p>
+        <p>.username("청약초보")</p>
+        <p>.role(UserRoleEnum.USER)</p>
+        <p>.monthlyIncome(500) // 500만원</p>
+        <p>.isMarried(true) // 기혼</p>
+        <p>.numChild(2) // 자녀 2명</p>
+        <p>.hasHouse(false) // 무주택</p>
+        <p>.interestLocal1("서울특별시 강남구")</p>
+        <p>.interestLocal2("경기도 성남시")</p>
+        <p>.build();</p>
+        <p>}</p>
+        <p>```</p>
+        <br>
+        <h3>👀 Code Review Process</h3>
+        <br>
+        <h4>Before Submitting PR</h4>
+        <li>[ ] All tests pass (`./gradlew test`)</li>
+        <li>[ ] Code coverage meets requirements (`./gradlew jacocoTestReport`)</li>
+        <li>[ ] No obvious security vulnerabilities</li>
+        <li>[ ] Korean business logic is accurate</li>
+        <li>[ ] Documentation updated if needed</li>
+        <br>
+        <h4>Review Checklist</h4>
+        <br>
+        <p>#### Architecture & Design</p>
+        <li>[ ] Follows Clean Architecture principles</li>
+        <li>[ ] Proper layer separation maintained</li>
+        <li>[ ] Business logic isolated from framework concerns</li>
+        <li>[ ] Appropriate design patterns used</li>
+        <br>
+        <p>#### Code Quality</p>
+        <li>[ ] Code is readable and well-structured</li>
+        <li>[ ] Naming conventions followed</li>
+        <li>[ ] No code duplication</li>
+        <li>[ ] Appropriate error handling</li>
+        <li>[ ] Performance considerations addressed</li>
+        <br>
+        <p>#### Korean Domain Accuracy</p>
+        <li>[ ] Korean business rules correctly implemented</li>
+        <li>[ ] Appropriate Korean terminology used</li>
+        <li>[ ] Government API integration follows standards</li>
+        <li>[ ] User experience appropriate for Korean market</li>
+        <br>
+        <p>#### Testing</p>
+        <li>[ ] Adequate test coverage</li>
+        <li>[ ] Tests follow Given-When-Then pattern</li>
+        <li>[ ] Korean domain test data used</li>
+        <li>[ ] Edge cases and error scenarios covered</li>
+        <br>
+        <p>#### Security</p>
+        <li>[ ] No sensitive data exposed</li>
+        <li>[ ] Authentication properly implemented</li>
+        <li>[ ] Input validation performed</li>
+        <li>[ ] SQL injection prevention</li>
+        <br>
+        <h4>Review Response Guidelines</h4>
+        <br>
+        <p>#### For Reviewers</p>
+        <li>**Be Constructive**: Suggest improvements, don't just point out problems</li>
+        <li>**Explain Why**: Help contributors understand the reasoning</li>
+        <li>**Consider Korean Context**: Understand Korean business requirements</li>
+        <li>**Be Timely**: Review within 24-48 hours</li>
+        <li>**Approve When Ready**: Don't nitpick minor style issues</li>
+        <br>
+        <p>#### For Contributors</p>
+        <li>**Respond Promptly**: Address feedback within 48 hours</li>
+        <li>**Ask Questions**: Clarify when feedback is unclear</li>
+        <li>**Make Requested Changes**: Don't argue unless you have strong technical reasons</li>
+        <li>**Test Changes**: Ensure fixes don't break other functionality</li>
+        <br>
+        <h3>📝 Commit Message Guidelines</h3>
+        <br>
+        <h4>Types</h4>
+        <li>**feat**: New feature</li>
+        <li>**fix**: Bug fix</li>
+        <li>**refactor**: Code refactoring</li>
+        <li>**test**: Adding or updating tests</li>
+        <li>**docs**: Documentation updates</li>
+        <li>**style**: Code style changes</li>
+        <li>**perf**: Performance improvements</li>
+        <li>**chore**: Maintenance tasks</li>
+        <br>
+        <h4>Examples</h4>
+        <p>```bash</p>
+        <p>feat(subscription): add real-time subscription alerts</p>
+        <br>
+        <li>Implement WebSocket-based notification system</li>
+        <li>Add subscription preference settings</li>
+        <li>Include email fallback for offline users</li>
+        <br>
+        <p>Closes #123</p>
+        <br>
+        <p>fix(auth): resolve JWT token refresh issue</p>
+        <br>
+        <li>Fix token expiry calculation bug</li>
+        <li>Add proper error handling for expired tokens</li>
+        <li>Update token refresh endpoint tests</li>
+        <br>
+        <p>test(community): add comprehensive post creation tests</p>
+        <br>
+        <li>Test Korean character handling in posts</li>
+        <li>Add validation error scenarios</li>
+        <li>Include pagination edge cases</li>
+        <br>
+        <p>refactor(news): improve content filtering pipeline</p>
+        <br>
+        <li>Extract filtering logic into separate service</li>
+        <li>Add configurable filtering rules</li>
+        <li>Improve performance with parallel processing</li>
+        <p>```</p>
+        <br>
+        <h3>🔍 Pull Request Guidelines</h3>
+        <br>
+        <h4>PR Title Format</h4>
+        <p>```</p>
+        <p>[Type] Brief description of changes</p>
+        <br>
+        <p>Examples:</p>
+        <p>[Feature] Add subscription price comparison tool</p>
+        <p>[Fix] Resolve Korean address parsing issue</p>
+        <p>[Refactor] Improve news content filtering performance</p>
+        <p>```</p>
+        <br>
+        <h4>PR Description Template</h4>
+        <p>```markdown</p>
+        <h3>📋 Summary</h3>
+        <p>Brief description of what this PR does.</p>
+        <br>
+        <h3>🎯 Type of Change</h3>
+        <li>[ ] Bug fix (non-breaking change which fixes an issue)</li>
+        <li>[ ] New feature (non-breaking change which adds functionality)</li>
+        <li>[ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)</li>
+        <li>[ ] Documentation update</li>
+        <br>
+        <h3>🔧 Changes Made</h3>
+        <li>Change 1</li>
+        <li>Change 2</li>
+        <li>Change 3</li>
+        <br>
+        <h3>🧪 Testing</h3>
+        <li>[ ] Unit tests added/updated</li>
+        <li>[ ] Integration tests added/updated</li>
+        <li>[ ] Manual testing performed</li>
+        <li>[ ] Korean business logic validated</li>
+        <br>
+        <h3>📚 Documentation</h3>
+        <li>[ ] Code comments updated</li>
+        <li>[ ] API documentation updated</li>
+        <li>[ ] User documentation updated (if applicable)</li>
+        <br>
+        <h3>🚀 Deployment Notes</h3>
+        <p>Any special deployment considerations.</p>
+        <br>
+        <h3>📱 Screenshots (if applicable)</h3>
+        <p>Screenshots of UI changes.</p>
+        <br>
+        <h3>✅ Checklist</h3>
+        <li>[ ] Code follows project coding standards</li>
+        <li>[ ] Self-review completed</li>
+        <li>[ ] Tests pass locally</li>
+        <li>[ ] Korean business requirements met</li>
+        <li>[ ] Breaking changes documented</li>
+        <p>```</p>
+        <br>
+        <h4>PR Size Guidelines</h4>
+        <li>**Small PRs Preferred**: <300 lines of code changes</li>
+        <li>**Medium PRs**: 300-800 lines (needs good description)</li>
+        <li>**Large PRs**: >800 lines (should be split if possible)</li>
+        <br>
+        <h3>🏢 Korean Business Domain Guidelines</h3>
+        <br>
+        <h4>Understanding Korean Real Estate</h4>
+        <li>**Study Documentation**: Read [Korean Business Rules](./korean-business-rules.md)</li>
+        <li>**Government APIs**: Understand LH Corporation and Ministry of Land data structures</li>
+        <li>**User Perspective**: Consider Korean user expectations and workflows</li>
+        <li>**Regulatory Compliance**: Ensure features meet Korean legal requirements</li>
+        <br>
+        <h4>Korean Text Handling</h4>
+        <p>```java</p>
+        <p>// Good - Proper Korean text validation</p>
+        <p>private void validateKoreanText(String text) {</p>
+        <p>if (text == null || text.trim().isEmpty()) {</p>
+        <p>throw new CustomException(ErrorCode.VALIDATION001, "입력값이 필요합니다");</p>
+        <p>}</p>
+        <br>
+        <p>// Check for Korean characters if needed</p>
+        <p>if (!text.matches(".*[ㄱ-ㅎㅏ-ㅣ가-힣].*")) {</p>
+        <p>throw new CustomException(ErrorCode.VALIDATION002, "한글 입력이 필요합니다");</p>
+        <p>}</p>
+        <p>}</p>
+        <br>
+        <p>// Database columns for Korean text</p>
+        <p>@Column(columnDefinition = "TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")</p>
+        <p>private String koreanContent;</p>
+        <p>```</p>
+        <br>
+        <h4>Korean Date and Number Formats</h4>
+        <p>```java</p>
+        <p>// Date formatting for Korean users</p>
+        <p>DateTimeFormatter koreanDateFormat = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");</p>
+        <br>
+        <p>// Number formatting for Korean currency</p>
+        <p>DecimalFormat koreanCurrency = new DecimalFormat("#,###원");</p>
+        <p>```</p>
+        <br>
+        <h3>🆘 Getting Help</h3>
+        <br>
+        <h4>Communication Channels</h4>
+        <li>**GitHub Issues**: For bug reports and feature requests</li>
+        <li>**GitHub Discussions**: For questions and general discussion</li>
+        <li>**Code Reviews**: For implementation guidance</li>
+        <li>**Documentation**: Check existing docs before asking</li>
+        <br>
+        <h4>When to Ask for Help</h4>
+        <li>Korean business logic clarification needed</li>
+        <li>Architecture decisions unclear</li>
+        <li>External API integration issues</li>
+        <li>Testing strategy questions</li>
+        <li>Performance concerns</li>
+        <br>
+        <h3>📈 Contribution Recognition</h3>
+        <br>
+        <h4>Types of Contributions</h4>
+        <li>**Code**: Features, bug fixes, performance improvements</li>
+        <li>**Documentation**: Guides, API docs, Korean business explanations</li>
+        <li>**Testing**: Test improvements, edge case discovery</li>
+        <li>**Reviews**: Code review feedback and mentoring</li>
+        <li>**Korean Domain**: Business rule clarification and validation</li>
+        <br>
+        <h4>Recognition</h4>
+        <li>Contributors listed in release notes</li>
+        <li>Special recognition for Korean domain expertise</li>
+        <li>Mentoring opportunities for significant contributors</li>
+        <br>
+        <p>---</p>
+        <br>
+        <h3>📚 Additional Resources</h3>
+        <br>
+        <li>**[CLAUDE.md](../CLAUDE.md)**: Complete project understanding</li>
+        <li>**[Architecture Decisions](./architecture-decisions.md)**: System design rationale</li>
+        <li>**[API Documentation](./api-documentation.md)**: REST API reference</li>
+        <li>**[Testing Guide](./testing-guide.md)**: Detailed testing strategies</li>
+        <li>**[Korean Business Rules](./korean-business-rules.md)**: Domain knowledge</li>
+        <br>
+        <p>---</p>
+        <br>
+        <p>**Contributing Guidelines Version**: 1.0</p>
+        <p>**Last Updated**: 2025-06-19</p>
+        <p>**Next Review**: 2025-09-19</p>
+        <br>
+        <p>Thank you for contributing to CheonYakPlanet! 🏠🇰🇷</p>
+    </section>
+    <footer class="footer">
+        <p>Last Updated: 2025-06-19 | <a href="../index.html">문서 홈으로</a></p>
+    </footer>
+</div>
+</body>
+</html>
