@@ -1,0 +1,26 @@
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f5f8fa;
+    color: #333;
+}
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+.header {
+    margin-bottom: 2rem;
+}
+h1, h2 {
+    color: #2c3e50;
+}
+ul, li {
+    margin-left: 1.2rem;
+}
+.footer {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: #888;
+    text-align: center;
+}

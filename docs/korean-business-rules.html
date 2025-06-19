@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>한국 청약 도메인 규칙 | 청약플래닛</title>
+    <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <h1>한국 청약 도메인 규칙</h1>
+        <p class="subtitle">한국 청약 도메인 규칙 문서</p>
+        <p class="description">CheonYakPlanet 백엔드 관련 문서입니다.</p>
+    </header>
+    <section class="quick-start">
+        <h2>Korean Real Estate Business Rules</h2>
+        <br>
+        <h3>🏠 Overview</h3>
+        <br>
+        <p>This document explains the Korean real estate subscription system (청약) business rules and terminology to help
+            developers understand the domain context of CheonYakPlanet.</p>
+        <br>
+        <h3>📚 Korean Housing Subscription System (청약 시스템)</h3>
+        <br>
+        <h4>Core Concepts</h4>
+        <br>
+        <p>#### 청약 (Subscription)</p>
+        <p>Korean public housing subscription system where citizens compete for newly constructed apartments at
+            government-regulated prices. This is fundamentally different from private real estate markets.</p>
+        <br>
+        <p>#### 분양 (Bunyang)</p>
+        <p>Developer-led apartment sales process. Can be public (regulated) or private (market rate).</p>
+        <br>
+        <p>#### 특별공급 (Special Supply)</p>
+        <p>Reserved units for specific demographic groups with priority access before general public.</p>
+        <br>
+        <p>#### 일반공급 (General Supply)</p>
+        <p>Regular subscription process open to general public after special supply allocation.</p>
+        <br>
+        <h4>Administrative Hierarchy</h4>
+        <br>
+        <p>#### 시/도 (Si/Do) - Province Level</p>
+        <li>**서울특별시** (Seoul Special City)</li>
+        <li>**부산광역시** (Busan Metropolitan City)</li>
+        <li>**경기도** (Gyeonggi Province)</li>
+        <li>**강원도** (Gangwon Province)</li>
+        <li>etc.</li>
+        <br>
+        <p>#### 시/군/구 (Si/Gun/Gu) - City/County/District Level</p>
+        <li>**구** (Gu): District within metropolitan cities</li>
+        <li>**시** (Si): City</li>
+        <li>**군** (Gun): County (rural areas)</li>
+        <br>
+        <p>#### 읍/면/동 (Eup/Myeon/Dong) - Neighborhood Level</p>
+        <li>**동** (Dong): Urban neighborhood</li>
+        <li>**읍** (Eup): Town</li>
+        <li>**면** (Myeon): Township (rural)</li>
+        <br>
+        <h4>Ranking System (순위제)</h4>
+        <br>
+        <p>#### 1순위 (First Priority)</p>
+        <li>**청약통장 가입기간**: Subscription savings account duration</li>
+        <li>**해당지역**: Local area residents (typically 2+ years)</li>
+        <li>**기타지역**: Other area residents</li>
+        <li>**특별공급 우선권**: Special supply priority</li>
+        <br>
+        <p>#### 2순위 (Second Priority)</p>
+        <li>Lower priority applicants</li>
+        <li>Usually those with shorter savings account history</li>
+        <li>Secondary consideration after 1순위 filled</li>
+        <br>
+        <h4>Special Supply Categories (특별공급 유형)</h4>
+        <br>
+        <p>#### 다자녀 가구 (Multi-child Families)</p>
+        <li>**자녀 수**: Number of children (3+ typically)</li>
+        <li>**소득 기준**: Income requirements</li>
+        <li>**거주 조건**: Residency requirements</li>
+        <br>
+        <p>#### 신혼부부 (Newlyweds)</p>
+        <li>**결혼 기간**: Marriage duration (typically ≤7 years)</li>
+        <li>**소득 기준**: Combined household income limits</li>
+        <li>**자녀 우대**: Additional points for children</li>
+        <br>
+        <p>#### 생애최초 (First-time Homebuyers)</p>
+        <li>**무주택 기간**: Period without house ownership</li>
+        <li>**소득 조건**: Income requirements</li>
+        <li>**연령 제한**: Age restrictions</li>
+        <br>
+        <p>#### 노부모 부양 (Elderly Parent Support)</p>
+        <li>**부모 연령**: Parent age requirements (65+)</li>
+        <li>**동거 조건**: Cohabitation requirements</li>
+        <li>**소득 기준**: Income limits</li>
+        <br>
+        <p>#### 청년 (Youth)</p>
+        <li>**연령 제한**: Age requirements (typically 19-39)</li>
+        <li>**소득 기준**: Income limits for young adults</li>
+        <li>**지역 조건**: Regional requirements</li>
+        <br>
+        <h4>Regional Eligibility (지역 자격)</h4>
+        <br>
+        <p>#### 해당지역 (Local Area)</p>
+        <li>**거주 기간**: Minimum residency period (typically 2+ years)</li>
+        <li>**주민등록**: Resident registration requirements</li>
+        <li>**우선 순위**: Higher priority in ranking</li>
+        <br>
+        <p>#### 기타지역 (Other Areas)</p>
+        <li>**경기지역**: Gyeonggi Province (special category for Seoul subscriptions)</li>
+        <li>**전국**: Nationwide (lowest priority)</li>
+        <br>
+        <h4>Financial Requirements</h4>
+        <br>
+        <p>#### Income Limits (소득 기준)</p>
+        <li>**도시근로자 월평균소득**: Urban worker average monthly income</li>
+        <li>**100% 이하**: ≤100% of median income</li>
+        <li>**130% 이하**: ≤130% of median income (with children)</li>
+        <br>
+        <p>#### Asset Limits (자산 기준)</p>
+        <li>**부동산 자산**: Real estate assets</li>
+        <li>**일반자산**: General assets (savings, stocks, etc.)</li>
+        <li>**자동차 가액**: Vehicle value</li>
+        <br>
+        <p>#### House Ownership (주택 보유 현황)</p>
+        <li>**무주택자**: Non-homeowner</li>
+        <li>**1주택자**: Single homeowner</li>
+        <li>**주택 처분 조건**: House disposal requirements</li>
+        <br>
+        <h4>Timeline Process (청약 일정)</h4>
+        <br>
+        <p>#### Key Dates</p>
+        <p>1. **모집공고일**: Recruitment announcement date</p>
+        <p>2. **특별공급 접수**: Special supply application period</p>
+        <p>3. **일반공급 1순위**: First priority general supply</p>
+        <p>4. **일반공급 2순위**: Second priority general supply</p>
+        <p>5. **당첨자 발표**: Winner announcement</p>
+        <p>6. **계약 체결**: Contract signing period</p>
+        <br>
+        <p>#### Typical Timeline</p>
+        <li>**공고 → 특별공급**: ~1 week</li>
+        <li>**특별공급 → 1순위**: ~1 week</li>
+        <li>**1순위 → 2순위**: ~1 week</li>
+        <li>**접수 → 발표**: ~1 week</li>
+        <li>**발표 → 계약**: ~1-2 weeks</li>
+        <br>
+        <h4>Payment Structure (분양가 구조)</h4>
+        <br>
+        <p>#### Supply Price Components</p>
+        <li>**분양가**: Base supply price</li>
+        <li>**발코니 확장비**: Balcony extension fee</li>
+        <li>**옵션 선택품목**: Optional items</li>
+        <li>**중도금**: Interim payments</li>
+        <li>**잔금**: Final payment</li>
+        <br>
+        <p>#### Government Regulations</p>
+        <li>**분양가상한제**: Supply price ceiling system</li>
+        <li>**투기과열지구**: Speculation overheating areas</li>
+        <li>**조정대상지역**: Adjustment target areas</li>
+        <br>
+        <h4>Subscription Savings (청약통장)</h4>
+        <br>
+        <p>#### Types of Accounts</p>
+        <li>**주택청약종합저축**: Comprehensive housing subscription savings</li>
+        <li>**청약예금**: Subscription deposits</li>
+        <li>**청약부금**: Subscription installments</li>
+        <br>
+        <p>#### Requirements</p>
+        <li>**가입 기간**: Subscription period</li>
+        <li>**납입 횟수**: Number of payments</li>
+        <li>**납입 금액**: Payment amounts</li>
+        <li>**예치 금액**: Deposit requirements</li>
+        <br>
+        <h4>Regulatory Framework</h4>
+        <br>
+        <p>#### Government Agencies</p>
+        <li>**국토교통부**: Ministry of Land, Infrastructure and Transport</li>
+        <li>**한국토지주택공사 (LH)**: Korea Land & Housing Corporation</li>
+        <li>**주택도시보증공사 (HUG)**: Housing & Urban Guarantee Corporation</li>
+        <br>
+        <p>#### Legal Framework</p>
+        <li>**주택법**: Housing Act</li>
+        <li>**주택공급에 관한 규칙**: Housing Supply Rules</li>
+        <li>**공동주택관리법**: Apartment Management Act</li>
+        <br>
+        <h4>Geographic Considerations</h4>
+        <br>
+        <p>#### Seoul Metropolitan Area</p>
+        <li>**수도권**: Seoul Capital Area (Seoul + Gyeonggi + Incheon)</li>
+        <li>**강남 3구**: Gangnam 3 districts (high-demand areas)</li>
+        <li>**서북권/동북권/서남권/동남권**: Seoul region divisions</li>
+        <br>
+        <p>#### Regional Characteristics</p>
+        <li>**신도시**: New towns (planned cities)</li>
+        <li>**재건축/재개발**: Reconstruction/redevelopment areas</li>
+        <li>**도심권**: Urban center areas</li>
+        <li>**강남권**: Gangnam area (premium locations)</li>
+        <br>
+        <h4>Market Dynamics</h4>
+        <br>
+        <p>#### Price Factors</p>
+        <li>**입지**: Location desirability</li>
+        <li>**교통**: Transportation accessibility</li>
+        <li>**교육환경**: Educational facilities</li>
+        <li>**개발호재**: Development prospects</li>
+        <br>
+        <p>#### Competition Levels</p>
+        <li>**경쟁률**: Competition ratio (applicants per unit)</li>
+        <li>**인기 단지**: Popular complexes</li>
+        <li>**미분양**: Unsold units</li>
+        <li>**청약 열기**: Subscription enthusiasm</li>
+        <br>
+        <h4>User Financial Profiling</h4>
+        <br>
+        <p>#### Income Categories</p>
+        <li>**월소득**: Monthly income</li>
+        <li>**연소득**: Annual income</li>
+        <li>**가구소득**: Household income</li>
+        <li>**소득 증빙**: Income verification</li>
+        <br>
+        <p>#### Asset Assessment</p>
+        <li>**금융자산**: Financial assets</li>
+        <li>**부동산 자산**: Real estate assets</li>
+        <li>**부채**: Liabilities</li>
+        <li>**순자산**: Net worth</li>
+        <br>
+        <p>#### Family Status Impact</p>
+        <li>**혼인 여부**: Marriage status</li>
+        <li>**자녀 수**: Number of children</li>
+        <li>**자녀 연령**: Children's ages</li>
+        <li>**부양가족**: Dependents</li>
+        <br>
+        <h4>Technology Integration</h4>
+        <br>
+        <p>#### Government APIs</p>
+        <li>**청약Home**: Official subscription portal</li>
+        <li>**LH 청약센터**: LH subscription center</li>
+        <li>**SH 청약포털**: Seoul Housing (SH) portal</li>
+        <br>
+        <p>#### Data Sources</p>
+        <li>**실거래가**: Actual transaction prices</li>
+        <li>**시세 정보**: Market price information</li>
+        <li>**분양 정보**: Pre-sale information</li>
+        <br>
+        <h4>Business Rules in System</h4>
+        <br>
+        <p>#### Eligibility Calculation</p>
+        <p>```pseudocode</p>
+        <p>function calculateEligibility(user, subscription) {</p>
+        <p>// Check regional requirements</p>
+        <p>if (user.residency.matches(subscription.region)) {</p>
+        <p>priority += LOCAL_AREA_BONUS</p>
+        <p>}</p>
+        <br>
+        <p>// Check special supply qualification</p>
+        <p>if (user.hasChildren >= 3) {</p>
+        <p>specialSupply.add(MULTI_CHILD)</p>
+        <p>}</p>
+        <br>
+        <p>if (user.marriageDuration <= 7 && user.age <= 39) {</p>
+        <p>specialSupply.add(NEWLYWED)</p>
+        <p>}</p>
+        <br>
+        <p>// Check financial requirements</p>
+        <p>if (user.monthlyIncome <= subscription.incomeLimit) {</p>
+        <p>eligible = true</p>
+        <p>}</p>
+        <br>
+        <p>return eligibility_result</p>
+        <p>}</p>
+        <p>```</p>
+        <br>
+        <p>#### Ranking Calculation</p>
+        <p>```pseudocode</p>
+        <p>function calculateRanking(user, subscription) {</p>
+        <p>ranking = SECOND_PRIORITY // default</p>
+        <br>
+        <p>if (user.subscriptionAccount.duration >= MINIMUM_DURATION) {</p>
+        <p>ranking = FIRST_PRIORITY</p>
+        <br>
+        <p>if (user.residency.isLocalArea(subscription.region)) {</p>
+        <p>ranking = FIRST_PRIORITY_LOCAL</p>
+        <p>}</p>
+        <p>}</p>
+        <br>
+        <p>return ranking</p>
+        <p>}</p>
+        <p>```</p>
+        <br>
+        <h4>Common User Scenarios</h4>
+        <br>
+        <p>#### Scenario 1: 신혼부부 (Newlyweds)</p>
+        <li>**나이**: 32세, 30세 부부</li>
+        <li>**결혼**: 2년차</li>
+        <li>**자녀**: 1명</li>
+        <li>**소득**: 월 600만원</li>
+        <li>**거주지**: 경기도 (서울 청약 희망)</li>
+        <li>**청약통장**: 5년 가입</li>
+        <br>
+        <p>**Eligibility**: 신혼부부 특별공급 + 일반공급 1순위 기타지역</p>
+        <br>
+        <p>#### Scenario 2: 생애최초 (First-time Buyer)</p>
+        <li>**나이**: 35세</li>
+        <li>**결혼**: 미혼</li>
+        <li>**무주택**: 10년</li>
+        <li>**소득**: 월 400만원</li>
+        <li>**거주지**: 서울 강남구</li>
+        <li>**청약통장**: 8년 가입</li>
+        <br>
+        <p>**Eligibility**: 생애최초 특별공급 + 일반공급 1순위 해당지역</p>
+        <br>
+        <p>#### Scenario 3: 다자녀가구 (Multi-child Family)</p>
+        <li>**나이**: 38세, 36세 부부</li>
+        <li>**자녀**: 3명</li>
+        <li>**소득**: 월 800만원</li>
+        <li>**거주지**: 서울 송파구</li>
+        <li>**청약통장**: 10년 가입</li>
+        <br>
+        <p>**Eligibility**: 다자녀 특별공급 + 일반공급 1순위 해당지역</p>
+        <br>
+        <h4>System Implementation Considerations</h4>
+        <br>
+        <p>#### Data Validation</p>
+        <li>Verify Korean address format</li>
+        <li>Validate administrative district codes</li>
+        <li>Check date ranges for subscription periods</li>
+        <li>Confirm financial data formats</li>
+        <br>
+        <p>#### User Experience</p>
+        <li>Provide Korean terminology with explanations</li>
+        <li>Guide users through complex eligibility rules</li>
+        <li>Show timeline visualization for subscription process</li>
+        <li>Offer personalized recommendations based on profile</li>
+        <br>
+        <p>#### Integration Points</p>
+        <li>Government API data synchronization</li>
+        <li>Real-time subscription status updates</li>
+        <li>Financial institution loan product matching</li>
+        <li>Geographic proximity calculations</li>
+        <br>
+        <p>---</p>
+        <br>
+        <p>**Business Rules Version**: 1.0</p>
+        <p>**Last Updated**: 2024-06-19</p>
+        <p>**Domain Expert Review**: Required for updates</p>
+    </section>
+    <footer class="footer">
+        <p>Last Updated: 2025-06-19 | <a href="../index.html">문서 홈으로</a></p>
+    </footer>
+</div>
+</body>
+</html>

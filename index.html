@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CheonYakPlanet Backend Documentation</title>
+    <meta name="description" content="한국 부동산 청약 플랫폼 CheonyakPlanet 백엔드 개발 문서">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+        }
+
+        .header .description {
+            font-size: 1rem;
+            color: #5a6c7d;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .navigation {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .nav-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .nav-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-section h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-section .icon {
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #3498db;
+            font-weight: 500;
+            padding: 0.5rem 0.8rem;
+            border-radius: 6px;
+            display: block;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-links a:hover {
+            background: #ecf0f1;
+            border-left-color: #3498db;
+            transform: translateX(5px);
+        }
+
+        .nav-links .description {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-top: 0.2rem;
+            margin-left: 0.8rem;
+        }
+
+        .quick-start {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .quick-start h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quick-start-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .quick-start-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+
+        .quick-start-item h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .quick-start-item a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .footer p {
+            color: #7f8c8d;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer .badges {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .badge {
+            background: #3498db;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .badge.korean {
+            background: #e74c3c;
+        }
+
+        .badge.java {
+            background: #f39c12;
+        }
+
+        .badge.spring {
+            background: #27ae60;
+        }
+
+        .badge.docs {
+            background: #9b59b6;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .navigation {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-start-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .search-container {
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .search-box:focus {
+            border-color: #3498db;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header Section -->
+    <header class="header">
+        <h1>🏠 CheonYakPlanet Backend</h1>
+        <p class="subtitle">한국 부동산 청약 플랫폼 개발 문서</p>
+        <p class="description">
+            CheonYakPlanet은 한국의 복잡한 청약 시스템을 간편하게 만들어주는 종합 부동산 플랫폼입니다.
+            이 문서는 개발팀의 협업과 프로젝트 이해를 돕기 위해 작성되었습니다.
+        </p>
+
+        <div class="search-container">
+            <input type="text" class="search-box" id="searchBox" placeholder="문서 검색... (예: API, 데이터베이스, 청약)">
+            <span class="search-icon">🔍</span>
+        </div>
+    </header>
+
+    <!-- Quick Start Section -->
+    <section class="quick-start">
+        <h2>🚀 빠른 시작</h2>
+        <p>새로운 팀원이나 기여자를 위한 필수 문서들</p>
+
+        <div class="quick-start-grid">
+            <div class="quick-start-item">
+                <h3>📖 프로젝트 이해</h3>
+                <a>CLAUDE.md</a> - 전체 프로젝트 가이드
+            </div>
+            <div class="quick-start-item">
+                <h3>🏛️ 한국 청약 시스템</h3>
+                <a href="docs/korean-business-rules.html">비즈니스 규칙</a> - 청약 도메인 지식
+            </div>
+            <div class="quick-start-item">
+                <h3>🛠️ 개발 환경</h3>
+                <a href="docs/deployment-guide.html">배포 가이드</a> - 환경 설정
+            </div>
+            <div class="quick-start-item">
+                <h3>🤝 기여하기</h3>
+                <a href="docs/contributing.html">기여 가이드</a> - 개발 프로세스
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Navigation -->
+    <nav class="navigation">
+        <!-- Architecture & Design -->
+        <section class="nav-section">
+            <h2><span class="icon">🏗️</span>아키텍처 & 설계</h2>
+            <ul class="nav-links">
+                <li>
+                    <a href="docs/architecture-decisions.html">아키텍처 결정 기록 (ADR)</a>
+                    <div class="description">주요 기술적 결정사항과 그 배경</div>
+                </li>
+                <li>
+                    <a href="docs/database-specs.html">데이터베이스 명세</a>
+                    <div class="description">MySQL 스키마와 테이블 구조</div>
+                </li>
+                <li>
+                    <a href="docs/features.html">기능 명세서</a>
+                    <div class="description">플랫폼의 모든 기능과 사용자 여정</div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- API & Integration -->
+        <section class="nav-section">
+            <h2><span class="icon">🔌</span>API & 연동</h2>
+            <ul class="nav-links">
+                <li>
+                    <a href="docs/api-documentation.html">API 문서</a>
+                    <div class="description">REST API와 WebSocket 명세</div>
+                </li>
+                <li>
+                    <a href="docs/external-apis.html">외부 API 연동</a>
+                    <div class="description">정부 API 및 상용 서비스 통합</div>
+                </li>
+                <li>
+                    <a href="docs/error-codes.html">오류 코드 참조</a>
+                    <div class="description">50+ 오류 코드와 해결 방법</div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Korean Business Domain -->
+        <section class="nav-section">
+            <h2><span class="icon">🇰🇷</span>한국 부동산 도메인</h2>
+            <ul class="nav-links">
+                <li>
+                    <a href="docs/korean-business-rules.html">청약 시스템 규칙</a>
+                    <div class="description">한국 부동산 청약의 복잡한 비즈니스 규칙</div>
+                </li>
+                <li>
+                    <a href="docs/features.html#subscription-system">청약 기능</a>
+                    <div class="description">특별공급, 일반공급, 순위제 시스템</div>
+                </li>
+                <li>
+                    <a href="docs/features.html#location-intelligence">입지 분석</a>
+                    <div class="description">교통, 교육, 생활 인프라 정보</div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Development -->
+        <section class="nav-section">
+            <h2><span class="icon">💻</span>개발 가이드</h2>
+            <ul class="nav-links">
+                <li>
+                    <a href="docs/contributing.html">기여 가이드라인</a>
+                    <div class="description">개발 워크플로우와 코딩 표준</div>
+                </li>
+                <li>
+                    <a href="docs/deployment-guide.html">배포 가이드</a>
+                    <div class="description">개발/운영 환경 설정과 배포</div>
+                </li>
+                <li>
+                    <a>CLAUDE.md</a>
+                    <div class="description">Claude Code를 위한 프로젝트 완전 가이드</div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Testing & Quality -->
+        <section class="nav-section">
+            <h2><span class="icon">🧪</span>테스트 & 품질</h2>
+            <ul class="nav-links">
+                <li>
+                    <a href="docs/TEST_COVERAGE_GUIDE.html">테스트 커버리지 가이드</a>
+                    <div class="description">JaCoCo 리포트와 테스트 전략</div>
+                </li>
+                <li>
+                    <a href="docs/contributing.html#testing-requirements">테스트 요구사항</a>
+                    <div class="description">Given-When-Then 패턴과 한국 도메인 테스트</div>
+                </li>
+                <li>
+                    <a href="./htmlReport/index.html">테스트 커버리지 리포트</a>
+                    <div class="description">JaCoCo 생성 커버리지 보고서</div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Project Management -->
+        <section class="nav-section">
+            <h2><span class="icon">📊</span>프로젝트 관리</h2>
+            <ul class="nav-links">
+                <li>
+                    <a href="docs/version-history.html">버전 히스토리</a>
+                    <div class="description">릴리즈 노트와 개발 로드맵</div>
+                </li>
+                <li>
+                    <a href="docs/README.html">README</a>
+                    <div class="description">프로젝트 개요와 시작 가이드</div>
+                </li>
+                <li>
+                    <a href="docs/NEWS_SETUP.html">뉴스봇 설정</a>
+                    <div class="description">자동 뉴스 수집 시스템 구성</div>
+                </li>
+            </ul>
+        </section>
+    </nav>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><strong>CheonYakPlanet Backend Documentation</strong></p>
+        <p>한국 부동산 청약 플랫폼의 백엔드 시스템 문서입니다.</p>
+        <p>궁금한 점이 있으시면 GitHub Issues를 통해 문의해주세요.</p>
+
+        <div class="badges">
+            <span class="badge korean">한국 도메인</span>
+            <span class="badge java">Java 17</span>
+            <span class="badge spring">Spring Boot</span>
+            <span class="badge docs">Documentation</span>
+        </div>
+
+        <p style="margin-top: 1rem; font-size: 0.9rem;">
+            Last Updated: <span id="lastUpdated">2024-06-19</span> |
+            <a href="docs/README.html" style="color: #3498db;">문서 네비게이션 가이드</a>
+        </p>
+    </footer>
+</div>
+
+<script>
+    // Search functionality
+    document.getElementById('searchBox').addEventListener('input', function (e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const sections = document.querySelectorAll('.nav-section');
+
+        sections.forEach(section => {
+            const links = section.querySelectorAll('.nav-links li');
+            let hasVisibleLinks = false;
+
+            links.forEach(link => {
+                const text = link.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    link.style.display = 'block';
+                    hasVisibleLinks = true;
+
+                    // Highlight search term
+                    if (searchTerm) {
+                        const linkElement = link.querySelector('a');
+                        const originalText = linkElement.textContent;
+                        const highlightedText = originalText.replace(
+                            new RegExp(searchTerm, 'gi'),
+                            match => `<mark style="background: #fff3cd; padding: 0 2px;">${match}</mark>`
+                        );
+                        linkElement.innerHTML = highlightedText;
+                    }
+                } else {
+                    link.style.display = searchTerm ? 'none' : 'block';
+                }
+            });
+
+            // Show/hide sections based on search results
+            if (searchTerm) {
+                section.style.display = hasVisibleLinks ? 'block' : 'none';
+            } else {
+                section.style.display = 'block';
+                // Reset highlighted text
+                section.querySelectorAll('a').forEach(link => {
+                    link.innerHTML = link.textContent;
+                });
+            }
+        });
+    });
+
+    // Set current date
+    document.getElementById('lastUpdated').textContent = new Date().toLocaleDateString('ko-KR');
+
+    // Add smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Add keyboard navigation
+    document.addEventListener('keydown', function (e) {
+        if (e.ctrlKey && e.key === 'k') {
+            e.preventDefault();
+            document.getElementById('searchBox').focus();
+        }
+    });
+
+    // Add analytics for link clicks (placeholder)
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', function () {
+            console.log('Documentation link clicked:', this.href);
+            // Add your analytics tracking here
+        });
+    });
+</script>
+</body>
+</html>
