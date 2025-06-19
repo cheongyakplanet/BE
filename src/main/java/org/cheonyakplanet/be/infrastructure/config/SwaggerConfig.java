@@ -43,8 +43,8 @@ public class SwaggerConfig {
 			.description("청약플래닛 API 문서입니다.")
 			.contact(new Contact()
 				.name("청약플래닛")
-				.email("cheonyakplanet@gmail.com")
-				.url("https://www.cheonyakplanet.site")
+				.email("cheongyakplanet@gmail.com")
+				.url("https://www.cheongyakplanet.site")
 			);
 	}
 
