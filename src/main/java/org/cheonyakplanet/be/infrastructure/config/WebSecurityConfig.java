@@ -80,6 +80,9 @@ public class WebSecurityConfig {
 				"/v3/api-docs/**",
 				"/swagger-ui/**",
 				"/swagger-ui.html",
+				"/swagger-resources/**",
+				"/webjars/**",
+				"/favicon.ico",
 				"/ws/**",
 				"/error"
 			).permitAll()
@@ -101,7 +104,6 @@ public class WebSecurityConfig {
 		);
 		// JWT 예외 처리 필터 추가 (다른 필터보다 먼저 실행되어야 함)
 		http.addFilterBefore(jwtExceptionFilter(), corsFilter().getClass());
-
 		http.addFilterBefore(corsFilter(), JwtAuthenticationFilter.class);
 		http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
 		http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

@@ -20,15 +20,20 @@ public class SwaggerConfig {
 
 	@Bean
 	public OpenAPI customOpenAPI() {
+		Server localServer = new Server()
+			.url("http://localhost:8082")
+			.description("Local Server");
+
 		Server prodServer = new Server()
-			.url("https://run.blu2print.site/api")
+			.url("https://run.blu2print.site:8082")
 			.description("Production Server");
 
 		return new OpenAPI()
 			.openapi("3.0.3")
 			.info(apiInfo())
 			.addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME))
-			.components(securityComponents()).servers(List.of(prodServer));
+			.components(securityComponents())
+			.servers(List.of(localServer, prodServer));
 	}
 
 	private Info apiInfo() {

@@ -62,7 +62,7 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
     // OpenAPI (Swagger)
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
 
     // MySQL
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -85,7 +85,7 @@ dependencies {
 
     implementation 'org.springframework.retry:spring-retry'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
-    
+
     // dotenv support
     implementation 'me.paulschwarz:spring-dotenv:4.0.0'
 
@@ -109,24 +109,24 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
-                // Exclude configuration classes
-                '**/config/**',
-                '**/BeApplication.class',
-                // Exclude DTOs (data transfer objects)
-                '**/dto/**',
-                // Exclude exception classes
-                '**/exception/**',
-                // Exclude entity classes (data classes)
-                '**/entity/**',
-                // Exclude constants and enums
-                '**/UserRoleEnum.class',
-                '**/UserStatusEnum.class',
-                '**/PostCategory.class',
-                '**/ReactionType.class',
-                '**/ErrorCode.class',
-                // Exclude generated code and builders
-                '**/*Builder.class',
-                '**/*$*.class'
+                    // Exclude configuration classes
+                    '**/config/**',
+                    '**/BeApplication.class',
+                    // Exclude DTOs (data transfer objects)
+                    '**/dto/**',
+                    // Exclude exception classes
+                    '**/exception/**',
+                    // Exclude entity classes (data classes)
+                    '**/entity/**',
+                    // Exclude constants and enums
+                    '**/UserRoleEnum.class',
+                    '**/UserStatusEnum.class',
+                    '**/PostCategory.class',
+                    '**/ReactionType.class',
+                    '**/ErrorCode.class',
+                    // Exclude generated code and builders
+                    '**/*Builder.class',
+                    '**/*$*.class'
             ])
         }))
     }
@@ -144,16 +144,16 @@ jacocoTestCoverageVerification {
         rule {
             element = 'CLASS'
             excludes = [
-                '*.config.*',
-                '*.dto.*',
-                '*.entity.*',
-                '*.exception.*',
-                '*.*Application',
-                '*.UserRoleEnum',
-                '*.UserStatusEnum',
-                '*.PostCategory',
-                '*.ReactionType',
-                '*.ErrorCode'
+                    '*.config.*',
+                    '*.dto.*',
+                    '*.entity.*',
+                    '*.exception.*',
+                    '*.*Application',
+                    '*.UserRoleEnum',
+                    '*.UserStatusEnum',
+                    '*.PostCategory',
+                    '*.ReactionType',
+                    '*.ErrorCode'
             ]
             limit {
                 counter = 'LINE'
@@ -164,10 +164,10 @@ jacocoTestCoverageVerification {
         rule {
             element = 'METHOD'
             excludes = [
-                '*.config.*',
-                '*.dto.*',
-                '*.entity.*',
-                '*.exception.*'
+                    '*.config.*',
+                    '*.dto.*',
+                    '*.entity.*',
+                    '*.exception.*'
             ]
             limit {
                 counter = 'BRANCH'
