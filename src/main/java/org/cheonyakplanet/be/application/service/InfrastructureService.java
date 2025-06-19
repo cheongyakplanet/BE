@@ -18,8 +18,8 @@ import org.cheonyakplanet.be.domain.repository.PublicFacilityRepository;
 import org.cheonyakplanet.be.domain.repository.SchoolRepository;
 import org.cheonyakplanet.be.domain.repository.StationRepository;
 import org.cheonyakplanet.be.domain.repository.SubscriptionLocationInfoRepository;
-import org.cheonyakplanet.be.presentation.exception.CustomException;
-import org.cheonyakplanet.be.presentation.exception.ErrorCode;
+import org.cheonyakplanet.be.domain.exception.CustomException;
+import org.cheonyakplanet.be.domain.exception.ErrorCode;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;

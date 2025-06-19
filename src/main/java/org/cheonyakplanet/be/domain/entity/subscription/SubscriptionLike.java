@@ -3,7 +3,7 @@ package org.cheonyakplanet.be.domain.entity.subscription;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionLikeDTO;
+import org.cheonyakplanet.be.application.dto.subscription.SubscriptionLikeDTO;
 import org.cheonyakplanet.be.domain.Stamped;
 
 import jakarta.persistence.Entity;

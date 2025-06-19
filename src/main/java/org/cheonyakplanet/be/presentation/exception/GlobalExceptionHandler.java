@@ -1,6 +1,9 @@
 package org.cheonyakplanet.be.presentation.exception;
 
 import org.cheonyakplanet.be.application.dto.ApiResponse;
+import org.cheonyakplanet.be.domain.exception.CustomException;
+import org.cheonyakplanet.be.domain.exception.ErrorCode;
+import org.cheonyakplanet.be.domain.exception.ErrorData;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;

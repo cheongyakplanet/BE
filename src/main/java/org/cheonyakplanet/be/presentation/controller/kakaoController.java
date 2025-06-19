@@ -4,7 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class kakaoController {
+public class KakaoController {
 
 	@GetMapping("loginpage")
 	public String loginpage() {

@@ -2,8 +2,8 @@ package org.cheonyakplanet.be.infrastructure.security;
 
 import org.cheonyakplanet.be.domain.entity.user.User;
 import org.cheonyakplanet.be.domain.repository.UserRepository;
-import org.cheonyakplanet.be.presentation.exception.CustomException;
-import org.cheonyakplanet.be.presentation.exception.ErrorCode;
+import org.cheonyakplanet.be.domain.exception.CustomException;
+import org.cheonyakplanet.be.domain.exception.ErrorCode;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

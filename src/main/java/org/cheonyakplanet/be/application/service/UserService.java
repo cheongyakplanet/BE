@@ -24,13 +24,14 @@ import org.cheonyakplanet.be.application.dto.user.UserUpdateResponseDTO;
 import org.cheonyakplanet.be.domain.entity.user.User;
 import org.cheonyakplanet.be.domain.entity.user.UserRoleEnum;
 import org.cheonyakplanet.be.domain.entity.user.UserToken;
+import org.cheonyakplanet.be.domain.exception.CustomException;
+import org.cheonyakplanet.be.domain.exception.ErrorCode;
 import org.cheonyakplanet.be.domain.repository.PostRepository;
 import org.cheonyakplanet.be.domain.repository.UserRepository;
 import org.cheonyakplanet.be.domain.repository.UserTokenRepository;
+import org.cheonyakplanet.be.infrastructure.cache.TokenCacheService;
 import org.cheonyakplanet.be.infrastructure.jwt.JwtUtil;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
-import org.cheonyakplanet.be.presentation.exception.CustomException;
-import org.cheonyakplanet.be.presentation.exception.ErrorCode;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -69,7 +70,6 @@ public class UserService {
 	private final EmailService emailService;
 	private final TokenCacheService tokenCacheService;
 	private final PostRepository postRepository;
-
 
 	private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
@@ -316,9 +316,9 @@ public class UserService {
 
 		String newRefreshToken
 			= jwtUtil.createRefreshToken(
-				user.getEmail(),
-				user.getRole()
-			);
+			user.getEmail(),
+			user.getRole()
+		);
 
 		jwtUtil.storeTokens(
 			user.getEmail(),
