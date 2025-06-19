@@ -52,7 +52,7 @@ public class DataController {
 	@GetMapping("/hosueloan")
 	@Operation(summary = "주택담보 대출 상품 불러오기")
 	public ResponseEntity<?> getHouseLoanData() {
-		String result = financeService.updateRenthouse();
+		String result = financeService.updateRentHouseLoan();
 		return ResponseEntity.ok(new ApiResponse<>("success", result));
 	}
 

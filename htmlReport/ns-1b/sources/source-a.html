@@ -1,0 +1,106 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PostRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.cheonyakplanet.be.domain.repository</a>
+</div>
+
+<h1>Coverage Summary for Class: PostRepository (org.cheonyakplanet.be.domain.repository)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">PostRepository</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.cheonyakplanet.be.domain.repository;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;import org.cheonyakplanet.be.domain.entity.comunity.Post;
+&nbsp;import org.springframework.data.domain.Page;
+&nbsp;import org.springframework.data.domain.Pageable;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;import org.springframework.data.jpa.repository.Modifying;
+&nbsp;import org.springframework.data.jpa.repository.Query;
+&nbsp;import org.springframework.data.repository.query.Param;
+&nbsp;import org.springframework.stereotype.Repository;
+&nbsp;
+&nbsp;@Repository
+&nbsp;public interface PostRepository extends JpaRepository&lt;Post, Long&gt; {
+&nbsp;
+&nbsp;	// TODO : 조회에서 빼지 않고 &quot;삭제된 게시글입니다.&quot;로 보이는 것 검토
+&nbsp;	Post findPostByIdAndDeletedAtIsNull(Long id);
+&nbsp;
+&nbsp;	@Query(&quot;select p from Post p order by p.likes desc &quot;)
+&nbsp;	List&lt;Post&gt; findPostsOrderByLikesAndDeletedAtIsNull(Pageable pageable);
+&nbsp;
+&nbsp;	Page&lt;Post&gt; findAllByDeletedAtIsNullAndIsBlindIsFalse(Pageable pageable);
+&nbsp;
+&nbsp;	@Query(&quot;SELECT p FROM Post p WHERE p.username = :username AND p.deletedAt IS NULL AND p.isBlind = false&quot;)
+&nbsp;	Page&lt;Post&gt; findByUsernameAndDeletedAtIsNullAndBlindIsFalse(@Param(&quot;username&quot;) String username, Pageable pageable);
+&nbsp;
+&nbsp;	@Modifying
+&nbsp;	@Query(&quot;UPDATE Post p SET p.username = :newUsername WHERE p.username = :oldUsername&quot;)
+&nbsp;	int updateUsernameForPosts(
+&nbsp;		@Param(&quot;oldUsername&quot;) String oldUsername,
+&nbsp;		@Param(&quot;newUsername&quot;) String newUsername
+&nbsp;	);
+&nbsp;
+&nbsp;	@Query(&quot;SELECT p FROM Post p WHERE p.id = :id AND p.deletedAt IS NULL AND p.isBlind = false&quot;)
+&nbsp;	Optional&lt;Post&gt; findByIdAndDeletedAtIsNullAndBlindIsFalse(Long id);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-11 15:26</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,313 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > FinanceService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.cheonyakplanet.be.application.service</a>
+</div>
+
+<h1>Coverage Summary for Class: FinanceService (org.cheonyakplanet.be.application.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FinanceService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (2/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    2.2%
+  </span>
+  <span class="absValue">
+    (2/92)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.cheonyakplanet.be.application.service;
+&nbsp;
+&nbsp;import java.nio.charset.StandardCharsets;
+&nbsp;import java.util.Collections;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import org.cheonyakplanet.be.domain.entity.finance.HouseLoan;
+&nbsp;import org.cheonyakplanet.be.domain.entity.finance.Mortgage;
+&nbsp;import org.cheonyakplanet.be.domain.repository.HouseLoanRepository;
+&nbsp;import org.cheonyakplanet.be.domain.repository.MortgageRepository;
+&nbsp;import org.springframework.beans.factory.annotation.Value;
+&nbsp;import org.springframework.http.HttpEntity;
+&nbsp;import org.springframework.http.HttpHeaders;
+&nbsp;import org.springframework.http.HttpMethod;
+&nbsp;import org.springframework.http.MediaType;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.web.client.RestTemplate;
+&nbsp;
+&nbsp;import com.fasterxml.jackson.databind.JsonNode;
+&nbsp;import com.fasterxml.jackson.databind.ObjectMapper;
+&nbsp;
+&nbsp;import lombok.RequiredArgsConstructor;
+&nbsp;import lombok.extern.slf4j.Slf4j;
+&nbsp;
+<b class="fc">&nbsp;@Slf4j</b>
+&nbsp;@Service
+<b class="fc">&nbsp;@RequiredArgsConstructor</b>
+&nbsp;public class FinanceService {
+&nbsp;
+&nbsp;	private final RestTemplate restTemplate;
+&nbsp;	private final MortgageRepository mortgageRepository;
+&nbsp;	private final HouseLoanRepository houseLoanRepository;
+&nbsp;
+&nbsp;	@Value(&quot;${fss.api.key}&quot;)
+&nbsp;	private String fssApiKey;
+&nbsp;
+&nbsp;	@Value(&quot;${mortgageLoan.api.url}&quot;)
+&nbsp;	private String mortgageLoanApiUrl;
+&nbsp;
+&nbsp;	@Value(&quot;${rentHouseLoan.api.url}&quot;)
+&nbsp;	private String rentHouseLoanApiUrl;
+&nbsp;
+&nbsp;	public String updateMortgageLoan() {
+&nbsp;		try {
+<b class="nc">&nbsp;			String requestUrl = mortgageLoanApiUrl + &quot;?auth=&quot; + fssApiKey + &quot;&amp;topFinGrpNo=050000&amp;pageNo=1&quot;;</b>
+<b class="nc">&nbsp;			log.info(&quot;requestUrl : {}&quot;, requestUrl);</b>
+&nbsp;
+<b class="nc">&nbsp;			HttpHeaders headers = new HttpHeaders();</b>
+<b class="nc">&nbsp;			headers.setContentType(MediaType.APPLICATION_JSON);</b>
+<b class="nc">&nbsp;			headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));</b>
+<b class="nc">&nbsp;			headers.setAcceptCharset(List.of(StandardCharsets.UTF_8));</b>
+&nbsp;
+<b class="nc">&nbsp;			ResponseEntity&lt;String&gt; response = restTemplate.exchange(requestUrl, HttpMethod.GET,</b>
+&nbsp;				new HttpEntity&lt;&gt;(headers), String.class);
+&nbsp;
+<b class="nc">&nbsp;			String responseBody = response.getBody();</b>
+<b class="nc">&nbsp;			log.info(&quot;API Response: {}&quot;, responseBody);</b>
+&nbsp;
+<b class="nc">&nbsp;			ObjectMapper objectMapper = new ObjectMapper();</b>
+<b class="nc">&nbsp;			JsonNode rootNode = objectMapper.readTree(responseBody);</b>
+<b class="nc">&nbsp;			JsonNode result = rootNode.path(&quot;result&quot;);</b>
+<b class="nc">&nbsp;			JsonNode baseList = result.path(&quot;baseList&quot;);</b>
+<b class="nc">&nbsp;			JsonNode optionList = result.path(&quot;optionList&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;			for (JsonNode baseItem : baseList) {</b>
+&nbsp;
+<b class="nc">&nbsp;				String finPrdtCd = baseItem.path(&quot;fin_prdt_cd&quot;).asText();</b>
+&nbsp;
+<b class="nc">&nbsp;				for (JsonNode optionItem : optionList) {</b>
+<b class="nc">&nbsp;					if (finPrdtCd.equals(optionItem.path(&quot;fin_prdt_cd&quot;).asText())) {</b>
+<b class="nc">&nbsp;						Mortgage mortgage = new Mortgage();</b>
+&nbsp;
+<b class="nc">&nbsp;						mortgage.setFinCoNo(finPrdtCd);</b>
+<b class="nc">&nbsp;						mortgage.setDclsMonth(baseItem.path(&quot;dcls_month&quot;).asText());</b>
+<b class="nc">&nbsp;						mortgage.setFinPrdtCd(baseItem.path(&quot;fin_prdt_cd&quot;).asText());</b>
+<b class="nc">&nbsp;						mortgage.setKorCoNm(baseItem.path(&quot;kor_co_nm&quot;).asText());</b>
+<b class="nc">&nbsp;						mortgage.setFinPrdtNm(baseItem.path(&quot;fin_prdt_nm&quot;).asText());</b>
+<b class="nc">&nbsp;						mortgage.setJoinWay(baseItem.path(&quot;join_way&quot;).asText());</b>
+<b class="nc">&nbsp;						mortgage.setLoanInciExpn(baseItem.path(&quot;loan_inci_expn&quot;).asText());</b>
+<b class="nc">&nbsp;						mortgage.setErlyRpayFee(baseItem.path(&quot;erly_rpay_fee&quot;).asText());</b>
+<b class="nc">&nbsp;						mortgage.setDlyRate(baseItem.path(&quot;dly_rate&quot;).asText());</b>
+<b class="nc">&nbsp;						mortgage.setLoanLmt(baseItem.path(&quot;loan_lmt&quot;).asText());</b>
+<b class="nc">&nbsp;						mortgage.setDclsStrtDay(baseItem.path(&quot;dcls_strt_day&quot;).asText());</b>
+<b class="nc">&nbsp;						mortgage.setDclsEndDay(baseItem.path(&quot;dcls_end_day&quot;).asText());</b>
+<b class="nc">&nbsp;						mortgage.setFinCoSubmDay(baseItem.path(&quot;fin_co_subm_day&quot;).asText());</b>
+&nbsp;
+<b class="nc">&nbsp;						mortgage.setMrtgType(optionItem.path(&quot;mrtg_type&quot;).asText());</b>
+<b class="nc">&nbsp;						mortgage.setMrtgTypeNm(optionItem.path(&quot;mrtg_type_nm&quot;).asText());</b>
+<b class="nc">&nbsp;						mortgage.setRpayType(optionItem.path(&quot;rpay_type&quot;).asText());</b>
+<b class="nc">&nbsp;						mortgage.setRpayTypeNm(optionItem.path(&quot;rpay_type_nm&quot;).asText());</b>
+<b class="nc">&nbsp;						mortgage.setLendRateType(optionItem.path(&quot;lend_rate_type&quot;).asText());</b>
+<b class="nc">&nbsp;						mortgage.setLendRateTypeNm(optionItem.path(&quot;lend_rate_type_nm&quot;).asText());</b>
+<b class="nc">&nbsp;						mortgage.setLendRateMin(optionItem.path(&quot;lend_rate_min&quot;).asDouble());</b>
+<b class="nc">&nbsp;						mortgage.setLendRateMax(optionItem.path(&quot;lend_rate_max&quot;).asDouble());</b>
+<b class="nc">&nbsp;						mortgage.setLendRateAvg(optionItem.path(&quot;lend_rate_avg&quot;).asDouble());</b>
+&nbsp;
+<b class="nc">&nbsp;						mortgageRepository.save(mortgage);</b>
+&nbsp;					}
+&nbsp;				}
+&nbsp;			}
+&nbsp;
+<b class="nc">&nbsp;		} catch (Exception e) {</b>
+<b class="nc">&nbsp;			log.error(&quot;Error updating deposit data&quot;, e);</b>
+<b class="nc">&nbsp;			return &quot;API 데이터 처리 중 오류 발생: &quot; + e.getMessage();</b>
+&nbsp;		}
+<b class="nc">&nbsp;		return &quot;주택담보대출 정보가 업데이트되었습니다&quot;;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	public String updateRentHouseLoan() {
+&nbsp;		try {
+<b class="nc">&nbsp;			String requestUrl = rentHouseLoanApiUrl + &quot;?auth=&quot; + fssApiKey + &quot;&amp;topFinGrpNo=050000&amp;pageNo=1&quot;;</b>
+<b class="nc">&nbsp;			log.info(&quot;requestUrl : {}&quot;, requestUrl);</b>
+&nbsp;
+<b class="nc">&nbsp;			HttpHeaders headers = new HttpHeaders();</b>
+<b class="nc">&nbsp;			headers.setContentType(MediaType.APPLICATION_JSON);</b>
+<b class="nc">&nbsp;			headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));</b>
+<b class="nc">&nbsp;			headers.setAcceptCharset(List.of(StandardCharsets.UTF_8));</b>
+&nbsp;
+<b class="nc">&nbsp;			ResponseEntity&lt;String&gt; response = restTemplate.exchange(requestUrl, HttpMethod.GET,</b>
+&nbsp;				new HttpEntity&lt;&gt;(headers), String.class);
+&nbsp;
+<b class="nc">&nbsp;			String responseBody = response.getBody();</b>
+<b class="nc">&nbsp;			log.info(&quot;API Response: {}&quot;, responseBody);</b>
+&nbsp;
+<b class="nc">&nbsp;			ObjectMapper objectMapper = new ObjectMapper();</b>
+<b class="nc">&nbsp;			JsonNode rootNode = objectMapper.readTree(responseBody);</b>
+<b class="nc">&nbsp;			JsonNode result = rootNode.path(&quot;result&quot;);</b>
+<b class="nc">&nbsp;			JsonNode baseList = result.path(&quot;baseList&quot;);</b>
+<b class="nc">&nbsp;			JsonNode optionList = result.path(&quot;optionList&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;			for (JsonNode baseItem : baseList) {</b>
+<b class="nc">&nbsp;				String finPrdtCd = baseItem.path(&quot;fin_prdt_cd&quot;).asText();</b>
+&nbsp;
+<b class="nc">&nbsp;				for (JsonNode optionItem : optionList) {</b>
+<b class="nc">&nbsp;					if (finPrdtCd.equals(optionItem.path(&quot;fin_prdt_cd&quot;).asText())) {</b>
+<b class="nc">&nbsp;						HouseLoan houseLoan = new HouseLoan();</b>
+&nbsp;
+<b class="nc">&nbsp;						houseLoan.setFinCoNo(finPrdtCd);</b>
+<b class="nc">&nbsp;						houseLoan.setDclsMonth(baseItem.path(&quot;dcls_month&quot;).asText());</b>
+<b class="nc">&nbsp;						houseLoan.setFinPrdtCd(baseItem.path(&quot;fin_prdt_cd&quot;).asText());</b>
+<b class="nc">&nbsp;						houseLoan.setKorCoNm(baseItem.path(&quot;kor_co_nm&quot;).asText());</b>
+<b class="nc">&nbsp;						houseLoan.setFinPrdtNm(baseItem.path(&quot;fin_prdt_nm&quot;).asText());</b>
+<b class="nc">&nbsp;						houseLoan.setJoinWay(baseItem.path(&quot;join_way&quot;).asText());</b>
+<b class="nc">&nbsp;						houseLoan.setLoanInciExpn(baseItem.path(&quot;loan_inci_expn&quot;).asText());</b>
+<b class="nc">&nbsp;						houseLoan.setErlyRpayFee(baseItem.path(&quot;erly_rpay_fee&quot;).asText());</b>
+<b class="nc">&nbsp;						houseLoan.setDlyRate(baseItem.path(&quot;dly_rate&quot;).asText());</b>
+<b class="nc">&nbsp;						houseLoan.setLoanLmt(baseItem.path(&quot;loan_lmt&quot;).asText());</b>
+<b class="nc">&nbsp;						houseLoan.setDclsStrtDay(baseItem.path(&quot;dcls_strt_day&quot;).asText());</b>
+<b class="nc">&nbsp;						houseLoan.setDclsEndDay(baseItem.path(&quot;dcls_end_day&quot;).asText());</b>
+<b class="nc">&nbsp;						houseLoan.setFinCoSubmDay(baseItem.path(&quot;fin_co_subm_day&quot;).asText());</b>
+&nbsp;
+<b class="nc">&nbsp;						houseLoan.setRpayType(optionItem.path(&quot;rpay_type&quot;).asText());</b>
+<b class="nc">&nbsp;						houseLoan.setRpayTypeNm(optionItem.path(&quot;rpay_type_nm&quot;).asText());</b>
+<b class="nc">&nbsp;						houseLoan.setLendRateType(optionItem.path(&quot;lend_rate_type&quot;).asText());</b>
+<b class="nc">&nbsp;						houseLoan.setLendRateTypeNm(optionItem.path(&quot;lend_rate_type_nm&quot;).asText());</b>
+<b class="nc">&nbsp;						houseLoan.setLendRateMin(optionItem.path(&quot;lend_rate_min&quot;).asDouble());</b>
+<b class="nc">&nbsp;						houseLoan.setLendRateMax(optionItem.path(&quot;lend_rate_max&quot;).asDouble());</b>
+<b class="nc">&nbsp;						houseLoan.setLendRateAvg(optionItem.path(&quot;lend_rate_avg&quot;).asDouble());</b>
+&nbsp;
+<b class="nc">&nbsp;						houseLoanRepository.save(houseLoan);</b>
+&nbsp;
+&nbsp;					}
+&nbsp;				}
+&nbsp;			}
+<b class="nc">&nbsp;			return &quot;전세자금대출 정보가 업데이트되었습니다&quot;;</b>
+&nbsp;
+<b class="nc">&nbsp;		} catch (Exception e) {</b>
+<b class="nc">&nbsp;			log.error(&quot;Error updating deposit data&quot;, e);</b>
+<b class="nc">&nbsp;			return &quot;API 데이터 처리 중 오류 발생: &quot; + e.getMessage();</b>
+&nbsp;		}
+&nbsp;	}
+&nbsp;
+&nbsp;	// /** 저장된 주택담보대출 전체를 DTO로 반환 */
+&nbsp;	// public List&lt;MortgageDTO&gt; getMortgageList() {
+&nbsp;	// 	return mortgageRepository.findAll().stream()
+&nbsp;	// 		.map(m -&gt; new MortgageDTO(
+&nbsp;	// 			m.getKorCoNm(),
+&nbsp;	// 			m.getFinPrdtNm(),
+&nbsp;	// 			m.getLendRateType(),
+&nbsp;	// 			m.getLendRateMin(),
+&nbsp;	// 			m.getLendRateMax()))
+&nbsp;	// 		.collect(Collectors.toList());
+&nbsp;	// }
+&nbsp;	//
+&nbsp;	// /** 저장된 전세자금대출 전체를 DTO로 반환 */
+&nbsp;	// public List&lt;HouseLoanDTO&gt; getHouseLoanList() {
+&nbsp;	// 	return houseLoanRepository.findAll().stream()
+&nbsp;	// 		.map(h -&gt; new HouseLoanDTO(
+&nbsp;	// 			h.getKorCoNm(),
+&nbsp;	// 			h.getFinPrdtNm(),
+&nbsp;	// 			h.getLendRateType(),
+&nbsp;	// 			(float) h.getLendRateMin(),
+&nbsp;	// 			(float) h.getLendRateMax()))
+&nbsp;	// 		.collect(Collectors.toList());
+&nbsp;	// }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-11 15:26</div>
+</div>
+</body>
+</html>

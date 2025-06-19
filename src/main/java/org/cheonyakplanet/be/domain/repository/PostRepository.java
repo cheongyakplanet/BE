@@ -35,4 +35,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 	@Query("SELECT p FROM Post p WHERE p.id = :id AND p.deletedAt IS NULL AND p.isBlind = false")
 	Optional<Post> findByIdAndDeletedAtIsNullAndBlindIsFalse(Long id);
+
+	@Query("SELECT p FROM Post p WHERE p.title LIKE %:titleFragment% AND p.username = :username AND p.deletedAt IS NULL")
+	List<Post> findByTitleContainingAndUsernameAndDeletedAtIsNull(@Param("titleFragment") String titleFragment, @Param("username") String username);
 }
