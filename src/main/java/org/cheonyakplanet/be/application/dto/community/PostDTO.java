@@ -5,7 +5,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-import org.cheonyakplanet.be.domain.entity.comunity.PostCategory;
+import org.cheonyakplanet.be.domain.entity.community.PostCategory;
 
 @Builder
 @Getter @Setter

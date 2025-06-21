@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.cheonyakplanet.be.domain.entity.comunity.Post;
-import org.cheonyakplanet.be.domain.entity.comunity.PostReaction;
-import org.cheonyakplanet.be.domain.entity.comunity.ReactionType;
+import org.cheonyakplanet.be.domain.entity.community.Post;
+import org.cheonyakplanet.be.domain.entity.community.PostReaction;
+import org.cheonyakplanet.be.domain.entity.community.ReactionType;
 
 import lombok.Builder;
 import lombok.Getter;

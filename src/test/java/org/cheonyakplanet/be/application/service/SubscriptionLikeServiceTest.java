@@ -19,8 +19,8 @@
 // import org.cheonyakplanet.be.domain.repository.SubscriptionLikeRepository;
 // import org.cheonyakplanet.be.domain.repository.UserRepository;
 // import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
-// import org.cheonyakplanet.be.presentation.exception.CustomException;
-// import org.cheonyakplanet.be.presentation.exception.ErrorCode;
+// import org.cheonyakplanet.be.domain.exception.CustomException;
+// import org.cheonyakplanet.be.domain.exception.ErrorCode;
 // import org.junit.jupiter.api.BeforeEach;
 // import org.junit.jupiter.api.DisplayName;
 // import org.junit.jupiter.api.Test;

@@ -2,7 +2,7 @@ package org.cheonyakplanet.be.application.dto.community;
 
 import java.time.LocalDateTime;
 
-import org.cheonyakplanet.be.domain.entity.comunity.Reply;
+import org.cheonyakplanet.be.domain.entity.community.Reply;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

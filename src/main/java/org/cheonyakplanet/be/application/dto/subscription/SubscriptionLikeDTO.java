@@ -1,31 +1,16 @@
-package org.cheonyakplanet.be.domain.entity.subscription;
+package org.cheonyakplanet.be.application.dto.subscription;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import org.cheonyakplanet.be.application.dto.subscription.SubscriptionLikeDTO;
-import org.cheonyakplanet.be.domain.Stamped;
+import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionLike;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@Entity
-@Table(name = "subscription_like")
-@NoArgsConstructor
-@AllArgsConstructor
-public class SubscriptionLike extends Stamped {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+public class SubscriptionLikeDTO {
 	private Long id;
 
 	private Long subscriptionId;
@@ -40,8 +25,12 @@ public class SubscriptionLike extends Stamped {
 	private LocalDate rceptBgnde; // 청약 접수 시작일
 	private LocalDate rceptEndde;
 
-	public static SubscriptionLikeDTO toDTO(SubscriptionLike entity) {
-		return SubscriptionLikeDTO.builder()
+	private String userEmail;
+
+	private LocalDateTime createdAt;
+
+	public static SubscriptionLikeDTO fromEntity(SubscriptionLike entity) {
+		SubscriptionLikeDTO dto = SubscriptionLikeDTO.builder()
 			.id(entity.getId())
 			.subscriptionId(entity.getSubscriptionId())
 			.houseNm(entity.getHouseNm())
@@ -52,11 +41,10 @@ public class SubscriptionLike extends Stamped {
 			.detail(entity.getDetail())
 			.rceptBgnde(entity.getRceptBgnde())
 			.rceptEndde(entity.getRceptEndde())
+			.userEmail(entity.getCreatedBy())
+			.createdAt(entity.getCreatedAt())
 			.build();
-	}
 
-	public void softdelete(String userEmail) {
-		this.setDeletedBy(userEmail);
-		this.setDeletedAt(LocalDateTime.now());
+		return dto;
 	}
 }

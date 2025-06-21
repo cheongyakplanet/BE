@@ -8,20 +8,20 @@ import org.cheonyakplanet.be.application.dto.community.PostCreateDTO;
 import org.cheonyakplanet.be.application.dto.community.PostDTO;
 import org.cheonyakplanet.be.application.dto.community.PostDetailDTO;
 import org.cheonyakplanet.be.application.dto.community.PostUpdateRequestDTO;
-import org.cheonyakplanet.be.domain.entity.comunity.Comment;
-import org.cheonyakplanet.be.domain.entity.comunity.Post;
-import org.cheonyakplanet.be.domain.entity.comunity.PostCategory;
-import org.cheonyakplanet.be.domain.entity.comunity.PostReaction;
-import org.cheonyakplanet.be.domain.entity.comunity.ReactionType;
-import org.cheonyakplanet.be.domain.entity.comunity.Reply;
+import org.cheonyakplanet.be.domain.entity.community.Comment;
+import org.cheonyakplanet.be.domain.entity.community.Post;
+import org.cheonyakplanet.be.domain.entity.community.PostCategory;
+import org.cheonyakplanet.be.domain.entity.community.PostReaction;
+import org.cheonyakplanet.be.domain.entity.community.ReactionType;
+import org.cheonyakplanet.be.domain.entity.community.Reply;
 import org.cheonyakplanet.be.domain.entity.user.User;
 import org.cheonyakplanet.be.domain.repository.CommentRepository;
 import org.cheonyakplanet.be.domain.repository.PostReactionRepository;
 import org.cheonyakplanet.be.domain.repository.PostRepository;
 import org.cheonyakplanet.be.domain.repository.ReplyRepository;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
-import org.cheonyakplanet.be.presentation.exception.CustomException;
-import org.cheonyakplanet.be.presentation.exception.ErrorCode;
+import org.cheonyakplanet.be.domain.exception.CustomException;
+import org.cheonyakplanet.be.domain.exception.ErrorCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -101,10 +101,13 @@ public class CommunityService {
 			Post post = postRepository.findPostByIdAndDeletedAtIsNull(id);
 			post.countViews();
 
-			String email = userDetails.getUsername();
-			PostReaction myReaction = reactionRepository
-				.findByPostAndEmail(post, email)
-				.orElse(null);
+			PostReaction myReaction = null;
+			if (userDetails != null) {
+				String email = userDetails.getUsername();
+				myReaction = reactionRepository
+					.findByPostAndEmail(post, email)
+					.orElse(null);
+			}
 
 			return PostDetailDTO.fromEntity(post, myReaction);
 
@@ -144,7 +147,15 @@ public class CommunityService {
 	 */
 	@Transactional
 	public void likePost(Long id, UserDetailsImpl userDetails) {
+		if (userDetails == null) {
+			throw new CustomException(ErrorCode.SIGN000, "로그인이 필요한 서비스입니다.");
+		}
+
 		Post post = postRepository.findPostByIdAndDeletedAtIsNull(id);
+		if (post == null) {
+			throw new CustomException(ErrorCode.COMU001, "해당 게시글이 존재하지 않습니다.");
+		}
+
 		String email = userDetails.getUsername();
 		Optional<PostReaction> existingReaction = reactionRepository.findByPostAndEmail(post, email);
 
@@ -164,8 +175,17 @@ public class CommunityService {
 		postRepository.save(post);
 	}
 
+	@Transactional
 	public void dislikePost(Long id, UserDetailsImpl userDetails) {
+		if (userDetails == null) {
+			throw new CustomException(ErrorCode.SIGN000, "로그인이 필요한 서비스입니다.");
+		}
+
 		Post post = postRepository.findPostByIdAndDeletedAtIsNull(id);
+		if (post == null) {
+			throw new CustomException(ErrorCode.COMU001, "해당 게시글이 존재하지 않습니다.");
+		}
+
 		String email = userDetails.getUsername();
 		Optional<PostReaction> existingReaction = reactionRepository.findByPostAndEmail(post, email);
 
