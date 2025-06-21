@@ -101,10 +101,13 @@ public class CommunityService {
 			Post post = postRepository.findPostByIdAndDeletedAtIsNull(id);
 			post.countViews();
 
-			String email = userDetails.getUsername();
-			PostReaction myReaction = reactionRepository
-				.findByPostAndEmail(post, email)
-				.orElse(null);
+			PostReaction myReaction = null;
+			if (userDetails != null) {
+				String email = userDetails.getUsername();
+				myReaction = reactionRepository
+					.findByPostAndEmail(post, email)
+					.orElse(null);
+			}
 
 			return PostDetailDTO.fromEntity(post, myReaction);
 
@@ -144,7 +147,15 @@ public class CommunityService {
 	 */
 	@Transactional
 	public void likePost(Long id, UserDetailsImpl userDetails) {
+		if (userDetails == null) {
+			throw new CustomException(ErrorCode.SIGN000, "로그인이 필요한 서비스입니다.");
+		}
+
 		Post post = postRepository.findPostByIdAndDeletedAtIsNull(id);
+		if (post == null) {
+			throw new CustomException(ErrorCode.COMU001, "해당 게시글이 존재하지 않습니다.");
+		}
+
 		String email = userDetails.getUsername();
 		Optional<PostReaction> existingReaction = reactionRepository.findByPostAndEmail(post, email);
 
@@ -164,8 +175,17 @@ public class CommunityService {
 		postRepository.save(post);
 	}
 
+	@Transactional
 	public void dislikePost(Long id, UserDetailsImpl userDetails) {
+		if (userDetails == null) {
+			throw new CustomException(ErrorCode.SIGN000, "로그인이 필요한 서비스입니다.");
+		}
+
 		Post post = postRepository.findPostByIdAndDeletedAtIsNull(id);
+		if (post == null) {
+			throw new CustomException(ErrorCode.COMU001, "해당 게시글이 존재하지 않습니다.");
+		}
+
 		String email = userDetails.getUsername();
 		Optional<PostReaction> existingReaction = reactionRepository.findByPostAndEmail(post, email);
 
