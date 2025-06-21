@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.cheonyakplanet.be.domain.entity.comunity.Comment;
+import org.cheonyakplanet.be.domain.entity.community.Comment;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

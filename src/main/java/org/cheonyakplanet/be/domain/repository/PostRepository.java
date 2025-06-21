@@ -3,7 +3,7 @@ package org.cheonyakplanet.be.domain.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.cheonyakplanet.be.domain.entity.comunity.Post;
+import org.cheonyakplanet.be.domain.entity.community.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

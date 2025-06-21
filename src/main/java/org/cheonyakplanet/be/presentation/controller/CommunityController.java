@@ -1,5 +1,7 @@
 package org.cheonyakplanet.be.presentation.controller;
 
+import java.util.Optional;
+
 import org.cheonyakplanet.be.application.dto.ApiResponse;
 import org.cheonyakplanet.be.application.dto.community.CommentDTO;
 import org.cheonyakplanet.be.application.dto.community.PostCreateDTO;
@@ -52,7 +54,8 @@ public class CommunityController {
 	@GetMapping("/post/{id}")
 	@Operation(summary = "게시글 한 건 조회")
 	public ResponseEntity<?> getPost(@PathVariable("id") Long id,
-		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		@AuthenticationPrincipal Optional<UserDetailsImpl> optionalUserDetails) {
+		UserDetailsImpl userDetails = (optionalUserDetails != null) ? optionalUserDetails.orElse(null) : null;
 		PostDetailDTO result = communityService.getPostById(id, userDetails);
 		return ResponseEntity.ok(new ApiResponse("success", result));
 	}
@@ -68,7 +71,8 @@ public class CommunityController {
 	@PostMapping("/post/like/{id}")
 	@Operation(summary = "게시글 좋아요")
 	public ResponseEntity<?> likePost(@PathVariable("id") Long id,
-		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		@AuthenticationPrincipal Optional<UserDetailsImpl> optionalUserDetails) {
+		UserDetailsImpl userDetails = (optionalUserDetails != null) ? optionalUserDetails.orElse(null) : null;
 		communityService.likePost(id, userDetails);
 		return ResponseEntity.ok(new ApiResponse<>("success", "좋아요 +1"));
 	}
@@ -86,7 +90,8 @@ public class CommunityController {
 	@PostMapping("/post/dislike/{id}")
 	@Operation(summary = "게시글 싫어요")
 	public ResponseEntity<?> dislikePost(@PathVariable("id") Long id,
-		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		@AuthenticationPrincipal Optional<UserDetailsImpl> optionalUserDetails) {
+		UserDetailsImpl userDetails = (optionalUserDetails != null) ? optionalUserDetails.orElse(null) : null;
 		communityService.dislikePost(id, userDetails);
 		return ResponseEntity.ok(new ApiResponse<>("success", "싫어요 +1"));
 	}

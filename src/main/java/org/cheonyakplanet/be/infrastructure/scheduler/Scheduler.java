@@ -23,22 +23,21 @@ public class Scheduler {
 	private final SubscriptionService subscriptionService;
 	private final NewsService newsService;
 
-	@Scheduled(cron = "0 0 3 ? * MON", zone = "Asia/Seoul")
+	@Scheduled(cron = "0 0 1 ? * *", zone = "Asia/Seoul")
 	public void weeklySubscriptionAPTUpdate() {
 		log.info("Weekly APT subscription update 시작");
 		subscriptionService.updateSubAPT();
 		log.info("Weekly APT subscription update 완료");
 	}
 
-	@Scheduled(cron = "0 15 3 ? * MON", zone = "Asia/Seoul")
+	@Scheduled(cron = "0 15 1 ? * *", zone = "Asia/Seoul")
 	public void weeklySubscriptionCoordinatesUpdate() {
 		log.info("Weekly Subscription Coordinates update 시작");
 		subscriptionService.updateAllSubscriptionCoordinates();
 		log.info("Weekly Subscription Coordinates update 완료");
 	}
 
-	@Scheduled(cron = "0 30 3 ? * MON", zone = "Asia/Seoul") // 매주 월요일 03:30
-	//@Scheduled(cron = "0 */5 * * * *", zone = "Asia/Seoul")
+	@Scheduled(cron = "0 30 1 ? * *", zone = "Asia/Seoul")
 	public void runPythonSupplyScript() {
 		log.info("Python 스크립트 실행 시작");
 		try {
@@ -77,7 +76,7 @@ public class Scheduler {
 		log.info("APT 실거래가 갱신 완료");
 	}
 
-	@Scheduled(cron = "0 0 1 * * ?", zone = "Asia/Seoul") // 매일 오전 9시
+	@Scheduled(cron = "0 30 0 * * ?", zone = "Asia/Seoul")
 	public void dailyNewsUpdate() {
 		log.info("일일 부동산 뉴스 요약 생성 시작");
 		try {

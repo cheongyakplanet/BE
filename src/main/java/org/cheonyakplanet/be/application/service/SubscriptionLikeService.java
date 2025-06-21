@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.cheonyakplanet.be.application.dto.subscriprtion.SubscriptionLikeDTO;
+import org.cheonyakplanet.be.application.dto.subscription.SubscriptionLikeDTO;
 import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionInfo;
 import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionLike;
+import org.cheonyakplanet.be.domain.exception.CustomException;
+import org.cheonyakplanet.be.domain.exception.ErrorCode;
 import org.cheonyakplanet.be.domain.repository.SubscriptionInfoRepository;
 import org.cheonyakplanet.be.domain.repository.SubscriptionLikeRepository;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
-import org.cheonyakplanet.be.presentation.exception.CustomException;
-import org.cheonyakplanet.be.presentation.exception.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
