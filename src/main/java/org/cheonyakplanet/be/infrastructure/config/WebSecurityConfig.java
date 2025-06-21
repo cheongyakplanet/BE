@@ -93,7 +93,7 @@ public class WebSecurityConfig {
 			// 3) 회원가입/로그인 등 공개 API
 			.requestMatchers("/api/member/**",
 				"/api/main/**",
-				"/api/community/post/",
+				"/api/community/post/", "/api/community/post/{id}",
 				"/api/info/subscription/**", "api/subscription/detail/view",
 				"loginpage").permitAll()
 
