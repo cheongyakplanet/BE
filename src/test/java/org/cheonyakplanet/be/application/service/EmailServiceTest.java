@@ -13,6 +13,7 @@ import org.cheonyakplanet.be.domain.entity.user.UserRoleEnum;
 import org.cheonyakplanet.be.domain.repository.UserRepository;
 import org.cheonyakplanet.be.domain.exception.CustomException;
 import org.cheonyakplanet.be.domain.exception.ErrorCode;
+import org.cheonyakplanet.be.infrastructure.cache.TokenCacheService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
