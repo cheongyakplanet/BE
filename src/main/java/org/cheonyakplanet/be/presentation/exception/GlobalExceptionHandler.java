@@ -5,6 +5,7 @@ import org.cheonyakplanet.be.domain.exception.CustomException;
 import org.cheonyakplanet.be.domain.exception.ErrorCode;
 import org.cheonyakplanet.be.domain.exception.ErrorData;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -20,6 +21,23 @@ public class GlobalExceptionHandler {
                 errorCode.getCode(),
                 errorCode.getMessage(),
                 e.getDetails()
+        );
+
+        ApiResponse<ErrorData> response = new ApiResponse<>(
+                "fail", errorData
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiResponse<ErrorData>> handleAccessDeniedException(AccessDeniedException e) {
+        ErrorCode errorCode = ErrorCode.AUTH007;
+
+        ErrorData errorData = new ErrorData(
+                errorCode.getCode(),
+                errorCode.getMessage(),
+                "관리자 권한이 필요한 API입니다"
         );
 
         ApiResponse<ErrorData> response = new ApiResponse<>(

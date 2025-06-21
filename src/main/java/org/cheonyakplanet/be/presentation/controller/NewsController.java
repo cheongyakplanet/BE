@@ -4,6 +4,7 @@ import org.cheonyakplanet.be.application.dto.ApiResponse;
 import org.cheonyakplanet.be.application.service.NewsService;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ public class NewsController extends BaseController {
 
 	@PostMapping("/crawl")
 	@Operation(summary = "수동 뉴스 크롤링", description = "관리자용 수동 뉴스 크롤링 및 포스트 생성")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse<String>> manualNewsCrawl(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		try {
 			log.info("수동 뉴스 크롤링 요청 - 사용자: {}", userDetails.getUser().getEmail());
