@@ -93,11 +93,11 @@ public class WebSecurityConfig {
 			// 3) 회원가입/로그인 등 공개 API
 			.requestMatchers("/api/member/**",
 				"/api/main/**",
-				"/api/community/post/", "/api/community/post/{id}",
 				"/api/info/subscription/**", "api/subscription/detail/view",
 				"loginpage").permitAll()
 
 			.requestMatchers(HttpMethod.GET, "api/community/posts").permitAll()
+			.requestMatchers(HttpMethod.GET, "/api/community/post/**").permitAll()
 
 			// 4) 나머지는 인증필요
 			.anyRequest().authenticated()
