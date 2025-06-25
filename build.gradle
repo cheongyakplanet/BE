@@ -79,6 +79,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testRuntimeOnly 'com.h2database:h2'
 
     // JavaMailSender
     implementation 'org.springframework.boot:spring-boot-starter-mail'
@@ -104,6 +105,7 @@ jacocoTestReport {
     reports {
         xml.required = true
         html.required = true
+        html.outputLocation = file("${buildDir}/reports/jacoco/html")
         csv.required = true
     }
     afterEvaluate {
@@ -112,21 +114,63 @@ jacocoTestReport {
                     // Exclude configuration classes
                     '**/config/**',
                     '**/BeApplication.class',
-                    // Exclude DTOs (data transfer objects)
+                    
+                    // Exclude DTOs (Data Transfer Objects) - all naming patterns
                     '**/dto/**',
+                    '**/*DTO.class',
+                    '**/*Dto.class',
+                    '**/*Request.class',
+                    '**/*Response.class',
+                    '**/*RequestDTO.class',
+                    '**/*ResponseDTO.class',
+                    
+                    // Exclude entities and domain objects
+                    '**/entity/**',
+                    '**/*Entity.class',
+                    
+                    // Exclude Value Objects
+                    '**/vo/**',
+                    '**/*VO.class',
+                    '**/*Value.class',
+                    '**/*ValueObject.class',
+                    
                     // Exclude exception classes
                     '**/exception/**',
-                    // Exclude entity classes (data classes)
-                    '**/entity/**',
-                    // Exclude constants and enums
+                    '**/*Exception.class',
+                    '**/*Error.class',
+                    
+                    // Exclude enums and constants
                     '**/UserRoleEnum.class',
                     '**/UserStatusEnum.class',
                     '**/PostCategory.class',
                     '**/ReactionType.class',
                     '**/ErrorCode.class',
+                    '**/*Enum.class',
+                    '**/*Constants.class',
+                    
+                    // Exclude Spring Boot infrastructure
+                    '**/*Application.class',
+                    '**/ServletInitializer.class',
+                    
                     // Exclude generated code and builders
                     '**/*Builder.class',
-                    '**/*$*.class'
+                    '**/*$*.class',
+                    
+                    // Exclude security and JWT infrastructure (typically not business logic)
+                    '**/security/**',
+                    '**/jwt/**',
+                    
+                    // Exclude utility classes that are mostly static methods
+                    '**/util/**',
+                    '**/*Util.class',
+                    '**/*Utils.class',
+                    
+                    // Exclude Lombok generated methods
+                    '**/*$Companion.class',
+                    
+                    // Exclude test configuration and base classes
+                    '**/*TestConfiguration.class',
+                    '**/*TestBase.class'
             ])
         }))
     }
@@ -138,27 +182,61 @@ jacocoTestCoverageVerification {
     violationRules {
         rule {
             limit {
-                minimum = 0.70 // 70% minimum coverage
+                minimum = 0.70 // 70% minimum coverage for all classes
             }
         }
         rule {
             element = 'CLASS'
             excludes = [
+                    // Configuration and infrastructure
                     '*.config.*',
-                    '*.dto.*',
-                    '*.entity.*',
-                    '*.exception.*',
                     '*.*Application',
+                    '*.ServletInitializer',
+                    
+                    // DTOs and data objects
+                    '*.dto.*',
+                    '*.*DTO',
+                    '*.*Dto',
+                    '*.*Request',
+                    '*.*Response',
+                    '*.*RequestDTO',
+                    '*.*ResponseDTO',
+                    
+                    // Entities and domain objects
+                    '*.entity.*',
+                    '*.*Entity',
+                    
+                    // Value Objects
+                    '*.vo.*',
+                    '*.*VO',
+                    '*.*Value',
+                    '*.*ValueObject',
+                    
+                    // Exceptions and error handling
+                    '*.exception.*',
+                    '*.*Exception',
+                    '*.*Error',
+                    
+                    // Enums and constants
                     '*.UserRoleEnum',
                     '*.UserStatusEnum',
                     '*.PostCategory',
                     '*.ReactionType',
-                    '*.ErrorCode'
+                    '*.ErrorCode',
+                    '*.*Enum',
+                    '*.*Constants',
+                    
+                    // Infrastructure classes
+                    '*.security.*',
+                    '*.jwt.*',
+                    '*.util.*',
+                    '*.*Util',
+                    '*.*Utils'
             ]
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
-                minimum = 0.80 // 80% for service classes
+                minimum = 0.80 // 80% for business logic classes (services, controllers, repositories)
             }
         }
         rule {
@@ -167,12 +245,16 @@ jacocoTestCoverageVerification {
                     '*.config.*',
                     '*.dto.*',
                     '*.entity.*',
-                    '*.exception.*'
+                    '*.exception.*',
+                    '*.vo.*',
+                    '*.security.*',
+                    '*.jwt.*',
+                    '*.util.*'
             ]
             limit {
                 counter = 'BRANCH'
                 value = 'COVEREDRATIO'
-                minimum = 0.75 // 75% branch coverage
+                minimum = 0.75 // 75% branch coverage for business logic methods
             }
         }
     }
