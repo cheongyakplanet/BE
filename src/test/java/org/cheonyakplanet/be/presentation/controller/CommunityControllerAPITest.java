@@ -14,7 +14,7 @@ import org.cheonyakplanet.be.application.dto.community.CommentDTO;
 import org.cheonyakplanet.be.application.dto.community.PostCreateDTO;
 import org.cheonyakplanet.be.application.dto.community.PostDTO;
 import org.cheonyakplanet.be.application.service.CommunityService;
-import org.cheonyakplanet.be.domain.entity.comunity.Post;
+import org.cheonyakplanet.be.domain.entity.community.Post;
 import org.cheonyakplanet.be.domain.entity.user.User;
 import org.cheonyakplanet.be.domain.entity.user.UserRoleEnum;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;

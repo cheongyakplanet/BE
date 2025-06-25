@@ -13,7 +13,7 @@ import java.util.List;
 
 import org.cheonyakplanet.be.application.service.CommunityService;
 import org.cheonyakplanet.be.application.service.SubscriptionService;
-import org.cheonyakplanet.be.domain.entity.comunity.Post;
+import org.cheonyakplanet.be.domain.entity.community.Post;
 import org.cheonyakplanet.be.domain.entity.user.User;
 import org.cheonyakplanet.be.domain.entity.user.UserRoleEnum;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
