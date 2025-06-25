@@ -70,6 +70,7 @@ public class User extends Stamped {
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
+	@Builder.Default
 	private UserStatusEnum status = UserStatusEnum.ACTIVE;
 
 	public User(String email, String password, UserRoleEnum role, String username) {
