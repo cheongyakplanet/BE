@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.cheonyakplanet.be.application.service.CommunityService;
 import org.cheonyakplanet.be.application.service.SubscriptionService;
 import org.cheonyakplanet.be.domain.entity.community.Post;
@@ -93,7 +95,7 @@ class HomeControllerAPITest {
 			"서울특별시 강북구",
 			"서울시 용산구"
 		);
-		given(subscriptionService.getInterestLocalsByEmail(any())).willReturn(interestLocals);
+		given(subscriptionService.getInterestLocalsByEmail(any(HttpServletRequest.class))).willReturn(interestLocals);
 
 		// when & then
 		mockMvc.perform(get("/api/main/my-locations")
@@ -105,7 +107,7 @@ class HomeControllerAPITest {
 			.andExpect(jsonPath("$.data[0]").value("서울특별시 동대문구"))
 			.andExpect(jsonPath("$.data[4]").value("서울시 용산구"));
 
-		verify(subscriptionService).getInterestLocalsByEmail(any());
+		verify(subscriptionService).getInterestLocalsByEmail(any(HttpServletRequest.class));
 	}
 
 	// @Test

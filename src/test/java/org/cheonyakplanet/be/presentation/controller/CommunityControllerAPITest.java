@@ -209,7 +209,7 @@ class CommunityControllerAPITest {
 	@DisplayName("게시글 좋아요 테스트")
 	void likePostTest() throws Exception {
 		// given
-		doNothing().when(communityService).likePost(anyLong(), any(UserDetailsImpl.class));
+		doNothing().when(communityService).likePost(anyLong(), any());
 
 		// when & then
 		mockMvc.perform(post("/api/community/post/like/{id}", 1L)
@@ -220,14 +220,14 @@ class CommunityControllerAPITest {
 			.andExpect(jsonPath("$.status").value("success"))
 			.andExpect(jsonPath("$.data").value("좋아요 +1"));
 
-		verify(communityService).likePost(anyLong(), any(UserDetailsImpl.class));
+		verify(communityService).likePost(anyLong(), any());
 	}
 
 	@Test
 	@DisplayName("게시글 싫어요 테스트")
 	void dislikePostTest() throws Exception {
 		// given
-		doNothing().when(communityService).dislikePost(anyLong(), any(UserDetailsImpl.class));
+		doNothing().when(communityService).dislikePost(anyLong(), any());
 
 		// when & then
 		mockMvc.perform(post("/api/community/post/dislike/{id}", 1L)
@@ -238,7 +238,7 @@ class CommunityControllerAPITest {
 			.andExpect(jsonPath("$.status").value("success"))
 			.andExpect(jsonPath("$.data").value("싫어요 +1"));
 
-		verify(communityService).dislikePost(anyLong(), any(UserDetailsImpl.class));
+		verify(communityService).dislikePost(anyLong(), any());
 	}
 
 	@Test
