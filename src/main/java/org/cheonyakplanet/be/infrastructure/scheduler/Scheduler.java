@@ -63,8 +63,9 @@ public class Scheduler {
 
 	@Scheduled(cron = "0 0 2 L * ?", zone = "Asia/Seoul")
 	public void monthlyRealPriceUpdate() {
-		String callDate = java.time.format.DateTimeFormatter.ofPattern("yyyyMM").
-			format(java.time.LocalDate.now().minusMonths(1));
+		String callDate = java.time.YearMonth.now()
+			.minusMonths(1)
+			.format(java.time.format.DateTimeFormatter.ofPattern("yyyyMM"));
 		log.info("RealEstate batch start for {}", callDate);
 		infoService.collectRealPrice(callDate);
 		log.info("APT 실거래가 갱신 완료");

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep:*)",
+      "Bash(export:*)",
+      "Bash(export PATH=$JAVA_HOME/bin:$PATH)",
+      "Bash(./gradlew test:*)",
+      "Bash(./gradlew build:*)",
+      "Bash(./gradlew:*)",
+      "Bash(rg:*)",
+      "Bash(sed:*)"
+    ],
+    "deny": []
+  }
+}

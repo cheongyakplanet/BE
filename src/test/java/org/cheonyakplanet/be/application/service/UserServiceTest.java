@@ -78,11 +78,11 @@ class UserServiceTest {
 		willDoNothing().given(jwtUtil).storeTokens(email, accessToken, refreshToken);
 
 		// When: 로그인 메서드 호출
-		ApiResponse response = (ApiResponse)userService.login(requestDTO);
+		Object response = userService.login(requestDTO);
 
-		// Then: 반환된 ApiResponse에 accessToken, refreshToken이 포함되어 있음
+		// Then: 반환된 Map에 accessToken, refreshToken이 포함되어 있음
 		assertNotNull(response);
-		Map<String, Object> data = (Map<String, Object>)response.getData();
+		Map<String, Object> data = (Map<String, Object>)response;
 		assertEquals(accessToken, data.get("accessToken"));
 		assertEquals(refreshToken, data.get("refreshToken"));
 
@@ -124,12 +124,11 @@ class UserServiceTest {
 		given(userTokenRepository.findByAccessToken(bearerToken)).willReturn(Optional.of(userToken));
 
 		// When: 로그아웃 메서드 호출
-		ApiResponse response = (ApiResponse)userService.logout(request);
+		Object response = userService.logout(request);
 
 		// Then: 로그아웃 성공 응답 및 토큰 블랙리스트 처리 확인
 		assertNotNull(response);
-		assertEquals("success", response.getStatus());
-		assertEquals("로그아웃 성공", response.getData());
+		assertEquals("로그아웃 성공", response);
 
 		then(userTokenRepository).should().findByAccessToken(bearerToken);
 		then(userTokenRepository).should().save(userToken);
@@ -146,13 +145,13 @@ class UserServiceTest {
 		given(jwtUtil.getTokenFromRequest(request)).willReturn(tokenValue);
 		given(userTokenRepository.findByAccessToken(bearerToken)).willReturn(Optional.empty());
 
-		// When: 로그아웃 메서드 호출
-		ApiResponse response = (ApiResponse)userService.logout(request);
-
-		// Then: 실패 응답 반환
-		assertNotNull(response);
-		assertEquals("fail", response.getStatus());
-		assertEquals("토큰 정보가 존재하지 않습니다.", response.getData());
+		// When & Then: 로그아웃 메서드 호출 시 CustomException 발생
+		CustomException exception = assertThrows(CustomException.class, () -> {
+			userService.logout(request);
+		});
+		
+		assertEquals(ErrorCode.AUTH002, exception.getErrorCode());
+		assertEquals("만료된 토큰", exception.getMessage());
 
 		then(userTokenRepository).should().findByAccessToken(bearerToken);
 	}

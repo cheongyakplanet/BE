@@ -24,495 +24,471 @@
         <h3>🏗️ 데이터베이스 아키텍처</h3>
         <br>
         <h4>기본 패턴</h4>
-        <li>**Auditing 추적**: 모든 테이블은 `created_at`, `created_by`, `updated_at`, `updated_by`를 상속합니다.</li>
-        <li>**소프트 삭제**: 데이터 보존을 위해 `deleted_at`, `deleted_by` 필드를 사용합니다.</li>
-        <li>**카탈로그 분리**: 모든 테이블은 `catalog = "planet"`을 사용합니다.</li>
-        <li>**기본 키**: 대부분의 엔티티는 자동 증가하는 `BIGINT`를 사용하며, 참조 데이터는 자연 키를 사용합니다.</li>
+        <ul>
+            <li><strong>Auditing 추적</strong>: 모든 테이블은 <code>created_at</code>, <code>created_by</code>, <code>updated_at</code>, <code>updated_by</code>를 상속합니다.</li>
+            <li><strong>소프트 삭제</strong>: 데이터 보존을 위해 <code>deleted_at</code>, <code>deleted_by</code> 필드를 사용합니다.</li>
+            <li><strong>카탈로그 분리</strong>: 모든 테이블은 <code>catalog = "planet"</code>을 사용합니다.</li>
+            <li><strong>기본 키</strong>: 대부분의 엔티티는 자동 증가하는 <code>BIGINT</code>를 사용하며, 참조 데이터는 자연 키를 사용합니다.</li>
+        </ul>
         <br>
         <h3>📋 테이블 명세</h3>
         <br>
         <h4>👤 사용자 관리</h4>
         <br>
-        <p>#### `user_info`</p>
-        <p>```sql</p>
-        <p>CREATE TABLE planet.user_info (</p>
-        <p>id BIGINT AUTO_INCREMENT PRIMARY KEY,</p>
-        <p>email VARCHAR(255) NOT NULL UNIQUE,</p>
-        <p>password VARCHAR(255) NOT NULL,</p>
-        <p>username VARCHAR(100) NOT NULL,</p>
-        <p>phone_number VARCHAR(20),</p>
-        <p>role ENUM('USER', 'ADMIN') DEFAULT 'USER',</p>
-        <p>status ENUM('ACTIVE', 'WITHDRAWN') DEFAULT 'ACTIVE',</p>
+        <h4><code>user_info</code></h4>
+        <pre><code class="language-sql">CREATE TABLE planet.user_info (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    username VARCHAR(100) NOT NULL,
+    phone_number VARCHAR(20),
+    role ENUM('USER', 'ADMIN') DEFAULT 'USER',
+    status ENUM('ACTIVE', 'WITHDRAWN') DEFAULT 'ACTIVE',
+
+    -- 청약 자격을 위한 재정 프로필
+    property DOUBLE COMMENT '부동산 자산 (만원)',
+    income INTEGER COMMENT '월소득 (만원)',
+    is_married BOOLEAN COMMENT '결혼 여부',
+    num_child INTEGER COMMENT '자녀 수',
+    num_house INTEGER COMMENT '주택 보유 수',
+
+    -- 관심 지역 (최대 5개)
+    interest_local_1 VARCHAR(100) COMMENT '관심지역 1',
+    interest_local_2 VARCHAR(100) COMMENT '관심지역 2',
+    interest_local_3 VARCHAR(100) COMMENT '관심지역 3',
+    interest_local_4 VARCHAR(100) COMMENT '관심지역 4',
+    interest_local_5 VARCHAR(100) COMMENT '관심지역 5',
+
+    -- Auditing 필드
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_by VARCHAR(255),
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by VARCHAR(255),
+    deleted_at DATETIME,
+    deleted_by VARCHAR(255)
+);</code></pre>
         <br>
-        <p>-- 청약 자격을 위한 재정 프로필</p>
-        <p>property DOUBLE COMMENT '부동산 자산 (만원)',</p>
-        <p>income INTEGER COMMENT '월소득 (만원)',</p>
-        <p>is_married BOOLEAN COMMENT '결혼 여부',</p>
-        <p>num_child INTEGER COMMENT '자녀 수',</p>
-        <p>num_house INTEGER COMMENT '주택 보유 수',</p>
+        <p><strong>인덱스:</strong></p>
+        <ul>
+            <li><code>idx_email</code> (이메일)</li>
+            <li><code>idx_status_deleted</code> (상태, deleted_at)</li>
+            <li><code>idx_interest_locations</code> (interest_local_1, interest_local_2, interest_local_3)</li>
+        </ul>
         <br>
-        <p>-- 관심 지역 (최대 5개)</p>
-        <p>interest_local_1 VARCHAR(100) COMMENT '관심지역 1',</p>
-        <p>interest_local_2 VARCHAR(100) COMMENT '관심지역 2',</p>
-        <p>interest_local_3 VARCHAR(100) COMMENT '관심지역 3',</p>
-        <p>interest_local_4 VARCHAR(100) COMMENT '관심지역 4',</p>
-        <p>interest_local_5 VARCHAR(100) COMMENT '관심지역 5',</p>
+        <h4><code>user_token</code></h4>
+        <pre><code class="language-sql">CREATE TABLE planet.user_token (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    access_token TEXT NOT NULL,
+    refresh_token TEXT NOT NULL,
+    access_token_expiry DATETIME NOT NULL,
+    refresh_token_expiry DATETIME NOT NULL,
+    blacklisted BOOLEAN DEFAULT FALSE,
+
+    -- Auditing 필드
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);</code></pre>
         <br>
-        <p>-- Auditing 필드</p>
-        <p>created_at DATETIME DEFAULT CURRENT_TIMESTAMP,</p>
-        <p>created_by VARCHAR(255),</p>
-        <p>updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,</p>
-        <p>updated_by VARCHAR(255),</p>
-        <p>deleted_at DATETIME,</p>
-        <p>deleted_by VARCHAR(255)</p>
-        <p>);</p>
-        <p>```</p>
-        <br>
-        <p>**인덱스:**</p>
-        <li>`idx_email` (이메일)</li>
-        <li>`idx_status_deleted` (상태, deleted_at)</li>
-        <li>`idx_interest_locations` (interest_local_1, interest_local_2, interest_local_3)</li>
-        <br>
-        <p>#### `user_token`</p>
-        <p>```sql</p>
-        <p>CREATE TABLE planet.user_token (</p>
-        <p>id BIGINT AUTO_INCREMENT PRIMARY KEY,</p>
-        <p>email VARCHAR(255) NOT NULL,</p>
-        <p>access_token TEXT NOT NULL,</p>
-        <p>refresh_token TEXT NOT NULL,</p>
-        <p>access_token_expiry DATETIME NOT NULL,</p>
-        <p>refresh_token_expiry DATETIME NOT NULL,</p>
-        <p>blacklisted BOOLEAN DEFAULT FALSE,</p>
-        <br>
-        <p>-- Auditing 필드</p>
-        <p>created_at DATETIME DEFAULT CURRENT_TIMESTAMP,</p>
-        <p>updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</p>
-        <p>);</p>
-        <p>```</p>
-        <br>
-        <p>**인덱스:**</p>
-        <li>`idx_email_blacklisted` (이메일, 블랙리스트 여부)</li>
-        <li>`idx_access_token` (액세스 토큰(255))</li>
-        <li>`idx_token_expiry` (액세스 토큰 만료, 리프레시 토큰 만료)</li>
+        <p><strong>인덱스:</strong></p>
+        <ul>
+            <li><code>idx_email_blacklisted</code> (이메일, 블랙리스트 여부)</li>
+            <li><code>idx_access_token</code> (액세스 토큰(255))</li>
+            <li><code>idx_token_expiry</code> (액세스 토큰 만료, 리프레시 토큰 만료)</li>
+        </ul>
         <br>
         <h4>🏠 청약 관리</h4>
         <br>
-        <p>#### `subscription_info` (주요 청약 데이터)</p>
-        <p>```sql</p>
-        <p>CREATE TABLE planet.subscription_info (</p>
-        <p>id BIGINT AUTO_INCREMENT PRIMARY KEY,</p>
+        <h4><code>subscription_info</code> (주요 청약 데이터)</h4>
+        <pre><code class="language-sql">CREATE TABLE planet.subscription_info (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    -- 기본 정보
+    house_nm VARCHAR(255) COMMENT '주택명',
+    house_manage_no VARCHAR(50) UNIQUE COMMENT '주택관리번호',
+    pblanc_no VARCHAR(50) COMMENT '공고번호',
+
+    -- 위치 정보
+    hssply_adres TEXT COMMENT '공급위치',
+    region VARCHAR(50) COMMENT '시/도',
+    city VARCHAR(50) COMMENT '시/군/구',
+    district VARCHAR(50) COMMENT '읍/면/동',
+
+    -- 접수 기간
+    rcept_bgnde DATE COMMENT '청약접수시작일',
+    rcept_endde DATE COMMENT '청약접수종료일',
+    spsply_rcept_bgnde DATE COMMENT '특별공급접수시작일',
+    spsply_rcept_endde DATE COMMENT '특별공급접수종료일',
+
+    -- 순위 시스템 날짜
+    gnrl_rnk1_crsparea_rcptde DATE COMMENT '1순위해당지역접수일',
+    gnrl_rnk1_etc_area_rcptde DATE COMMENT '1순위기타지역접수일',
+    gnrl_rnk2_crsparea_rcptde DATE COMMENT '2순위해당지역접수일',
+    gnrl_rnk2_etc_area_rcptde DATE COMMENT '2순위기타지역접수일',
+
+    -- 당첨자 발표 및 계약
+    przwner_presnatn_de DATE COMMENT '당첨자발표일',
+    cntrct_cncls_bgnde DATE COMMENT '계약체결시작일',
+    cntrct_cncls_endde DATE COMMENT '계약체결종료일',
+
+    -- 사업 정보
+    bsns_mby_nm VARCHAR(255) COMMENT '사업주체명',
+    cnstrct_entrps_nm VARCHAR(255) COMMENT '건설업체명',
+    mdhs_telno VARCHAR(20) COMMENT '문의처전화번호',
+    hmpg_adres TEXT COMMENT '홈페이지주소',
+
+    -- 규제 정보
+    parcprc_uls_at CHAR(1) COMMENT '분양가상한제적용여부',
+    speclt_rdn_earth_at CHAR(1) COMMENT '투기과열지구여부',
+    public_house_earth_at CHAR(1) COMMENT '공공주택지구여부',
+    lrscl_bldlnd_at CHAR(1) COMMENT '대규모택지개발지구여부',
+
+    -- 좌표 (지오코딩으로 추가됨)
+    latitude DOUBLE COMMENT '위도',
+    longitude DOUBLE COMMENT '경도',
+
+    -- Auditing 필드
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_by VARCHAR(255),
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by VARCHAR(255),
+    deleted_at DATETIME,
+    deleted_by VARCHAR(255)
+);</code></pre>
         <br>
-        <p>-- 기본 정보</p>
-        <p>house_nm VARCHAR(255) COMMENT '주택명',</p>
-        <p>house_manage_no VARCHAR(50) UNIQUE COMMENT '주택관리번호',</p>
-        <p>pblanc_no VARCHAR(50) COMMENT '공고번호',</p>
+        <p><strong>인덱스:</strong></p>
+        <ul>
+            <li><code>idx_house_manage_no</code> (주택관리번호)</li>
+            <li><code>idx_region_city</code> (지역, 도시)</li>
+            <li><code>idx_reception_dates</code> (접수 시작일, 접수 종료일)</li>
+            <li><code>idx_location</code> (위도, 경도)</li>
+            <li><code>idx_deleted_at</code> (deleted_at)</li>
+        </ul>
         <br>
-        <p>-- 위치 정보</p>
-        <p>hssply_adres TEXT COMMENT '공급위치',</p>
-        <p>region VARCHAR(50) COMMENT '시/도',</p>
-        <p>city VARCHAR(50) COMMENT '시/군/구',</p>
-        <p>district VARCHAR(50) COMMENT '읍/면/동',</p>
+        <h4><code>subscription_price_info</code></h4>
+        <pre><code class="language-sql">CREATE TABLE planet.subscription_price_info (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    subscription_info_id BIGINT NOT NULL,
+
+    housing_type VARCHAR(100) COMMENT '주택유형',
+    supply_area DECIMAL(10,4) COMMENT '공급면적',
+    supply_price BIGINT COMMENT '공급가격',
+    supply_count INTEGER COMMENT '공급세대수',
+    spsply_count INTEGER COMMENT '특별공급세대수',
+    gnrl_spsply_count INTEGER COMMENT '일반공급세대수',
+
+    -- 순위 우선 지불
+    gnrl_rnk1_etc_area_apt_cnt INTEGER COMMENT '1순위기타지역세대수',
+    gnrl_rnk2_etc_area_apt_cnt INTEGER COMMENT '2순위기타지역세대수',
+
+    -- 지불 정보
+    lfe_frst_lwet_top_amount BIGINT COMMENT '생애최초저소득층상위소득',
+    old_parnts_suport_spsply_top_amount BIGINT COMMENT '노부모부양특별공급상위소득',
+    nwwds_spsply_top_amount BIGINT COMMENT '신혼부부특별공급상위소득',
+
+    -- Auditing 필드
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_by VARCHAR(255),
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by VARCHAR(255),
+    deleted_at DATETIME,
+    deleted_by VARCHAR(255),
+
+    FOREIGN KEY (subscription_info_id) REFERENCES subscription_info(id)
+);</code></pre>
         <br>
-        <p>-- 접수 기간</p>
-        <p>rcept_bgnde DATE COMMENT '청약접수시작일',</p>
-        <p>rcept_endde DATE COMMENT '청약접수종료일',</p>
-        <p>spsply_rcept_bgnde DATE COMMENT '특별공급접수시작일',</p>
-        <p>spsply_rcept_endde DATE COMMENT '특별공급접수종료일',</p>
+        <h4><code>subscription_special_supply_target</code></h4>
+        <pre><code class="language-sql">CREATE TABLE planet.subscription_special_supply_target (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    subscription_info_id BIGINT NOT NULL,
+
+    -- 특별 공급 유형
+    supply_count_multichild INTEGER COMMENT '다자녀가구공급세대수',
+    supply_count_newlywed INTEGER COMMENT '신혼부부공급세대수',
+    supply_count_first INTEGER COMMENT '생애최초공급세대수',
+    supply_count_old_parent INTEGER COMMENT '노부모부양공급세대수',
+    supply_count_institution_recommend INTEGER COMMENT '기관추천공급세대수',
+    supply_count_etc INTEGER COMMENT '기타공급세대수',
+    supply_count_disabled INTEGER COMMENT '장애인공급세대수',
+    supply_count_youth INTEGER COMMENT '청년공급세대수',
+    supply_count_newborn INTEGER COMMENT '신생아공급세대수',
+
+    -- Auditing 필드
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_by VARCHAR(255),
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by VARCHAR(255),
+    deleted_at DATETIME,
+    deleted_by VARCHAR(255),
+
+    FOREIGN KEY (subscription_info_id) REFERENCES subscription_info(id)
+);</code></pre>
         <br>
-        <p>-- 순위 시스템 날짜</p>
-        <p>gnrl_rnk1_crsparea_rcptde DATE COMMENT '1순위해당지역접수일',</p>
-        <p>gnrl_rnk1_etc_area_rcptde DATE COMMENT '1순위기타지역접수일',</p>
-        <p>gnrl_rnk2_crsparea_rcptde DATE COMMENT '2순위해당지역접수일',</p>
-        <p>gnrl_rnk2_etc_area_rcptde DATE COMMENT '2순위기타지역접수일',</p>
-        <br>
-        <p>-- 당첨자 발표 및 계약</p>
-        <p>przwner_presnatn_de DATE COMMENT '당첨자발표일',</p>
-        <p>cntrct_cncls_bgnde DATE COMMENT '계약체결시작일',</p>
-        <p>cntrct_cncls_endde DATE COMMENT '계약체결종료일',</p>
-        <br>
-        <p>-- 사업 정보</p>
-        <p>bsns_mby_nm VARCHAR(255) COMMENT '사업주체명',</p>
-        <p>cnstrct_entrps_nm VARCHAR(255) COMMENT '건설업체명',</p>
-        <p>mdhs_telno VARCHAR(20) COMMENT '문의처전화번호',</p>
-        <p>hmpg_adres TEXT COMMENT '홈페이지주소',</p>
-        <br>
-        <p>-- 규제 정보</p>
-        <p>parcprc_uls_at CHAR(1) COMMENT '분양가상한제적용여부',</p>
-        <p>speclt_rdn_earth_at CHAR(1) COMMENT '투기과열지구여부',</p>
-        <p>public_house_earth_at CHAR(1) COMMENT '공공주택지구여부',</p>
-        <p>lrscl_bldlnd_at CHAR(1) COMMENT '대규모택지개발지구여부',</p>
-        <br>
-        <p>-- 좌표 (지오코딩으로 추가됨)</p>
-        <p>latitude DOUBLE COMMENT '위도',</p>
-        <p>longitude DOUBLE COMMENT '경도',</p>
-        <br>
-        <p>-- Auditing 필드</p>
-        <p>created_at DATETIME DEFAULT CURRENT_TIMESTAMP,</p>
-        <p>created_by VARCHAR(255),</p>
-        <p>updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,</p>
-        <p>updated_by VARCHAR(255),</p>
-        <p>deleted_at DATETIME,</p>
-        <p>deleted_by VARCHAR(255)</p>
-        <p>);</p>
-        <p>```</p>
-        <br>
-        <p>**인덱스:**</p>
-        <li>`idx_house_manage_no` (주택관리번호)</li>
-        <li>`idx_region_city` (지역, 도시)</li>
-        <li>`idx_reception_dates` (접수 시작일, 접수 종료일)</li>
-        <li>`idx_location` (위도, 경도)</li>
-        <li>`idx_deleted_at` (deleted_at)</li>
-        <br>
-        <p>#### `subscription_price_info`</p>
-        <p>```sql</p>
-        <p>CREATE TABLE planet.subscription_price_info (</p>
-        <p>id BIGINT AUTO_INCREMENT PRIMARY KEY,</p>
-        <p>subscription_info_id BIGINT NOT NULL,</p>
-        <br>
-        <p>housing_type VARCHAR(100) COMMENT '주택유형',</p>
-        <p>supply_area DECIMAL(10,4) COMMENT '공급면적',</p>
-        <p>supply_price BIGINT COMMENT '공급가격',</p>
-        <p>supply_count INTEGER COMMENT '공급세대수',</p>
-        <p>spsply_count INTEGER COMMENT '특별공급세대수',</p>
-        <p>gnrl_spsply_count INTEGER COMMENT '일반공급세대수',</p>
-        <br>
-        <p>-- 순위 우선 지불</p>
-        <p>gnrl_rnk1_etc_area_apt_cnt INTEGER COMMENT '1순위기타지역세대수',</p>
-        <p>gnrl_rnk2_etc_area_apt_cnt INTEGER COMMENT '2순위기타지역세대수',</p>
-        <br>
-        <p>-- 지불 정보</p>
-        <p>lfe_frst_lwet_top_amount BIGINT COMMENT '생애최초저소득층상위소득',</p>
-        <p>old_parnts_suport_spsply_top_amount BIGINT COMMENT '노부모부양특별공급상위소득',</p>
-        <p>nwwds_spsply_top_amount BIGINT COMMENT '신혼부부특별공급상위소득',</p>
-        <br>
-        <p>-- Auditing 필드</p>
-        <p>created_at DATETIME DEFAULT CURRENT_TIMESTAMP,</p>
-        <p>created_by VARCHAR(255),</p>
-        <p>updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,</p>
-        <p>updated_by VARCHAR(255),</p>
-        <p>deleted_at DATETIME,</p>
-        <p>deleted_by VARCHAR(255),</p>
-        <br>
-        <p>FOREIGN KEY (subscription_info_id) REFERENCES subscription_info(id)</p>
-        <p>);</p>
-        <p>```</p>
-        <br>
-        <p>#### `subscription_special_supply_target`</p>
-        <p>```sql</p>
-        <p>CREATE TABLE planet.subscription_special_supply_target (</p>
-        <p>id BIGINT AUTO_INCREMENT PRIMARY KEY,</p>
-        <p>subscription_info_id BIGINT NOT NULL,</p>
-        <br>
-        <p>-- 특별 공급 유형</p>
-        <p>supply_count_multichild INTEGER COMMENT '다자녀가구공급세대수',</p>
-        <p>supply_count_newlywed INTEGER COMMENT '신혼부부공급세대수',</p>
-        <p>supply_count_first INTEGER COMMENT '생애최초공급세대수',</p>
-        <p>supply_count_old_parent INTEGER COMMENT '노부모부양공급세대수',</p>
-        <p>supply_count_institution_recommend INTEGER COMMENT '기관추천공급세대수',</p>
-        <p>supply_count_etc INTEGER COMMENT '기타공급세대수',</p>
-        <p>supply_count_disabled INTEGER COMMENT '장애인공급세대수',</p>
-        <p>supply_count_youth INTEGER COMMENT '청년공급세대수',</p>
-        <p>supply_count_newborn INTEGER COMMENT '신생아공급세대수',</p>
-        <br>
-        <p>-- Auditing 필드</p>
-        <p>created_at DATETIME DEFAULT CURRENT_TIMESTAMP,</p>
-        <p>created_by VARCHAR(255),</p>
-        <p>updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,</p>
-        <p>updated_by VARCHAR(255),</p>
-        <p>deleted_at DATETIME,</p>
-        <p>deleted_by VARCHAR(255),</p>
-        <br>
-        <p>FOREIGN KEY (subscription_info_id) REFERENCES subscription_info(id)</p>
-        <p>);</p>
-        <p>```</p>
-        <br>
-        <p>#### `subscription_like`</p>
-        <p>```sql</p>
-        <p>CREATE TABLE planet.subscription_like (</p>
-        <p>id BIGINT AUTO_INCREMENT PRIMARY KEY,</p>
-        <p>subscription_id BIGINT NOT NULL,</p>
-        <p>user_email VARCHAR(255) NOT NULL,</p>
-        <br>
-        <p>-- 빠른 액세스를 위한 캐시된 청약 데이터</p>
-        <p>house_nm VARCHAR(255),</p>
-        <p>hssply_adres TEXT,</p>
-        <p>region VARCHAR(50),</p>
-        <p>rcept_bgnde DATE,</p>
-        <br>
-        <p>-- Auditing 필드</p>
-        <p>created_at DATETIME DEFAULT CURRENT_TIMESTAMP,</p>
-        <p>created_by VARCHAR(255),</p>
-        <p>updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,</p>
-        <p>updated_by VARCHAR(255),</p>
-        <p>deleted_at DATETIME,</p>
-        <p>deleted_by VARCHAR(255),</p>
-        <br>
-        <p>UNIQUE KEY uk_subscription_user (subscription_id, user_email, deleted_at)</p>
-        <p>);</p>
-        <p>```</p>
+        <h4><code>subscription_like</code></h4>
+        <pre><code class="language-sql">CREATE TABLE planet.subscription_like (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    subscription_id BIGINT NOT NULL,
+    user_email VARCHAR(255) NOT NULL,
+
+    -- 빠른 액세스를 위한 캐시된 청약 데이터
+    house_nm VARCHAR(255),
+    hssply_adres TEXT,
+    region VARCHAR(50),
+    rcept_bgnde DATE,
+
+    -- Auditing 필드
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_by VARCHAR(255),
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by VARCHAR(255),
+    deleted_at DATETIME,
+    deleted_by VARCHAR(255),
+
+    UNIQUE KEY uk_subscription_user (subscription_id, user_email, deleted_at)
+);</code></pre>
         <br>
         <h4>💬 커뮤니티 플랫폼</h4>
         <br>
-        <p>#### `Post`</p>
-        <p>```sql</p>
-        <p>CREATE TABLE planet.Post (</p>
-        <p>id BIGINT AUTO_INCREMENT PRIMARY KEY,</p>
-        <p>username VARCHAR(100) NOT NULL,</p>
-        <p>title VARCHAR(255) NOT NULL,</p>
-        <p>content TEXT NOT NULL,</p>
-        <p>views BIGINT DEFAULT 0,</p>
-        <p>likes INTEGER DEFAULT 0,</p>
-        <p>dislikes INTEGER DEFAULT 0,</p>
-        <p>is_blind BOOLEAN DEFAULT FALSE,</p>
-        <p>category ENUM('REVIEW', 'SUBSCRIPTION_INFO', 'SUBSCRIPTION_INQUIRY', 'INFO_SHARE', 'FREE_TALK') NOT NULL,</p>
+        <h4><code>Post</code></h4>
+        <pre><code class="language-sql">CREATE TABLE planet.Post (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    views BIGINT DEFAULT 0,
+    likes INTEGER DEFAULT 0,
+    dislikes INTEGER DEFAULT 0,
+    is_blind BOOLEAN DEFAULT FALSE,
+    category ENUM('REVIEW', 'SUBSCRIPTION_INFO', 'SUBSCRIPTION_INQUIRY', 'INFO_SHARE', 'FREE_TALK') NOT NULL,
+
+    -- Auditing 필드
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_by VARCHAR(255),
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by VARCHAR(255),
+    deleted_at DATETIME,
+    deleted_by VARCHAR(255)
+);</code></pre>
         <br>
-        <p>-- Auditing 필드</p>
-        <p>created_at DATETIME DEFAULT CURRENT_TIMESTAMP,</p>
-        <p>created_by VARCHAR(255),</p>
-        <p>updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,</p>
-        <p>updated_by VARCHAR(255),</p>
-        <p>deleted_at DATETIME,</p>
-        <p>deleted_by VARCHAR(255)</p>
-        <p>);</p>
-        <p>```</p>
+        <p><strong>인덱스:</strong></p>
+        <ul>
+            <li><code>idx_category_created</code> (카테고리, created_at DESC)</li>
+            <li><code>idx_username</code> (사용자 이름)</li>
+            <li><code>idx_views_likes</code> (조회수 DESC, 좋아요 DESC)</li>
+        </ul>
         <br>
-        <p>**인덱스:**</p>
-        <li>`idx_category_created` (카테고리, created_at DESC)</li>
-        <li>`idx_username` (사용자 이름)</li>
-        <li>`idx_views_likes` (조회수 DESC, 좋아요 DESC)</li>
+        <h4><code>Comment</code></h4>
+        <pre><code class="language-sql">CREATE TABLE planet.Comment (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    post_id BIGINT NOT NULL,
+    username VARCHAR(100) NOT NULL,
+    content TEXT NOT NULL,
+
+    -- Auditing 필드
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_by VARCHAR(255),
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by VARCHAR(255),
+    deleted_at DATETIME,
+    deleted_by VARCHAR(255),
+
+    FOREIGN KEY (post_id) REFERENCES Post(id)
+);</code></pre>
         <br>
-        <p>#### `Comment`</p>
-        <p>```sql</p>
-        <p>CREATE TABLE planet.Comment (</p>
-        <p>id BIGINT AUTO_INCREMENT PRIMARY KEY,</p>
-        <p>post_id BIGINT NOT NULL,</p>
-        <p>username VARCHAR(100) NOT NULL,</p>
-        <p>content TEXT NOT NULL,</p>
+        <h4><code>Reply</code></h4>
+        <pre><code class="language-sql">CREATE TABLE planet.Reply (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    comment_id BIGINT NOT NULL,
+    username VARCHAR(100) NOT NULL,
+    content TEXT NOT NULL,
+
+    -- Auditing 필드
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_by VARCHAR(255),
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by VARCHAR(255),
+    deleted_at DATETIME,
+    deleted_by VARCHAR(255),
+
+    FOREIGN KEY (comment_id) REFERENCES Comment(id)
+);</code></pre>
         <br>
-        <p>-- Auditing 필드</p>
-        <p>created_at DATETIME DEFAULT CURRENT_TIMESTAMP,</p>
-        <p>created_by VARCHAR(255),</p>
-        <p>updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,</p>
-        <p>updated_by VARCHAR(255),</p>
-        <p>deleted_at DATETIME,</p>
-        <p>deleted_by VARCHAR(255),</p>
-        <br>
-        <p>FOREIGN KEY (post_id) REFERENCES Post(id)</p>
-        <p>);</p>
-        <p>```</p>
-        <br>
-        <p>#### `Reply`</p>
-        <p>```sql</p>
-        <p>CREATE TABLE planet.Reply (</p>
-        <p>id BIGINT AUTO_INCREMENT PRIMARY KEY,</p>
-        <p>comment_id BIGINT NOT NULL,</p>
-        <p>username VARCHAR(100) NOT NULL,</p>
-        <p>content TEXT NOT NULL,</p>
-        <br>
-        <p>-- Auditing 필드</p>
-        <p>created_at DATETIME DEFAULT CURRENT_TIMESTAMP,</p>
-        <p>created_by VARCHAR(255),</p>
-        <p>updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,</p>
-        <p>updated_by VARCHAR(255),</p>
-        <p>deleted_at DATETIME,</p>
-        <p>deleted_by VARCHAR(255),</p>
-        <br>
-        <p>FOREIGN KEY (comment_id) REFERENCES Comment(id)</p>
-        <p>);</p>
-        <p>```</p>
-        <br>
-        <p>#### `post_reaction`</p>
-        <p>```sql</p>
-        <p>CREATE TABLE planet.post_reaction (</p>
-        <p>id BIGINT AUTO_INCREMENT PRIMARY KEY,</p>
-        <p>post_id BIGINT NOT NULL,</p>
-        <p>email VARCHAR(255) NOT NULL,</p>
-        <p>reaction_type ENUM('LIKE', 'DISLIKE') NOT NULL,</p>
-        <br>
-        <p>created_at DATETIME DEFAULT CURRENT_TIMESTAMP,</p>
-        <br>
-        <p>FOREIGN KEY (post_id) REFERENCES Post(id),</p>
-        <p>UNIQUE KEY uk_post_user_reaction (post_id, email)</p>
-        <p>);</p>
-        <p>```</p>
+        <h4><code>post_reaction</code></h4>
+        <pre><code class="language-sql">CREATE TABLE planet.post_reaction (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    post_id BIGINT NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    reaction_type ENUM('LIKE', 'DISLIKE') NOT NULL,
+
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (post_id) REFERENCES Post(id),
+    UNIQUE KEY uk_post_user_reaction (post_id, email)
+);</code></pre>
         <br>
         <h4>💰 금융 상품</h4>
         <br>
-        <p>#### `houseloan_product`</p>
-        <p>```sql</p>
-        <p>CREATE TABLE planet.houseloan_product (</p>
-        <p>id BIGINT AUTO_INCREMENT PRIMARY KEY,</p>
+        <h4><code>houseloan_product</code></h4>
+        <pre><code class="language-sql">CREATE TABLE planet.houseloan_product (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    -- 상품 정보
+    fin_co_nm VARCHAR(255) COMMENT '금융회사명',
+    fin_prdt_nm VARCHAR(255) COMMENT '금융상품명',
+    join_way TEXT COMMENT '가입방법',
+    loan_inci_expn TEXT COMMENT '대출부대비용',
+    erly_rpay_fee TEXT COMMENT '중도상환수수료',
+    dly_rate TEXT COMMENT '연체이자율',
+    loan_lmt TEXT COMMENT '대출한도',
+
+    -- 금리
+    lend_rate_type_nm VARCHAR(100) COMMENT '대출금리유형명',
+    lend_rate_min DOUBLE COMMENT '대출최저금리',
+    lend_rate_max DOUBLE COMMENT '대출최고금리',
+    lend_rate_avg DOUBLE COMMENT '대출평균금리',
+
+    -- Auditing 필드
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_by VARCHAR(255),
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by VARCHAR(255),
+    deleted_at DATETIME,
+    deleted_by VARCHAR(255)
+);</code></pre>
         <br>
-        <p>-- 상품 정보</p>
-        <p>fin_co_nm VARCHAR(255) COMMENT '금융회사명',</p>
-        <p>fin_prdt_nm VARCHAR(255) COMMENT '금융상품명',</p>
-        <p>join_way TEXT COMMENT '가입방법',</p>
-        <p>loan_inci_expn TEXT COMMENT '대출부대비용',</p>
-        <p>erly_rpay_fee TEXT COMMENT '중도상환수수료',</p>
-        <p>dly_rate TEXT COMMENT '연체이자율',</p>
-        <p>loan_lmt TEXT COMMENT '대출한도',</p>
-        <br>
-        <p>-- 금리</p>
-        <p>lend_rate_type_nm VARCHAR(100) COMMENT '대출금리유형명',</p>
-        <p>lend_rate_min DOUBLE COMMENT '대출최저금리',</p>
-        <p>lend_rate_max DOUBLE COMMENT '대출최고금리',</p>
-        <p>lend_rate_avg DOUBLE COMMENT '대출평균금리',</p>
-        <br>
-        <p>-- Auditing 필드</p>
-        <p>created_at DATETIME DEFAULT CURRENT_TIMESTAMP,</p>
-        <p>created_by VARCHAR(255),</p>
-        <p>updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,</p>
-        <p>updated_by VARCHAR(255),</p>
-        <p>deleted_at DATETIME,</p>
-        <p>deleted_by VARCHAR(255)</p>
-        <p>);</p>
-        <p>```</p>
-        <br>
-        <p>#### `mortgage_product`</p>
-        <p>```sql</p>
-        <p>CREATE TABLE planet.mortgage_product (</p>
-        <p>id BIGINT AUTO_INCREMENT PRIMARY KEY,</p>
-        <br>
-        <p>-- 상품 정보</p>
-        <p>fin_co_nm VARCHAR(255) COMMENT '금융회사명',</p>
-        <p>fin_prdt_nm VARCHAR(255) COMMENT '금융상품명',</p>
-        <p>mrtg_type VARCHAR(50) COMMENT '담보유형코드',</p>
-        <p>mrtg_type_nm VARCHAR(100) COMMENT '담보유형명',</p>
-        <br>
-        <p>-- 금리 및 약관에 대한 houseloan_product와 동일한 구조</p>
-        <p>join_way TEXT COMMENT '가입방법',</p>
-        <p>loan_inci_expn TEXT COMMENT '대출부대비용',</p>
-        <p>erly_rpay_fee TEXT COMMENT '중도상환수수료',</p>
-        <p>dly_rate TEXT COMMENT '연체이자율',</p>
-        <p>loan_lmt TEXT COMMENT '대출한도',</p>
-        <br>
-        <p>lend_rate_type_nm VARCHAR(100) COMMENT '대출금리유형명',</p>
-        <p>lend_rate_min DOUBLE COMMENT '대출최저금리',</p>
-        <p>lend_rate_max DOUBLE COMMENT '대출최고금리',</p>
-        <p>lend_rate_avg DOUBLE COMMENT '대출평균금리',</p>
-        <br>
-        <p>-- Auditing 필드</p>
-        <p>created_at DATETIME DEFAULT CURRENT_TIMESTAMP,</p>
-        <p>created_by VARCHAR(255),</p>
-        <p>updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,</p>
-        <p>updated_by VARCHAR(255),</p>
-        <p>deleted_at DATETIME,</p>
-        <p>deleted_by VARCHAR(255)</p>
-        <p>);</p>
-        <p>```</p>
+        <h4><code>mortgage_product</code></h4>
+        <pre><code class="language-sql">CREATE TABLE planet.mortgage_product (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    -- 상품 정보
+    fin_co_nm VARCHAR(255) COMMENT '금융회사명',
+    fin_prdt_nm VARCHAR(255) COMMENT '금융상품명',
+    mrtg_type VARCHAR(50) COMMENT '담보유형코드',
+    mrtg_type_nm VARCHAR(100) COMMENT '담보유형명',
+
+    -- 금리 및 약관에 대한 houseloan_product와 동일한 구조
+    join_way TEXT COMMENT '가입방법',
+    loan_inci_expn TEXT COMMENT '대출부대비용',
+    erly_rpay_fee TEXT COMMENT '중도상환수수료',
+    dly_rate TEXT COMMENT '연체이자율',
+    loan_lmt TEXT COMMENT '대출한도',
+
+    lend_rate_type_nm VARCHAR(100) COMMENT '대출금리유형명',
+    lend_rate_min DOUBLE COMMENT '대출최저금리',
+    lend_rate_max DOUBLE COMMENT '대출최고금리',
+    lend_rate_avg DOUBLE COMMENT '대출평균금리',
+
+    -- Auditing 필드
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_by VARCHAR(255),
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by VARCHAR(255),
+    deleted_at DATETIME,
+    deleted_by VARCHAR(255)
+);</code></pre>
         <br>
         <h4>🏫 인프라 데이터</h4>
         <br>
-        <p>#### `school`</p>
-        <p>```sql</p>
-        <p>CREATE TABLE planet.school (</p>
-        <p>school_id VARCHAR(50) PRIMARY KEY COMMENT '학교ID',</p>
-        <p>school_name VARCHAR(255) NOT NULL COMMENT '학교명',</p>
-        <p>category VARCHAR(50) COMMENT '학교급 (초등학교, 중학교, 고등학교)',</p>
-        <p>type1 VARCHAR(50) COMMENT '설립구분 (국립, 공립, 사립)',</p>
-        <p>type2 VARCHAR(50) COMMENT '운영구분',</p>
-        <p>status VARCHAR(50) COMMENT '운영상태',</p>
-        <p>address TEXT COMMENT '주소',</p>
-        <p>latitude DOUBLE COMMENT '위도',</p>
-        <p>longitude DOUBLE COMMENT '경도',</p>
+        <h4><code>school</code></h4>
+        <pre><code class="language-sql">CREATE TABLE planet.school (
+    school_id VARCHAR(50) PRIMARY KEY COMMENT '학교ID',
+    school_name VARCHAR(255) NOT NULL COMMENT '학교명',
+    category VARCHAR(50) COMMENT '학교급 (초등학교, 중학교, 고등학교)',
+    type1 VARCHAR(50) COMMENT '설립구분 (국립, 공립, 사립)',
+    type2 VARCHAR(50) COMMENT '운영구분',
+    status VARCHAR(50) COMMENT '운영상태',
+    address TEXT COMMENT '주소',
+    latitude DOUBLE COMMENT '위도',
+    longitude DOUBLE COMMENT '경도',
+
+    -- Auditing 필드
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);</code></pre>
         <br>
-        <p>-- Auditing 필드</p>
-        <p>created_at DATETIME DEFAULT CURRENT_TIMESTAMP,</p>
-        <p>updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</p>
-        <p>);</p>
-        <p>```</p>
+        <p><strong>인덱스:</strong></p>
+        <ul>
+            <li><code>idx_location</code> (위도, 경도)</li>
+            <li><code>idx_category_type</code> (카테고리, 유형1)</li>
+            <li><code>idx_address</code> (주소(255))</li>
+        </ul>
         <br>
-        <p>**인덱스:**</p>
-        <li>`idx_location` (위도, 경도)</li>
-        <li>`idx_category_type` (카테고리, 유형1)</li>
-        <li>`idx_address` (주소(255))</li>
+        <h4><code>station</code></h4>
+        <pre><code class="language-sql">CREATE TABLE planet.station (
+    number VARCHAR(50) PRIMARY KEY COMMENT '역번호',
+    operator VARCHAR(100) COMMENT '운영회사',
+    line VARCHAR(100) COMMENT '노선명',
+    type VARCHAR(50) COMMENT '교통수단 (지하철, 기차, 버스)',
+    nm_kor VARCHAR(255) NOT NULL COMMENT '한국어역명',
+    nm_eng VARCHAR(255) COMMENT '영어역명',
+    is_transfer CHAR(1) COMMENT '환승역여부',
+    platform TEXT COMMENT '플랫폼정보',
+    longitude DOUBLE COMMENT '경도',
+    latitude DOUBLE COMMENT '위도',
+    addr_nm TEXT COMMENT '주소',
+
+    -- Auditing 필드
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);</code></pre>
         <br>
-        <p>#### `station`</p>
-        <p>```sql</p>
-        <p>CREATE TABLE planet.station (</p>
-        <p>number VARCHAR(50) PRIMARY KEY COMMENT '역번호',</p>
-        <p>operator VARCHAR(100) COMMENT '운영회사',</p>
-        <p>line VARCHAR(100) COMMENT '노선명',</p>
-        <p>type VARCHAR(50) COMMENT '교통수단 (지하철, 기차, 버스)',</p>
-        <p>nm_kor VARCHAR(255) NOT NULL COMMENT '한국어역명',</p>
-        <p>nm_eng VARCHAR(255) COMMENT '영어역명',</p>
-        <p>is_transfer CHAR(1) COMMENT '환승역여부',</p>
-        <p>platform TEXT COMMENT '플랫폼정보',</p>
-        <p>longitude DOUBLE COMMENT '경도',</p>
-        <p>latitude DOUBLE COMMENT '위도',</p>
-        <p>addr_nm TEXT COMMENT '주소',</p>
-        <br>
-        <p>-- Auditing 필드</p>
-        <p>created_at DATETIME DEFAULT CURRENT_TIMESTAMP,</p>
-        <p>updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</p>
-        <p>);</p>
-        <p>```</p>
-        <br>
-        <p>#### `public_facility`</p>
-        <p>```sql</p>
-        <p>CREATE TABLE planet.public_facility (</p>
-        <p>present_sn VARCHAR(50) PRIMARY KEY COMMENT '시설고유번호',</p>
-        <p>lclas_cl VARCHAR(100) COMMENT '대분류',</p>
-        <p>mlsfc_cl VARCHAR(100) COMMENT '중분류',</p>
-        <p>sclas_cl VARCHAR(100) COMMENT '소분류',</p>
-        <p>dgm_nm VARCHAR(255) COMMENT '시설명',</p>
-        <p>dgm_ar DOUBLE COMMENT '시설면적',</p>
-        <p>signgu_se VARCHAR(100) COMMENT '시군구구분',</p>
-        <p>geometry TEXT COMMENT 'GIS좌표정보',</p>
-        <p>latlon_geometry TEXT COMMENT '위경도좌표',</p>
-        <p>longitude DOUBLE COMMENT '경도',</p>
-        <p>latitude DOUBLE COMMENT '위도'</p>
-        <p>);</p>
-        <p>```</p>
+        <h4><code>public_facility</code></h4>
+        <pre><code class="language-sql">CREATE TABLE planet.public_facility (
+    present_sn VARCHAR(50) PRIMARY KEY COMMENT '시설고유번호',
+    lclas_cl VARCHAR(100) COMMENT '대분류',
+    mlsfc_cl VARCHAR(100) COMMENT '중분류',
+    sclas_cl VARCHAR(100) COMMENT '소분류',
+    dgm_nm VARCHAR(255) COMMENT '시설명',
+    dgm_ar DOUBLE COMMENT '시설면적',
+    signgu_se VARCHAR(100) COMMENT '시군구구분',
+    geometry TEXT COMMENT 'GIS좌표정보',
+    latlon_geometry TEXT COMMENT '위경도좌표',
+    longitude DOUBLE COMMENT '경도',
+    latitude DOUBLE COMMENT '위도'
+);</code></pre>
         <br>
         <h4>🏘️ 행정 데이터</h4>
         <br>
-        <p>#### `sggcode`</p>
-        <p>```sql</p>
-        <p>CREATE TABLE planet.sggcode (</p>
-        <p>sgg_cd5 INTEGER PRIMARY KEY COMMENT '5자리시군구코드',</p>
-        <p>sgg_cd_nm TEXT COMMENT '시군구명',</p>
-        <p>sgg_cd_nm_region VARCHAR(100) COMMENT '시도명',</p>
-        <p>sgg_cd_nm_city VARCHAR(100) COMMENT '시군구명'</p>
-        <p>);</p>
-        <p>```</p>
+        <h4><code>sggcode</code></h4>
+        <pre><code class="language-sql">CREATE TABLE planet.sggcode (
+    sgg_cd5 INTEGER PRIMARY KEY COMMENT '5자리시군구코드',
+    sgg_cd_nm TEXT COMMENT '시군구명',
+    sgg_cd_nm_region VARCHAR(100) COMMENT '시도명',
+    sgg_cd_nm_city VARCHAR(100) COMMENT '시군구명'
+);</code></pre>
         <br>
         <h4>📊 부동산 가격 데이터</h4>
         <br>
-        <p>#### `real_estate_price`</p>
-        <p>```sql</p>
-        <p>CREATE TABLE planet.real_estate_price (</p>
-        <p>id BIGINT AUTO_INCREMENT PRIMARY KEY,</p>
-        <p>region VARCHAR(50) COMMENT '시도',</p>
-        <p>sgg_cd VARCHAR(10) COMMENT '시군구코드',</p>
-        <p>umd_nm VARCHAR(100) COMMENT '읍면동명',</p>
-        <p>apt_nm VARCHAR(255) COMMENT '아파트명',</p>
-        <p>deal_amount BIGINT COMMENT '거래금액',</p>
-        <p>exclu_use_ar DECIMAL(10,4) COMMENT '전용면적',</p>
-        <p>deal_date DATE COMMENT '거래일',</p>
-        <p>floor_info VARCHAR(10) COMMENT '층정보',</p>
-        <p>build_year INTEGER COMMENT '건축년도',</p>
+        <h4><code>real_estate_price</code></h4>
+        <pre><code class="language-sql">CREATE TABLE planet.real_estate_price (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    region VARCHAR(50) COMMENT '시도',
+    sgg_cd VARCHAR(10) COMMENT '시군구코드',
+    umd_nm VARCHAR(100) COMMENT '읍면동명',
+    apt_nm VARCHAR(255) COMMENT '아파트명',
+    deal_amount BIGINT COMMENT '거래금액',
+    exclu_use_ar DECIMAL(10,4) COMMENT '전용면적',
+    deal_date DATE COMMENT '거래일',
+    floor_info VARCHAR(10) COMMENT '층정보',
+    build_year INTEGER COMMENT '건축년도',
+
+    -- Auditing 필드
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);</code></pre>
         <br>
-        <p>-- Auditing 필드</p>
-        <p>created_at DATETIME DEFAULT CURRENT_TIMESTAMP,</p>
-        <p>updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</p>
-        <p>);</p>
-        <p>```</p>
-        <br>
-        <p>#### `real_estate_price_summary`</p>
-        <p>```sql</p>
-        <p>CREATE TABLE planet.real_estate_price_summary (</p>
-        <p>id BIGINT AUTO_INCREMENT PRIMARY KEY,</p>
-        <p>region VARCHAR(50) COMMENT '시도',</p>
-        <p>sgg_cd_nm VARCHAR(100) COMMENT '시군구명',</p>
-        <p>deal_year INTEGER COMMENT '거래년도',</p>
-        <p>deal_month INTEGER COMMENT '거래월',</p>
-        <p>deal_count INTEGER COMMENT '거래건수',</p>
-        <p>price_per_ar BIGINT COMMENT '면적당평균가격',</p>
-        <br>
-        <p>UNIQUE KEY uk_region_year_month (region, sgg_cd_nm, deal_year, deal_month)</p>
-        <p>);</p>
-        <p>```</p>
+        <h4><code>real_estate_price_summary</code></h4>
+        <pre><code class="language-sql">CREATE TABLE planet.real_estate_price_summary (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    region VARCHAR(50) COMMENT '시도',
+    sgg_cd_nm VARCHAR(100) COMMENT '시군구명',
+    deal_year INTEGER COMMENT '거래년도',
+    deal_month INTEGER COMMENT '거래월',
+    deal_count INTEGER COMMENT '거래건수',
+    price_per_ar BIGINT COMMENT '면적당평균가격',
+
+    UNIQUE KEY uk_region_year_month (region, sgg_cd_nm, deal_year, deal_month)
+);</code></pre>
         <br>
         <h3>🔗 엔티티 관계</h3>
         <br>
@@ -543,22 +519,26 @@
         <h3>🔧 유지보수 절차</h3>
         <br>
         <h4>데이터 정리</h4>
-        <li>**토큰 정리**: 만료된 토큰은 매주 정리됩니다.</li>
-        <li>**소프트 삭제 정리**: 오래된 소프트 삭제 레코드는 분기별로 보관됩니다.</li>
+        <ul>
+            <li><strong>토큰 정리</strong>: 만료된 토큰은 매주 정리됩니다.</li>
+            <li><strong>소프트 삭제 정리</strong>: 오래된 소프트 삭제 레코드는 분기별로 보관됩니다.</li>
+        </ul>
         <br>
         <h4>백업 전략</h4>
-        <li>**일일 백업**: x</li>
-        <li>**트랜잭션 로그 백업**: x</li>
-        <li>**테스팅**: x</li>
+        <ul>
+            <li><strong>일일 백업</strong>: x</li>
+            <li><strong>트랜잭션 로그 백업</strong>: x</li>
+            <li><strong>테스팅</strong>: x</li>
+        </ul>
         <br>
         <p>---</p>
         <br>
-        <p>**최종 업데이트**: 2025-06-19</p>
-        <p>**스키마 버전**: 1.0</p>
-        <p>**데이터베이스 엔진**: MySQL 8.0 이상</p>
+        <p><strong>최종 업데이트</strong>: 2025-06-26</p>
+        <p><strong>스키마 버전</strong>: 1.0</p>
+        <p><strong>데이터베이스 엔진</strong>: MySQL 8.0 이상</p>
     </section>
     <footer class="footer">
-        <p>최종 업데이트: 2025-06-19 | <a href="../index.html">문서 홈으로</a></p>
+        <p>최종 업데이트: 2025-06-26 | <a href="../index.html">문서 홈으로</a></p>
     </footer>
 </div>
 </body>

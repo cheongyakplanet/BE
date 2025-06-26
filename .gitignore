@@ -42,3 +42,5 @@ src/main/resources/properties/env.properties
 # Environment Variables
 .env
 .env.properties
+java17.tar.gz
+jdk-17.0.7+7/
