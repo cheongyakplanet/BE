@@ -2,103 +2,99 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>배포 가이드 | 청약플래닛</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="container">
+    <!-- Header -->
     <header class="header">
       <h1>배포 가이드</h1>
       <p class="subtitle">배포 가이드 문서</p>
       <p class="description">CheonYakPlanet 백엔드 관련 문서입니다.</p>
     </header>
-    <section class="quick-start">
+
+    <!-- Main Content -->
+    <section class="content">
       <h2>Deployment Guide</h2>
-<br>
-<h3>🚀 Environment Setup & Deployment</h3>
-<br>
-<p>This guide provides comprehensive instructions for setting up development, testing, and production environments for CheonYakPlanet.</p>
-<br>
-<h3>📋 Prerequisites</h3>
-<br>
-<h4>System Requirements</h4>
-<ul>
-<li><strong>Java</strong>: OpenJDK 17 or higher</li>
-<li><strong>Database</strong>: MySQL 8.0+</li>
-<li><strong>Build Tool</strong>: Gradle 8.0+</li>
-<li><strong>Memory</strong>: Minimum 4GB RAM (8GB recommended)</li>
-<li><strong>Storage</strong>: 10GB+ available space</li>
-</ul>
-<br>
-<h4>Development Tools</h4>
-<ul>
-<li><strong>IDE</strong>: IntelliJ IDEA or VS Code</li>
-<li><strong>Git</strong>: Version 2.20+</li>
-<li><strong>Docker</strong>: For containerized deployment (optional)</li>
-<li><strong>Postman</strong>: For API testing</li>
-</ul>
-<br>
-<h3>🔧 Environment Configuration</h3>
-<br>
-<h4>1. Local Development Environment</h4>
-<br>
-<h5>Java Installation</h5>
-<pre><code class="language-bash"># Install OpenJDK 17
+
+      <article>
+        <h3>🚀 Environment Setup & Deployment</h3>
+        <p>이 가이드는 CheonYakPlanet의 개발, 테스트, 프로덕션 환경 설정 및 배포 절차를 제공합니다.</p>
+      </article>
+
+      <article>
+        <h3>📋 Prerequisites</h3>
+        <h4>System Requirements</h4>
+        <ul>
+          <li><strong>Java</strong>: OpenJDK 17 이상</li>
+          <li><strong>Database</strong>: MySQL 8.0 이상</li>
+          <li><strong>Build Tool</strong>: Gradle 8.0 이상</li>
+          <li><strong>Memory</strong>: 최소 4GB RAM (권장 8GB)</li>
+          <li><strong>Storage</strong>: 10GB 이상 여유 공간</li>
+        </ul>
+        <h4>Development Tools</h4>
+        <ul>
+          <li><strong>IDE</strong>: IntelliJ IDEA 또는 VS Code</li>
+          <li><strong>Git</strong>: 버전 2.20 이상</li>
+          <li><strong>Docker</strong>: 컨테이너 배포 (선택 사항)</li>
+          <li><strong>Postman</strong>: API 테스트</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>🔧 Environment Configuration</h3>
+        <h4>1. Local Development Environment</h4>
+        <h5>Java Installation</h5>
+        <pre><code class="language-bash"># OpenJDK 17 설치
 sudo apt update
 sudo apt install openjdk-17-jdk
 
-# Verify installation
+# 설치 확인
 java -version
 javac -version</code></pre>
-<br>
-<h5>MySQL Database Setup</h5>
-<pre><code class="language-bash"># Install MySQL 8.0
+
+        <h5>MySQL Database Setup</h5>
+        <pre><code class="language-bash"># MySQL 8.0 설치
 sudo apt install mysql-server-8.0
 
-# Secure installation
+# 보안 설정
 sudo mysql_secure_installation
 
-# Create database and user
+# 데이터베이스 및 사용자 생성
 mysql -u root -p</code></pre>
-<br>
-<pre><code class="language-sql">-- Create database
+        <pre><code class="language-sql">-- 데이터베이스 생성
 CREATE DATABASE planet CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- Create user
+-- 사용자 생성 및 권한 부여
 CREATE USER 'planet_user'@'localhost' IDENTIFIED BY 'secure_password';
 GRANT ALL PRIVILEGES ON planet.* TO 'planet_user'@'localhost';
 FLUSH PRIVILEGES;</code></pre>
-<br>
-<h5>Project Setup</h5>
-<pre><code class="language-bash"># Clone repository
+
+        <h5>Project Setup</h5>
+        <pre><code class="language-bash"># 리포지토리 클론
 git clone https://github.com/your-org/cheonyakplanet-be.git
 cd cheonyakplanet-be
 
-# Make gradlew executable
+# gradlew 실행 권한 설정
 chmod +x gradlew
 
-# Build project
+# 빌드
 ./gradlew build</code></pre>
-<br>
-<h4>2. Environment Variables</h4>
-<br>
-<h5>Required Environment Variables</h5>
-<p>Create <code>.env</code> file in project root:</p>
-<br>
-<pre><code class="language-bash"># Database Configuration
-DB_HOST=localhost
+
+        <h4>2. Environment Variables</h4>
+        <p><code>.env</code> 파일을 프로젝트 루트에 생성:</p>
+        <pre><code class="language-bash">DB_HOST=localhost
 DB_PORT=3306
 DB_NAME=planet
 DB_USERNAME=planet_user
 DB_PASSWORD=secure_password
 
-# JWT Configuration
 JWT_SECRET=your_super_secure_jwt_secret_key_min_256_bits
-JWT_ACCESS_TOKEN_EXPIRY=3600000     # 60 minutes
-JWT_REFRESH_TOKEN_EXPIRY=86400000   # 24 hours
+JWT_ACCESS_TOKEN_EXPIRY=3600000
+JWT_REFRESH_TOKEN_EXPIRY=86400000
 
-# External API Keys
 NAVER_CLIENT_ID=your_naver_client_id
 NAVER_CLIENT_SECRET=your_naver_client_secret
 KAKAO_API_KEY=your_kakao_api_key
@@ -106,31 +102,26 @@ LH_API_KEY=your_lh_api_key
 REALESTATE_API_KEY=your_realestate_api_key
 GEMINI_API_KEY=your_gemini_api_key
 
-# Email Configuration (Gmail SMTP)
 MAIL_HOST=smtp.gmail.com
 MAIL_PORT=587
 MAIL_USERNAME=your_email@gmail.com
 MAIL_PASSWORD=your_app_password
 
-# Application Configuration
 CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8080
 NEWS_CRAWL_ENABLED=true
 CHAT_DAILY_LIMIT=15
 SCHEDULER_ENABLED=true
 
-# Logging Configuration
 LOG_LEVEL=DEBUG
 LOG_FILE_PATH=./logs/application.log</code></pre>
-<br>
-<h5>Environment-Specific Configuration</h5>
 
-<p><strong>Development (<code>application-dev.yml</code>):</strong></p>
-<pre><code class="language-yaml">spring:
+        <h5>Environment-Specific Configuration</h5>
+        <p><strong>application-dev.yml</strong></p>
+        <pre><code class="language-yaml">spring:
   datasource:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false&allowPublicKeyRetrieval=true
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -138,14 +129,12 @@ LOG_FILE_PATH=./logs/application.log</code></pre>
     properties:
       hibernate:
         format_sql: true
-
 logging:
   level:
     org.cheonyakplanet.be: DEBUG
     org.springframework.web: DEBUG</code></pre>
-<br>
-<p><strong>Production (<code>application-prod.yml</code>):</strong></p>
-<pre><code class="language-yaml">spring:
+        <p><strong>application-prod.yml</strong></p>
+        <pre><code class="language-yaml">spring:
   datasource:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=true&requireSSL=true
     username: ${DB_USERNAME}
@@ -154,114 +143,86 @@ logging:
       maximum-pool-size: 20
       minimum-idle: 5
       connection-timeout: 30000
-
   jpa:
     hibernate:
       ddl-auto: validate
     show-sql: false
-
 logging:
   level:
     org.cheonyakplanet.be: INFO
     org.springframework.web: WARN</code></pre>
-<br>
-<h4>3. External API Setup</h4>
-<br>
-<h5>Naver News API</h5>
-<ol>
-<li>Visit <a href="https://developers.naver.com/">Naver Developers</a></li>
-<li>Create application and get Client ID/Secret</li>
-<li>Add to environment variables</li>
-</ol>
-<br>
-<h5>Kakao Developers</h5>
-<ol>
-<li>Visit <a href="https://developers.kakao.com/">Kakao Developers</a></li>
-<li>Create application for Maps API</li>
-<li>Get REST API key</li>
-</ol>
-<br>
-<h5>LH Corporation API</h5>
-<ol>
-<li>Visit <a href="https://www.data.go.kr/">Korea Data Portal</a></li>
-<li>Register for LH Corporation APIs</li>
-<li>Get service key</li>
-</ol>
-<br>
-<h5>Google Gemini API</h5>
-<ol>
-<li>Visit <a href="https://makersuite.google.com/">Google AI Studio</a></li>
-<li>Create project and get API key</li>
-<li>Enable Gemini Pro API</li>
-</ol>
-<br>
-<h3>🏃‍♂️ Running the Application</h3>
-<br>
-<h4>Development Mode</h4>
-<pre><code class="language-bash"># Run with development profile
-./gradlew bootRun --args='--spring.profiles.active=dev'
+      </article>
 
-# Or using environment variable
+      <article>
+        <h3>3. External API Setup</h3>
+        <h5>Naver News API</h5>
+        <ol>
+          <li>Visit <a href="https://developers.naver.com/">Naver Developers</a></li>
+          <li>Create application and obtain Client ID/Secret</li>
+          <li>Add to environment variables</li>
+        </ol>
+        <h5>Kakao Developers</h5>
+        <ol>
+          <li>Visit <a href="https://developers.kakao.com/">Kakao Developers</a></li>
+          <li>Create application for Maps API</li>
+          <li>Get REST API key</li>
+        </ol>
+        <h5>LH Corporation API</h5>
+        <ol>
+          <li>Visit <a href="https://www.data.go.kr/">Korea Data Portal</a></li>
+          <li>Register for LH APIs</li>
+          <li>Obtain service key</li>
+        </ol>
+        <h5>Google Gemini API</h5>
+        <ol>
+          <li>Visit <a href="https://makersuite.google.com/">Google AI Studio</a></li>
+          <li>Create project and get API key</li>
+          <li>Enable Gemini Pro API</li>
+        </ol>
+      </article>
+
+      <article>
+        <h3>🏃‍♂️ Running the Application</h3>
+        <h4>Development Mode</h4>
+        <pre><code class="language-bash">./gradlew bootRun --args='--spring.profiles.active=dev'
+# 또는
 export SPRING_PROFILES_ACTIVE=dev
 ./gradlew bootRun</code></pre>
-<br>
-<h4>Production Mode</h4>
-<pre><code class="language-bash"># Build production JAR
-./gradlew clean build -Pprod
-
-# Run production JAR
+        <h4>Production Mode</h4>
+        <pre><code class="language-bash">./gradlew clean build -Pprod
 java -jar -Dspring.profiles.active=prod build/libs/be-1.0.0.jar</code></pre>
-<br>
-<h4>Testing</h4>
-<pre><code class="language-bash"># Run all tests
-./gradlew test
-
-# Run specific test class
+        <h4>Testing</h4>
+        <pre><code class="language-bash">./gradlew test
 ./gradlew test --tests UserServiceTest
-
-# Generate coverage report
 ./gradlew jacocoTestReport
-
-# Verify coverage thresholds
 ./gradlew jacocoTestCoverageVerification</code></pre>
-<br>
-<h3>🐳 Docker Deployment</h3>
-<br>
-<h4>Dockerfile</h4>
-<pre><code class="language-dockerfile">FROM openjdk:17-jdk-slim
+      </article>
 
+      <article>
+        <h3>🐳 Docker Deployment</h3>
+        <h4>Dockerfile</h4>
+        <pre><code class="language-dockerfile">FROM openjdk:17-jdk-slim
 WORKDIR /app
-
-# Copy built JAR
 COPY build/libs/be-1.0.0.jar app.jar
-
-# Expose port
 EXPOSE 8080
-
-# Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
   CMD curl -f http://localhost:8080/actuator/health || exit 1
-
-# Run application
 ENTRYPOINT ["java", "-jar", "app.jar"]</code></pre>
-<br>
-<h4>Docker Compose</h4>
-<pre><code class="language-yaml">version: '3.8'
-
+        <h4>Docker Compose</h4>
+        <pre><code class="language-yaml">version: '3.8'
 services:
   app:
     build: .
     ports:
       - "8080:8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - DB_HOST=mysql
-      - DB_USERNAME=planet_user
-      - DB_PASSWORD=secure_password
+      SPRING_PROFILES_ACTIVE: prod
+      DB_HOST: mysql
+      DB_USERNAME: planet_user
+      DB_PASSWORD: secure_password
     depends_on:
       - mysql
     restart: unless-stopped
-
   mysql:
     image: mysql:8.0
     environment:
@@ -275,65 +236,39 @@ services:
       - mysql_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     restart: unless-stopped
-
 volumes:
   mysql_data:</code></pre>
-<br>
-<h4>Docker Commands</h4>
-<pre><code class="language-bash"># Build and run
-docker-compose up --build
-
-# Run in background
+        <h4>Docker Commands</h4>
+        <pre><code class="language-bash">docker-compose up --build
 docker-compose up -d
-
-# View logs
 docker-compose logs -f app
-
-# Stop services
 docker-compose down
-
-# Clean up
 docker-compose down -v</code></pre>
-<br>
-<h3>☁️ Cloud Deployment</h3>
-<br>
-<h4>AWS Deployment</h4>
-<br>
-<h5>EC2 Setup</h5>
-<pre><code class="language-bash"># Update system
-sudo yum update -y
+      </article>
 
-# Install Java 17
+      <article>
+        <h3>☁️ Cloud Deployment</h3>
+        <h4>AWS Deployment</h4>
+        <h5>EC2 Setup</h5>
+        <pre><code class="language-bash">sudo yum update -y
 sudo yum install java-17-amazon-corretto-devel -y
-
-# Install MySQL client
 sudo yum install mysql -y
-
-# Create application user
 sudo useradd -m -s /bin/bash cheonyak
-sudo mkdir -p /opt/cheonyakplanet
-sudo chown cheonyak:cheonyak /opt/cheonyakplanet</code></pre>
-<br>
-<h5>RDS Database Setup</h5>
-<ol>
-<li>Create RDS MySQL 8.0 instance</li>
-<li>Configure security groups for application access</li>
-<li>Create database and user:</li>
-</ol>
-
-<pre><code class="language-sql">CREATE DATABASE planet CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+sudo mkdir -p /opt/cheonyakplanet\sudo chown cheonyak:cheonyak /opt/cheonyakplanet</code></pre>
+        <h5>RDS Database Setup</h5>
+        <ol>
+          <li>Create RDS MySQL 8.0 instance</li>
+          <li>Configure security groups for application access</li>
+          <li>Create database and user</li>
+        </ol>
+        <pre><code class="language-sql">CREATE DATABASE planet CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE USER 'planet_user'@'%' IDENTIFIED BY 'secure_password';
 GRANT ALL PRIVILEGES ON planet.* TO 'planet_user'@'%';
 FLUSH PRIVILEGES;</code></pre>
-<br>
-<h5>Application Deployment</h5>
-<pre><code class="language-bash"># Copy JAR to server
-scp build/libs/be-1.0.0.jar ec2-user@your-server:/opt/cheonyakplanet/
-
-# Create systemd service
+        <h5>Application Deployment</h5>
+        <pre><code class="language-bash">scp build/libs/be-1.0.0.jar ec2-user@your-server:/opt/cheonyakplanet/
 sudo vim /etc/systemd/system/cheonyakplanet.service</code></pre>
-<br>
-<pre><code class="language-ini">[Unit]
+        <pre><code class="language-ini">[Unit]
 Description=CheonYakPlanet Application
 After=network.target
 
@@ -344,39 +279,25 @@ WorkingDirectory=/opt/cheonyakplanet
 ExecStart=/usr/bin/java -jar -Dspring.profiles.active=prod be-1.0.0.jar
 Restart=always
 RestartSec=10
-
 Environment=DB_HOST=your-rds-endpoint
 Environment=DB_USERNAME=planet_user
 Environment=DB_PASSWORD=secure_password
-Environment=JWT_SECRET=your_jwt_secret
-# ... other environment variables
 
 [Install]
 WantedBy=multi-user.target</code></pre>
-<br>
-<pre><code class="language-bash"># Enable and start service
-sudo systemctl daemon-reload
+        <pre><code class="language-bash">sudo systemctl daemon-reload
 sudo systemctl enable cheonyakplanet
 sudo systemctl start cheonyakplanet
-
-# Check status
 sudo systemctl status cheonyakplanet</code></pre>
-<br>
-<h4>Load Balancer Setup</h4>
-<pre><code class="language-bash"># Install nginx
-sudo yum install nginx -y
-
-# Configure nginx
+        <h5>Load Balancer Setup</h5>
+        <pre><code class="language-bash">sudo yum install nginx -y
 sudo vim /etc/nginx/nginx.conf</code></pre>
-<br>
-<pre><code class="language-nginx">upstream cheonyakplanet {
+        <pre><code class="language-nginx">upstream cheonyakplanet {
   server localhost:8080;
 }
-
 server {
   listen 80;
   server_name your-domain.com;
-
   location / {
     proxy_pass http://cheonyakplanet;
     proxy_set_header Host $host;
@@ -384,7 +305,6 @@ server {
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme;
   }
-
   location /ws/ {
     proxy_pass http://cheonyakplanet;
     proxy_http_version 1.1;
@@ -393,52 +313,37 @@ server {
     proxy_set_header Host $host;
   }
 }</code></pre>
-<br>
-<h3>🔒 Security Configuration</h3>
-<br>
-<h4>SSL/TLS Setup</h4>
-<pre><code class="language-bash"># Install certbot
-sudo yum install certbot python3-certbot-nginx -y
+      </article>
 
-# Get SSL certificate
+      <article>
+        <h3>🔒 Security Configuration</h3>
+        <h4>SSL/TLS Setup</h4>
+        <pre><code class="language-bash">sudo yum install certbot python3-certbot-nginx -y
 sudo certbot --nginx -d your-domain.com
-
-# Auto-renewal
 sudo crontab -e
-# Add: 0 12 * * * /usr/bin/certbot renew --quiet</code></pre>
-<br>
-<h4>Firewall Configuration</h4>
-<pre><code class="language-bash"># Configure security groups (AWS)
-# Allow ports: 22 (SSH), 80 (HTTP), 443 (HTTPS), 8080 (Application)
-
-# Or using ufw (Ubuntu)
-sudo ufw allow ssh
+# Add renewal job: 0 12 * * * /usr/bin/certbot renew --quiet</code></pre>
+        <h4>Firewall Configuration</h4>
+        <pre><code class="language-bash">sudo ufw allow ssh
 sudo ufw allow http
 sudo ufw allow https
 sudo ufw allow 8080
 sudo ufw enable</code></pre>
-<br>
-<h4>Database Security</h4>
-<pre><code class="language-sql">-- Remove default users
-DELETE FROM mysql.user WHERE User='';
-DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
-
--- Update root password
+        <h4>Database Security</h4>
+        <pre><code class="language-sql">DELETE FROM mysql.user WHERE User='';
+DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost','127.0.0.1','::1');
 ALTER USER 'root'@'localhost' IDENTIFIED BY 'strong_password';
-
--- Create application user with limited privileges
 CREATE USER 'planet_app'@'%' IDENTIFIED BY 'app_password';
-GRANT SELECT, INSERT, UPDATE, DELETE ON planet.* TO 'planet_app'@'%';</code></pre>
-<br>
-<h3>📊 Monitoring & Observability</h3>
-<br>
-<h4>Application Monitoring</h4>
-<pre><code class="language-yaml"># application.yml
-management:
+GRANT SELECT,INSERT,UPDATE,DELETE ON planet.* TO 'planet_app'@'%';</code></pre>
+      </article>
+
+      <article>
+        <h3>📊 Monitoring & Observability</h3>
+        <h4>Application Monitoring</h4>
+        <pre><code class="language-yaml">management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,prometheus
+        include: health, info, metrics, prometheus
   endpoint:
     health:
       show-details: always
@@ -446,9 +351,8 @@ management:
     export:
       prometheus:
         enabled: true</code></pre>
-<br>
-<h4>Log Configuration</h4>
-<pre><code class="language-xml">&lt;!-- logback-spring.xml --&gt;
+        <h4>Log Configuration</h4>
+        <pre><code class="language-xml">&lt;!-- logback-spring.xml --&gt;
 &lt;configuration&gt;
   &lt;springProfile name="prod"&gt;
     &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender"&gt;
@@ -461,174 +365,133 @@ management:
         &lt;pattern&gt;%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n&lt;/pattern&gt;
       &lt;/encoder&gt;
     &lt;/appender&gt;
-
     &lt;root level="INFO"&gt;
       &lt;appender-ref ref="FILE"/&gt;
     &lt;/root&gt;
   &lt;/springProfile&gt;
 &lt;/configuration&gt;</code></pre>
-<br>
-<h4>Health Checks</h4>
-<pre><code class="language-bash"># Application health
-curl http://localhost:8080/actuator/health
-
-# Database connectivity
+        <h4>Health Checks</h4>
+        <pre><code class="language-bash">curl http://localhost:8080/actuator/health
 curl http://localhost:8080/actuator/health/db
-
-# Custom health indicators
 curl http://localhost:8080/actuator/health/external-apis</code></pre>
-<br>
-<h3>🔄 CI/CD Pipeline</h3>
-<br>
-<h4>GitHub Actions</h4>
-<p>```yaml</p>
-<h2>.github/workflows/deploy.yml</h2>
-<p>name: Deploy to Production</p>
-<br>
-<p>on:</p>
-<p>push:</p>
-<p>branches: [main]</p>
-<br>
-<p>jobs:</p>
-<p>test:</p>
-<p>runs-on: ubuntu-latest</p>
-<p>steps:</p>
-<p>- uses: actions/checkout@v3</p>
-<br>
-<p>- name: Set up JDK 17</p>
-<p>uses: actions/setup-java@v3</p>
-<p>with:</p>
-<p>java-version: '17'</p>
-<p>distribution: 'temurin'</p>
-<br>
-<p>- name: Run tests</p>
-<p>run: ./gradlew test</p>
-<br>
-<p>- name: Generate coverage report</p>
-<p>run: ./gradlew jacocoTestReport</p>
-<br>
-<p>- name: Upload coverage to Codecov</p>
-<p>uses: codecov/codecov-action@v3</p>
-<br>
-<p>build:</p>
-<p>needs: test</p>
-<p>runs-on: ubuntu-latest</p>
-<p>steps:</p>
-<p>- uses: actions/checkout@v3</p>
-<br>
-<p>- name: Set up JDK 17</p>
-<p>uses: actions/setup-java@v3</p>
-<p>with:</p>
-<p>java-version: '17'</p>
-<p>distribution: 'temurin'</p>
-<br>
-<p>- name: Build application</p>
-<p>run: ./gradlew build -Pprod</p>
-<br>
-<p>- name: Build Docker image</p>
-<p>run: docker build -t cheonyakplanet:${{ github.sha }} .</p>
-<br>
-<p>- name: Deploy to server</p>
-<p>run: |</p>
-<p># Deploy script here</p>
-<p>```</p>
-<br>
-<h3>🛠️ Troubleshooting</h3>
-<br>
-<h4>Common Issues</h4>
-<br>
-<p>#### Database Connection Issues</p>
-<p>```bash</p>
-<h2>Check MySQL status</h2>
-<p>sudo systemctl status mysql</p>
-<br>
-<h2>Check connectivity</h2>
-<p>mysql -h $DB_HOST -P $DB_PORT -u $DB_USERNAME -p$DB_PASSWORD</p>
-<br>
-<h2>Check firewall</h2>
-<p>sudo ufw status</p>
-<p>```</p>
-<br>
-<p>#### Application Startup Issues</p>
-<p>```bash</p>
-<h2>Check logs</h2>
-<p>sudo journalctl -u cheonyakplanet -f</p>
-<br>
-<h2>Check port usage</h2>
-<p>sudo netstat -tlnp | grep 8080</p>
-<br>
-<h2>Check Java version</h2>
-<p>java -version</p>
-<p>```</p>
-<br>
-<p>#### Memory Issues</p>
-<p>```bash</p>
-<h2>Increase heap size</h2>
-<p>java -Xmx2048m -Xms1024m -jar app.jar</p>
-<br>
-<h2>Monitor memory usage</h2>
-<p>top -p $(pgrep java)</p>
-<p>```</p>
-<br>
-<h4>Performance Tuning</h4>
-<br>
-<p>#### JVM Options</p>
-<p>```bash</p>
-<h2>Production JVM settings</h2>
-<p>java -jar \</p>
-<p>-Xmx4g \</p>
-<p>-Xms2g \</p>
-<p>-XX:+UseG1GC \</p>
-<p>-XX:MaxGCPauseMillis=200 \</p>
-<p>-XX:+UseStringDeduplication \</p>
-<p>app.jar</p>
-<p>```</p>
-<br>
-<p>#### Database Optimization</p>
-<p>```sql</p>
-<p>-- Optimize queries</p>
-<p>EXPLAIN SELECT * FROM subscription_info WHERE region = 'Seoul';</p>
-<br>
-<p>-- Add indexes</p>
-<p>CREATE INDEX idx_subscription_region_city ON subscription_info(region, city);</p>
-<br>
-<p>-- Update statistics</p>
-<p>ANALYZE TABLE subscription_info;</p>
-<p>```</p>
-<br>
-<h3>📋 Deployment Checklist</h3>
-<br>
-<h4>Pre-deployment</h4>
-<li>[ ] Environment variables configured</li>
-<li>[ ] Database setup and migrated</li>
-<li>[ ] External API keys obtained and tested</li>
-<li>[ ] SSL certificates configured</li>
-<li>[ ] Firewall rules configured</li>
-<li>[ ] Monitoring setup</li>
-<li>[ ] Backup strategy implemented</li>
-<br>
-<h4>Post-deployment</h4>
-<li>[ ] Application health check passed</li>
-<li>[ ] All endpoints responding correctly</li>
-<li>[ ] WebSocket connections working</li>
-<li>[ ] Scheduled tasks running</li>
-<li>[ ] Logs generating properly</li>
-<li>[ ] Monitoring alerts configured</li>
-<li>[ ] Performance baseline established</li>
-<br>
-<h4>Rollback Plan</h4>
-<li>[ ] Previous version JAR available</li>
-<li>[ ] Database backup created</li>
-<li>[ ] Rollback script tested</li>
-<li>[ ] Team notification process</li>
-<li>[ ] Health check validation</li>
-<br>
-<p>---</p>
-<br>
-<p>**Deployment Guide Version**: 1.0</p>
-<p><strong>Last Updated</strong>: 2025-06-26</p>
-<p>**Environment**: Production-ready</p>
+      </article>
+
+      <article>
+        <h3>🔄 CI/CD Pipeline</h3>
+        <h4>GitHub Actions</h4>
+        <p><strong>.github/workflows/deploy.yml</strong></p>
+        <pre><code class="language-yaml">name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Run tests
+        run: ./gradlew test
+      - name: Generate coverage report
+        run: ./gradlew jacocoTestReport
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Build application
+        run: ./gradlew build -Pprod
+      - name: Build Docker image
+        run: docker build -t cheonyakplanet:${{ github.sha }} .
+      - name: Deploy to server
+        run: |
+          # Deploy script here
+          ssh user@server "docker pull cheonyakplanet:${{ github.sha }} && docker-compose up -d --remove-orphans"
+</code></pre>
+      </article>
+
+      <article>
+        <h3>🛠️ Troubleshooting</h3>
+        <h4>Common Issues</h4>
+        <h5>Database Connection Issues</h5>
+        <pre><code class="language-bash">sudo systemctl status mysql
+mysql -h $DB_HOST -P $DB_PORT -u $DB_USERNAME -p$DB_PASSWORD
+sudo ufw status</code></pre>
+        <h5>Application Startup Issues</h5>
+        <pre><code class="language-bash">sudo journalctl -u cheonyakplanet -f
+sudo netstat -tlnp | grep 8080
+java -version</code></pre>
+        <h5>Memory Issues</h5>
+        <pre><code class="language-bash">java -Xmx2048m -Xms1024m -jar app.jar
+top -p $(pgrep java)</code></pre>
+        <h4>Performance Tuning</h4>
+        <h5>JVM Options</h5>
+        <pre><code class="language-bash">java -jar \
+  -Xmx4g \
+  -Xms2g \
+  -XX:+UseG1GC \
+  -XX:MaxGCPauseMillis=200 \
+  -XX:+UseStringDeduplication \
+  app.jar</code></pre>
+        <h5>Database Optimization</h5>
+        <pre><code class="language-sql">EXPLAIN SELECT * FROM subscription_info WHERE region = 'Seoul';
+CREATE INDEX idx_subscription_region_city ON subscription_info(region, city);
+ANALYZE TABLE subscription_info;</code></pre>
+      </article>
+
+      <article>
+        <h3>📋 Deployment Checklist</h3>
+        <h5>Pre-deployment</h5>
+        <ul>
+          <li>[ ] Environment variables configured</li>
+          <li>[ ] Database setup and migrated</li>
+          <li>[ ] External API keys obtained and tested</li>
+          <li>[ ] SSL certificates configured</li>
+          <li>[ ] Firewall rules configured</li>
+          <li>[ ] Monitoring setup</li>
+          <li>[ ] Backup strategy implemented</li>
+        </ul>
+        <h5>Post-deployment</h5>
+        <ul>
+          <li>[ ] Application health check passed</li>
+          <li>[ ] All endpoints responding correctly</li>
+          <li>[ ] WebSocket connections working</li>
+          <li>[ ] Scheduled tasks running</li>
+          <li>[ ] Logs generating properly</li>
+          <li>[ ] Monitoring alerts configured</li>
+          <li>[ ] Performance baseline established</li>
+        </ul>
+        <h5>Rollback Plan</h5>
+        <ul>
+          <li>[ ] Previous version JAR available</li>
+          <li>[ ] Database backup created</li>
+          <li>[ ] Rollback script tested</li>
+          <li>[ ] Team notification process</li>
+          <li>[ ] Health check validation</li>
+        </ul> 
+      </article> 
+
+      <hr />
+      <p><strong>Deployment Guide Version</strong>: 1.0</p>
+      <p><strong>Last Updated</strong>: 2025-06-26</p>
+      <p><strong>Environment</strong>: Production-ready</p>
     </section>
+
+    <!-- Footer -->
     <footer class="footer">
       <p>Last Updated: 2025-06-26 | <a href="../index.html">문서 홈으로</a></p>
     </footer>
