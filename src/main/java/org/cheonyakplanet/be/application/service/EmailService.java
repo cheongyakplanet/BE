@@ -4,9 +4,10 @@ import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 import org.cheonyakplanet.be.domain.entity.user.User;
+import org.cheonyakplanet.be.domain.exception.CustomException;
+import org.cheonyakplanet.be.domain.exception.ErrorCode;
 import org.cheonyakplanet.be.domain.repository.UserRepository;
-import org.cheonyakplanet.be.presentation.exception.CustomException;
-import org.cheonyakplanet.be.presentation.exception.ErrorCode;
+import org.cheonyakplanet.be.infrastructure.cache.TokenCacheService;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;

@@ -12,7 +12,7 @@ import org.cheonyakplanet.be.application.dto.user.TokenResponse;
 import org.cheonyakplanet.be.application.dto.user.UserDTO;
 import org.cheonyakplanet.be.application.dto.user.UserUpdateRequestDTO;
 import org.cheonyakplanet.be.application.dto.user.UserUpdateResponseDTO;
-import org.cheonyakplanet.be.application.service.TokenCacheService;
+import org.cheonyakplanet.be.infrastructure.cache.TokenCacheService;
 import org.cheonyakplanet.be.application.service.UserService;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
 import org.springframework.http.HttpHeaders;

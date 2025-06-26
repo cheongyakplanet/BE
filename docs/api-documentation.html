@@ -24,624 +24,548 @@
             API documentation.</p>
         <br>
         <h4>Swagger Configuration</h4>
-        <li>**OpenAPI Version**: 3.0</li>
-        <li>**Authentication**: Bearer Token support</li>
-        <li>**Try It Out**: Interactive API testing</li>
-        <li>**Code Examples**: Multiple language examples</li>
+        <ul>
+            <li><strong>OpenAPI Version</strong>: 3.0</li>
+            <li><strong>Authentication</strong>: Bearer Token support</li>
+            <li><strong>Try It Out</strong>: Interactive API testing</li>
+            <li><strong>Code Examples</strong>: Multiple language examples</li>
+        </ul>
         <br>
         <p>---</p>
         <br>
-        <p>**API Documentation Version**: 1.0</p>
-        <p>**Last Updated**: 2025-06-19</p>
-        <p>**Base URL**: `https://run.blu2print.site:8082/api`</p>
+        <p><strong>API Documentation Version</strong>: 1.0</p>
+        <p><strong>Last Updated</strong>: 2025-06-26</p>
+        <p><strong>Base URL</strong>: <code>https://run.blu2print.site:8082/api</code></p>
         <br>
         <h3>🌐 API Overview</h3>
         <br>
         <p>CheonYakPlanet provides a comprehensive RESTful API for Korean real estate subscription management, along
             with WebSocket support for real-time chat functionality.</p>
         <br>
-        <p>**Base URL**: `https://run.blu2print.site:8082/api`</p>
-        <p>**Authentication**: JWT Bearer Token</p>
-        <p>**Content-Type**: `application/json`</p>
-        <p>**API Version**: 1.0</p>
+        <p><strong>Base URL</strong>: <code>https://run.blu2print.site:8082/api</code></p>
+        <p><strong>Authentication</strong>: JWT Bearer Token</p>
+        <p><strong>Content-Type</strong>: <code>application/json</code></p>
+        <p><strong>API Version</strong>: 1.0</p>
         <br>
         <h3>🔐 Authentication</h3>
         <br>
         <h4>Authentication Flow</h4>
-        <p>1. **Register**: `POST /api/member/signup`</p>
-        <p>2. **Login**: `POST /api/member/login`</p>
-        <p>3. **Use Token**: Include `Authorization: Bearer {access_token}` in headers</p>
-        <p>4. **Refresh**: `POST /api/member/refresh` when access token expires</p>
-        <p>5. **Logout**: `POST /api/member/logout`</p>
+        <ol>
+            <li><strong>Register</strong>: <code>POST /api/member/signup</code></li>
+            <li><strong>Login</strong>: <code>POST /api/member/login</code></li>
+            <li><strong>Use Token</strong>: Include <code>Authorization: Bearer {access_token}</code> in headers</li>
+            <li><strong>Refresh</strong>: <code>POST /api/member/refresh</code> when access token expires</li>
+            <li><strong>Logout</strong>: <code>POST /api/member/logout</code></li>
+        </ol>
         <br>
         <h4>Token Structure</h4>
-        <li>**Access Token**: 60 minutes lifespan</li>
-        <li>**Refresh Token**: 24 hours lifespan</li>
-        <li>**Storage**: Database with blacklisting support</li>
+        <ul>
+            <li><strong>Access Token</strong>: 60 minutes lifespan</li>
+            <li><strong>Refresh Token</strong>: 24 hours lifespan</li>
+            <li><strong>Storage</strong>: Database with blacklisting support</li>
+        </ul>
         <br>
         <h3>📚 API Endpoints</h3>
         <br>
         <h4>👤 User Management (`/api/member`)</h4>
         <br>
-        <p>#### Register User</p>
-        <p>```http</p>
-        <p>POST /api/member/signup</p>
-        <p>Content-Type: application/json</p>
+        <h5>Register User</h5>
+        <pre><code class="language-http">POST /api/member/signup
+Content-Type: application/json
+
+{
+  "email": "user@cheonyakplanet.com",
+  "password": "password123!",
+  "username": "청약초보",
+  "phoneNumber": "010-1234-5678"
+}</code></pre>
         <br>
-        <p>{</p>
-        <p>"email": "user@cheonyakplanet.com",</p>
-        <p>"password": "password123!",</p>
-        <p>"username": "청약초보",</p>
-        <p>"phoneNumber": "010-1234-5678"</p>
-        <p>}</p>
-        <p>```</p>
+        <p><strong>Response (200 OK):</strong></p>
+        <pre><code class="language-json">{
+  "status": "success",
+  "data": {
+    "email": "user@cheonyakplanet.com",
+    "username": "청약초보",
+    "role": "USER",
+    "status": "ACTIVE"
+  }
+}</code></pre>
         <br>
-        <p>**Response (200 OK):**</p>
-        <p>```json</p>
-        <p>{</p>
-        <p>"status": "success",</p>
-        <p>"data": {</p>
-        <p>"email": "user@cheonyakplanet.com",</p>
-        <p>"username": "청약초보",</p>
-        <p>"role": "USER",</p>
-        <p>"status": "ACTIVE"</p>
-        <p>}</p>
-        <p>}</p>
-        <p>```</p>
+        <h5>Login</h5>
+        <pre><code class="language-http">POST /api/member/login
+Content-Type: application/json
+
+{
+  "email": "user@cheonyakplanet.com",
+  "password": "password123!"
+}</code></pre>
         <br>
-        <p>#### Login</p>
-        <p>```http</p>
-        <p>POST /api/member/login</p>
-        <p>Content-Type: application/json</p>
+        <p><strong>Response (200 OK):</strong></p>
+        <pre><code class="language-json">{
+  "status": "success",
+  "data": {
+    "accessToken": "eyJhbGciOiJIUzI1NiJ9...",
+    "refreshToken": "eyJhbGciOiJIUzI1NiJ9...",
+    "tokenType": "Bearer",
+    "expiresIn": 3600
+  }
+}</code></pre>
         <br>
-        <p>{</p>
-        <p>"email": "user@cheonyakplanet.com",</p>
-        <p>"password": "password123!"</p>
-        <p>}</p>
-        <p>```</p>
+        <h5>Get User Profile</h5>
+        <pre><code class="language-http">GET /api/member/mypage
+Authorization: Bearer {access_token}</code></pre>
         <br>
-        <p>**Response (200 OK):**</p>
-        <p>```json</p>
-        <p>{</p>
-        <p>"status": "success",</p>
-        <p>"data": {</p>
-        <p>"accessToken": "eyJhbGciOiJIUzI1NiJ9...",</p>
-        <p>"refreshToken": "eyJhbGciOiJIUzI1NiJ9...",</p>
-        <p>"tokenType": "Bearer",</p>
-        <p>"expiresIn": 3600</p>
-        <p>}</p>
-        <p>}</p>
-        <p>```</p>
+        <p><strong>Response (200 OK):</strong></p>
+        <pre><code class="language-json">{
+  "status": "success",
+  "data": {
+    "email": "user@cheonyakplanet.com",
+    "username": "청약초보",
+    "phoneNumber": "010-1234-5678",
+    "marriageStatus": "기혼",
+    "numberOfChildren": 2,
+    "monthlyIncome": 500,
+    "totalAssets": 2000,
+    "hasHouse": false,
+    "interestLocations": ["서울특별시 강남구", "경기도 성남시"]
+  }
+}</code></pre>
         <br>
-        <p>#### Get User Profile</p>
-        <p>```http</p>
-        <p>GET /api/member/mypage</p>
-        <p>Authorization: Bearer {access_token}</p>
-        <p>```</p>
+        <h5>Update User Profile</h5>
+        <pre><code class="language-http">PUT /api/member/update
+Authorization: Bearer {access_token}
+Content-Type: application/json
+
+{
+  "username": "청약전문가",
+  "marriageStatus": "기혼",
+  "numberOfChildren": 2,
+  "monthlyIncome": 600,
+  "totalAssets": 2500,
+  "hasHouse": false
+}</code></pre>
         <br>
-        <p>**Response (200 OK):**</p>
-        <p>```json</p>
-        <p>{</p>
-        <p>"status": "success",</p>
-        <p>"data": {</p>
-        <p>"email": "user@cheonyakplanet.com",</p>
-        <p>"username": "청약초보",</p>
-        <p>"phoneNumber": "010-1234-5678",</p>
-        <p>"marriageStatus": "기혼",</p>
-        <p>"numberOfChildren": 2,</p>
-        <p>"monthlyIncome": 500,</p>
-        <p>"totalAssets": 2000,</p>
-        <p>"hasHouse": false,</p>
-        <p>"interestLocations": ["서울특별시 강남구", "경기도 성남시"]</p>
-        <p>}</p>
-        <p>}</p>
-        <p>```</p>
+        <h5>Add Interest Location</h5>
+        <pre><code class="language-http">POST /api/member/interest-location
+Authorization: Bearer {access_token}
+Content-Type: application/json
+
+{
+  "locations": ["서울특별시 강남구", "경기도 성남시", "서울특별시 서초구"]
+}</code></pre>
         <br>
-        <p>#### Update User Profile</p>
-        <p>```http</p>
-        <p>PUT /api/member/update</p>
-        <p>Authorization: Bearer {access_token}</p>
-        <p>Content-Type: application/json</p>
+        <h5>Refresh Token</h5>
+        <pre><code class="language-http">POST /api/member/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiJ9..."
+}</code></pre>
         <br>
-        <p>{</p>
-        <p>"username": "청약전문가",</p>
-        <p>"marriageStatus": "기혼",</p>
-        <p>"numberOfChildren": 2,</p>
-        <p>"monthlyIncome": 600,</p>
-        <p>"totalAssets": 2500,</p>
-        <p>"hasHouse": false</p>
-        <p>}</p>
-        <p>```</p>
-        <br>
-        <p>#### Add Interest Location</p>
-        <p>```http</p>
-        <p>POST /api/member/interest-location</p>
-        <p>Authorization: Bearer {access_token}</p>
-        <p>Content-Type: application/json</p>
-        <br>
-        <p>{</p>
-        <p>"locations": ["서울특별시 강남구", "경기도 성남시", "서울특별시 서초구"]</p>
-        <p>}</p>
-        <p>```</p>
-        <br>
-        <p>#### Refresh Token</p>
-        <p>```http</p>
-        <p>POST /api/member/refresh</p>
-        <p>Content-Type: application/json</p>
-        <br>
-        <p>{</p>
-        <p>"refreshToken": "eyJhbGciOiJIUzI1NiJ9..."</p>
-        <p>}</p>
-        <p>```</p>
-        <br>
-        <p>#### Logout</p>
-        <p>```http</p>
-        <p>POST /api/member/logout</p>
-        <p>Authorization: Bearer {access_token}</p>
-        <p>```</p>
+        <h5>Logout</h5>
+        <pre><code class="language-http">POST /api/member/logout
+Authorization: Bearer {access_token}</code></pre>
         <br>
         <h4>🏠 Subscription Information (`/api/info`)</h4>
         <br>
-        <p>#### Get Subscription Details</p>
-        <p>```http</p>
-        <p>GET /api/info/subscription/{subscriptionId}</p>
-        <p>Authorization: Bearer {access_token}</p>
-        <p>```</p>
+        <h5>Get Subscription Details</h5>
+        <pre><code class="language-http">GET /api/info/subscription/{subscriptionId}
+Authorization: Bearer {access_token}</code></pre>
         <br>
-        <p>**Response (200 OK):**</p>
-        <p>```json</p>
-        <p>{</p>
-        <p>"status": "success",</p>
-        <p>"data": {</p>
-        <p>"id": 1,</p>
-        <p>"houseName": "래미안 강남포레스트",</p>
-        <p>"houseManageNo": "2024000001",</p>
-        <p>"publicationNumber": "2024강남01",</p>
-        <p>"supplyLocation": "서울특별시 강남구 대치동",</p>
-        <p>"region": "서울특별시",</p>
-        <p>"city": "강남구",</p>
-        <p>"district": "대치동",</p>
-        <p>"receptionStartDate": "2024-07-01",</p>
-        <p>"receptionEndDate": "2024-07-03",</p>
-        <p>"specialSupplyStartDate": "2024-06-25",</p>
-        <p>"specialSupplyEndDate": "2024-06-27",</p>
-        <p>"coordinates": {</p>
-        <p>"latitude": 37.5665,</p>
-        <p>"longitude": 127.0015</p>
-        <p>},</p>
-        <p>"priceInfo": [</p>
-        <p>{</p>
-        <p>"housingType": "84㎡",</p>
-        <p>"supplyPrice": 1200000000,</p>
-        <p>"supplyCount": 100</p>
-        <p>}</p>
-        <p>],</p>
-        <p>"specialSupplyTargets": {</p>
-        <p>"multichild": 20,</p>
-        <p>"newlywed": 30,</p>
-        <p>"firstTime": 25</p>
-        <p>}</p>
-        <p>}</p>
-        <p>}</p>
-        <p>```</p>
+        <p><strong>Response (200 OK):</strong></p>
+        <pre><code class="language-json">{
+  "status": "success",
+  "data": {
+    "id": 1,
+    "houseName": "래미안 강남포레스트",
+    "houseManageNo": "2024000001",
+    "publicationNumber": "2024강남01",
+    "supplyLocation": "서울특별시 강남구 대치동",
+    "region": "서울특별시",
+    "city": "강남구",
+    "district": "대치동",
+    "receptionStartDate": "2024-07-01",
+    "receptionEndDate": "2024-07-03",
+    "specialSupplyStartDate": "2024-06-25",
+    "specialSupplyEndDate": "2024-06-27",
+    "coordinates": {
+      "latitude": 37.5665,
+      "longitude": 127.0015
+    },
+    "priceInfo": [
+      {
+        "housingType": "84㎡",
+        "supplyPrice": 1200000000,
+        "supplyCount": 100
+      }
+    ],
+    "specialSupplyTargets": {
+      "multichild": 20,
+      "newlywed": 30,
+      "firstTime": 25
+    }
+  }
+}</code></pre>
         <br>
-        <p>#### Search Subscriptions</p>
-        <p>```http</p>
-        <p>GET /api/info/subscriptions?region=서울특별시&city=강남구&page=0&size=10&sort=receptionStartDate,desc</p>
-        <p>Authorization: Bearer {access_token}</p>
-        <p>```</p>
+        <h5>Search Subscriptions</h5>
+        <pre><code class="language-http">GET /api/info/subscriptions?region=서울특별시&amp;city=강남구&amp;page=0&amp;size=10&amp;sort=receptionStartDate,desc
+Authorization: Bearer {access_token}</code></pre>
         <br>
-        <p>**Query Parameters:**</p>
-        <li>`region`: 시/도 (optional)</li>
-        <li>`city`: 시/군/구 (optional)</li>
-        <li>`year`: 년도 (optional)</li>
-        <li>`month`: 월 (optional)</li>
-        <li>`page`: 페이지 번호 (default: 0)</li>
-        <li>`size`: 페이지 크기 (default: 10)</li>
-        <li>`sort`: 정렬 기준 (default: receptionStartDate,desc)</li>
+        <p><strong>Query Parameters:</strong></p>
+        <ul>
+            <li><code>region</code>: 시/도 (optional)</li>
+            <li><code>city</code>: 시/군/구 (optional)</li>
+            <li><code>year</code>: 년도 (optional)</li>
+            <li><code>month</code>: 월 (optional)</li>
+            <li><code>page</code>: 페이지 번호 (default: 0)</li>
+            <li><code>size</code>: 페이지 크기 (default: 10)</li>
+            <li><code>sort</code>: 정렬 기준 (default: receptionStartDate,desc)</li>
+        </ul>
         <br>
-        <p>**Response (200 OK):**</p>
-        <p>```json</p>
-        <p>{</p>
-        <p>"status": "success",</p>
-        <p>"data": {</p>
-        <p>"content": [</p>
-        <p>{</p>
-        <p>"id": 1,</p>
-        <p>"houseName": "래미안 강남포레스트",</p>
-        <p>"supplyLocation": "서울특별시 강남구 대치동",</p>
-        <p>"receptionStartDate": "2024-07-01",</p>
-        <p>"receptionEndDate": "2024-07-03",</p>
-        <p>"isLiked": false</p>
-        <p>}</p>
-        <p>],</p>
-        <p>"pageable": {</p>
-        <p>"pageNumber": 0,</p>
-        <p>"pageSize": 10,</p>
-        <p>"sort": {</p>
-        <p>"sorted": true,</p>
-        <p>"orderBy": "receptionStartDate",</p>
-        <p>"direction": "DESC"</p>
-        <p>}</p>
-        <p>},</p>
-        <p>"totalElements": 150,</p>
-        <p>"totalPages": 15,</p>
-        <p>"first": true,</p>
-        <p>"last": false</p>
-        <p>}</p>
-        <p>}</p>
-        <p>```</p>
+        <p><strong>Response (200 OK):</strong></p>
+        <pre><code class="language-json">{
+  "status": "success",
+  "data": {
+    "content": [
+      {
+        "id": 1,
+        "houseName": "래미안 강남포레스트",
+        "supplyLocation": "서울특별시 강남구 대치동",
+        "receptionStartDate": "2024-07-01",
+        "receptionEndDate": "2024-07-03",
+        "isLiked": false
+      }
+    ],
+    "pageable": {
+      "pageNumber": 0,
+      "pageSize": 10,
+      "sort": {
+        "sorted": true,
+        "orderBy": "receptionStartDate",
+        "direction": "DESC"
+      }
+    },
+    "totalElements": 150,
+    "totalPages": 15,
+    "first": true,
+    "last": false
+  }
+}</code></pre>
         <br>
-        <p>#### Get User Interest Subscriptions</p>
-        <p>```http</p>
-        <p>GET /api/info/interest-subscriptions?page=0&size=10</p>
-        <p>Authorization: Bearer {access_token}</p>
-        <p>```</p>
+        <h5>Get User Interest Subscriptions</h5>
+        <pre><code class="language-http">GET /api/info/interest-subscriptions?page=0&amp;size=10
+Authorization: Bearer {access_token}</code></pre>
         <br>
-        <p>#### Get Infrastructure Information</p>
-        <p>```http</p>
-        <p>GET /api/info/infrastructure?latitude=37.5665&longitude=127.0015</p>
-        <p>Authorization: Bearer {access_token}</p>
-        <p>```</p>
+        <h5>Get Infrastructure Information</h5>
+        <pre><code class="language-http">GET /api/info/infrastructure?latitude=37.5665&amp;longitude=127.0015
+Authorization: Bearer {access_token}</code></pre>
         <br>
-        <p>**Response (200 OK):**</p>
-        <p>```json</p>
-        <p>{</p>
-        <p>"status": "success",</p>
-        <p>"data": {</p>
-        <p>"schools": [</p>
-        <p>{</p>
-        <p>"name": "대치초등학교",</p>
-        <p>"category": "초등학교",</p>
-        <p>"type": "공립",</p>
-        <p>"distance": 0.3,</p>
-        <p>"address": "서울특별시 강남구 대치동"</p>
-        <p>}</p>
-        <p>],</p>
-        <p>"stations": [</p>
-        <p>{</p>
-        <p>"name": "대치역",</p>
-        <p>"line": "3호선",</p>
-        <p>"type": "지하철",</p>
-        <p>"distance": 0.5</p>
-        <p>}</p>
-        <p>],</p>
-        <p>"publicFacilities": [</p>
-        <p>{</p>
-        <p>"name": "강남구청",</p>
-        <p>"category": "행정기관",</p>
-        <p>"distance": 1.2</p>
-        <p>}</p>
-        <p>]</p>
-        <p>}</p>
-        <p>}</p>
-        <p>```</p>
+        <p><strong>Response (200 OK):</strong></p>
+        <pre><code class="language-json">{
+  "status": "success",
+  "data": {
+    "schools": [
+      {
+        "name": "대치초등학교",
+        "category": "초등학교",
+        "type": "공립",
+        "distance": 0.3,
+        "address": "서울특별시 강남구 대치동"
+      }
+    ],
+    "stations": [
+      {
+        "name": "대치역",
+        "line": "3호선",
+        "type": "지하철",
+        "distance": 0.5
+      }
+    ],
+    "publicFacilities": [
+      {
+        "name": "강남구청",
+        "category": "행정기관",
+        "distance": 1.2
+      }
+    ]
+  }
+}</code></pre>
         <br>
-        <p>#### Like/Unlike Subscription</p>
-        <p>```http</p>
-        <p>POST /api/info/subscription/{subscriptionId}/like</p>
-        <p>Authorization: Bearer {access_token}</p>
-        <p>```</p>
+        <h5>Like/Unlike Subscription</h5>
+        <pre><code class="language-http">POST /api/info/subscription/{subscriptionId}/like
+Authorization: Bearer {access_token}</code></pre>
         <br>
-        <p>```http</p>
-        <p>DELETE /api/info/subscription/{subscriptionId}/like</p>
-        <p>Authorization: Bearer {access_token}</p>
-        <p>```</p>
+        <pre><code class="language-http">DELETE /api/info/subscription/{subscriptionId}/like
+Authorization: Bearer {access_token}</code></pre>
         <br>
         <h4>💬 Community (`/api/community`)</h4>
         <br>
-        <p>#### Get Posts</p>
-        <p>```http</p>
-        <p>GET /api/community/posts?category=SUBSCRIPTION_INQUIRY&page=0&size=10&sort=createdDate,desc</p>
-        <p>Authorization: Bearer {access_token}</p>
-        <p>```</p>
+        <h5>Get Posts</h5>
+        <pre><code class="language-http">GET /api/community/posts?category=SUBSCRIPTION_INQUIRY&amp;page=0&amp;size=10&amp;sort=createdDate,desc
+Authorization: Bearer {access_token}</code></pre>
         <br>
-        <p>**Query Parameters:**</p>
-        <li>`category`: POST 카테고리 (optional)</li>
-        <li>`search`: 검색어 (optional)</li>
-        <li>`page`: 페이지 번호 (default: 0)</li>
-        <li>`size`: 페이지 크기 (default: 10)</li>
-        <li>`sort`: 정렬 기준 (default: createdDate,desc)</li>
+        <p><strong>Query Parameters:</strong></p>
+        <ul>
+            <li><code>category</code>: POST 카테고리 (optional)</li>
+            <li><code>search</code>: 검색어 (optional)</li>
+            <li><code>page</code>: 페이지 번호 (default: 0)</li>
+            <li><code>size</code>: 페이지 크기 (default: 10)</li>
+            <li><code>sort</code>: 정렬 기준 (default: createdDate,desc)</li>
+        </ul>
         <br>
-        <p>**Response (200 OK):**</p>
-        <p>```json</p>
-        <p>{</p>
-        <p>"status": "success",</p>
-        <p>"data": {</p>
-        <p>"content": [</p>
-        <p>{</p>
-        <p>"id": 1,</p>
-        <p>"title": "강남구 청약 질문",</p>
-        <p>"content": "강남구 신규 분양 아파트 청약 자격 조건이 궁금합니다.",</p>
-        <p>"username": "청약초보",</p>
-        <p>"category": "SUBSCRIPTION_INQUIRY",</p>
-        <p>"views": 150,</p>
-        <p>"likes": 5,</p>
-        <p>"commentCount": 3,</p>
-        <p>"createdDate": "2024-06-19T10:30:00"</p>
-        <p>}</p>
-        <p>],</p>
-        <p>"totalElements": 50,</p>
-        <p>"totalPages": 5</p>
-        <p>}</p>
-        <p>}</p>
-        <p>```</p>
+        <p><strong>Response (200 OK):</strong></p>
+        <pre><code class="language-json">{
+  "status": "success",
+  "data": {
+    "content": [
+      {
+        "id": 1,
+        "title": "강남구 청약 질문",
+        "content": "강남구 신규 분양 아파트 청약 자격 조건이 궁금합니다.",
+        "username": "청약초보",
+        "category": "SUBSCRIPTION_INQUIRY",
+        "views": 150,
+        "likes": 5,
+        "commentCount": 3,
+        "createdDate": "2024-06-19T10:30:00"
+      }
+    ],
+    "totalElements": 50,
+    "totalPages": 5
+  }
+}</code></pre>
         <br>
-        <p>#### Create Post</p>
-        <p>```http</p>
-        <p>POST /api/community/posts</p>
-        <p>Authorization: Bearer {access_token}</p>
-        <p>Content-Type: application/json</p>
+        <h5>Create Post</h5>
+        <pre><code class="language-http">POST /api/community/posts
+Authorization: Bearer {access_token}
+Content-Type: application/json
+
+{
+  "title": "강남구 청약 질문",
+  "content": "강남구 신규 분양 아파트 청약 자격 조건이 궁금합니다.",
+  "category": "SUBSCRIPTION_INQUIRY"
+}</code></pre>
         <br>
-        <p>{</p>
-        <p>"title": "강남구 청약 질문",</p>
-        <p>"content": "강남구 신규 분양 아파트 청약 자격 조건이 궁금합니다.",</p>
-        <p>"category": "SUBSCRIPTION_INQUIRY"</p>
-        <p>}</p>
-        <p>```</p>
+        <h5>Get Post Details</h5>
+        <pre><code class="language-http">GET /api/community/posts/{postId}
+Authorization: Bearer {access_token}</code></pre>
         <br>
-        <p>#### Get Post Details</p>
-        <p>```http</p>
-        <p>GET /api/community/posts/{postId}</p>
-        <p>Authorization: Bearer {access_token}</p>
-        <p>```</p>
+        <p><strong>Response (200 OK):</strong></p>
+        <pre><code class="language-json">{
+  "status": "success",
+  "data": {
+    "id": 1,
+    "title": "강남구 청약 질문",
+    "content": "강남구 신규 분양 아파트 청약 자격 조건이 궁금합니다.",
+    "username": "청약초보",
+    "category": "SUBSCRIPTION_INQUIRY",
+    "views": 151,
+    "likes": 5,
+    "createdDate": "2024-06-19T10:30:00",
+    "comments": [
+      {
+        "id": 1,
+        "content": "1순위 자격은 청약통장 가입 기간과 지역에 따라 결정됩니다.",
+        "username": "청약전문가",
+        "createdDate": "2024-06-19T11:00:00",
+        "replies": [
+          {
+            "id": 1,
+            "content": "감사합니다! 추가 질문이 있어요.",
+            "username": "청약초보",
+            "createdDate": "2024-06-19T11:15:00"
+          }
+        ]
+      }
+    ]
+  }
+}</code></pre>
         <br>
-        <p>**Response (200 OK):**</p>
-        <p>```json</p>
-        <p>{</p>
-        <p>"status": "success",</p>
-        <p>"data": {</p>
-        <p>"id": 1,</p>
-        <p>"title": "강남구 청약 질문",</p>
-        <p>"content": "강남구 신규 분양 아파트 청약 자격 조건이 궁금합니다.",</p>
-        <p>"username": "청약초보",</p>
-        <p>"category": "SUBSCRIPTION_INQUIRY",</p>
-        <p>"views": 151,</p>
-        <p>"likes": 5,</p>
-        <p>"createdDate": "2024-06-19T10:30:00",</p>
-        <p>"comments": [</p>
-        <p>{</p>
-        <p>"id": 1,</p>
-        <p>"content": "1순위 자격은 청약통장 가입 기간과 지역에 따라 결정됩니다.",</p>
-        <p>"username": "청약전문가",</p>
-        <p>"createdDate": "2024-06-19T11:00:00",</p>
-        <p>"replies": [</p>
-        <p>{</p>
-        <p>"id": 1,</p>
-        <p>"content": "감사합니다! 추가 질문이 있어요.",</p>
-        <p>"username": "청약초보",</p>
-        <p>"createdDate": "2024-06-19T11:15:00"</p>
-        <p>}</p>
-        <p>]</p>
-        <p>}</p>
-        <p>]</p>
-        <p>}</p>
-        <p>}</p>
-        <p>```</p>
+        <h5>Like/Unlike Post</h5>
+        <pre><code class="language-http">POST /api/community/posts/{postId}/like
+Authorization: Bearer {access_token}</code></pre>
         <br>
-        <p>#### Like/Unlike Post</p>
-        <p>```http</p>
-        <p>POST /api/community/posts/{postId}/like</p>
-        <p>Authorization: Bearer {access_token}</p>
-        <p>```</p>
+        <pre><code class="language-http">POST /api/community/posts/{postId}/dislike
+Authorization: Bearer {access_token}</code></pre>
         <br>
-        <p>```http</p>
-        <p>POST /api/community/posts/{postId}/dislike</p>
-        <p>Authorization: Bearer {access_token}</p>
-        <p>```</p>
+        <h5>Add Comment</h5>
+        <pre><code class="language-http">POST /api/community/posts/{postId}/comments
+Authorization: Bearer {access_token}
+Content-Type: application/json
+
+{
+  "content": "1순위 자격은 청약통장 가입 기간과 지역에 따라 결정됩니다."
+}</code></pre>
         <br>
-        <p>#### Add Comment</p>
-        <p>```http</p>
-        <p>POST /api/community/posts/{postId}/comments</p>
-        <p>Authorization: Bearer {access_token}</p>
-        <p>Content-Type: application/json</p>
-        <br>
-        <p>{</p>
-        <p>"content": "1순위 자격은 청약통장 가입 기간과 지역에 따라 결정됩니다."</p>
-        <p>}</p>
-        <p>```</p>
-        <br>
-        <p>#### Add Reply</p>
-        <p>```http</p>
-        <p>POST /api/community/comments/{commentId}/replies</p>
-        <p>Authorization: Bearer {access_token}</p>
-        <p>Content-Type: application/json</p>
-        <br>
-        <p>{</p>
-        <p>"content": "감사합니다! 추가 질문이 있어요."</p>
-        <p>}</p>
-        <p>```</p>
+        <h5>Add Reply</h5>
+        <pre><code class="language-http">POST /api/community/comments/{commentId}/replies
+Authorization: Bearer {access_token}
+Content-Type: application/json
+
+{
+  "content": "감사합니다! 추가 질문이 있어요."
+}</code></pre>
         <br>
         <h4>🏦 Finance (`/api/finance`)</h4>
         <br>
-        <p>#### Get House Loans</p>
-        <p>```http</p>
-        <p>GET /api/finance/house-loans?page=0&size=10</p>
-        <p>Authorization: Bearer {access_token}</p>
-        <p>```</p>
+        <h5>Get House Loans</h5>
+        <pre><code class="language-http">GET /api/finance/house-loans?page=0&amp;size=10
+Authorization: Bearer {access_token}</code></pre>
         <br>
-        <p>**Response (200 OK):**</p>
-        <p>```json</p>
-        <p>{</p>
-        <p>"status": "success",</p>
-        <p>"data": {</p>
-        <p>"content": [</p>
-        <p>{</p>
-        <p>"id": 1,</p>
-        <p>"bankName": "국민은행",</p>
-        <p>"productName": "주택담보대출 우대형",</p>
-        <p>"joinMethod": "인터넷, 스마트폰, 영업점",</p>
-        <p>"loanLimit": "최대 10억원",</p>
-        <p>"interestRateMin": 3.5,</p>
-        <p>"interestRateMax": 5.2,</p>
-        <p>"interestRateAvg": 4.1</p>
-        <p>}</p>
-        <p>],</p>
-        <p>"totalElements": 25</p>
-        <p>}</p>
-        <p>}</p>
-        <p>```</p>
+        <p><strong>Response (200 OK):</strong></p>
+        <pre><code class="language-json">{
+  "status": "success",
+  "data": {
+    "content": [
+      {
+        "id": 1,
+        "bankName": "국민은행",
+        "productName": "주택담보대출 우대형",
+        "joinMethod": "인터넷, 스마트폰, 영업점",
+        "loanLimit": "최대 10억원",
+        "interestRateMin": 3.5,
+        "interestRateMax": 5.2,
+        "interestRateAvg": 4.1
+      }
+    ],
+    "totalElements": 25
+  }
+}</code></pre>
         <br>
-        <p>#### Get Mortgages</p>
-        <p>```http</p>
-        <p>GET /api/finance/mortgages?page=0&size=10</p>
-        <p>Authorization: Bearer {access_token}</p>
-        <p>```</p>
+        <h5>Get Mortgages</h5>
+        <pre><code class="language-http">GET /api/finance/mortgages?page=0&amp;size=10
+Authorization: Bearer {access_token}</code></pre>
         <br>
         <h4>📰 News (`/api/news`)</h4>
         <br>
-        <p>#### Manual News Crawl (Admin Only)</p>
-        <p>```http</p>
-        <p>POST /api/news/crawl</p>
-        <p>Authorization: Bearer {admin_access_token}</p>
-        <p>```</p>
+        <h5>Manual News Crawl (Admin Only)</h5>
+        <pre><code class="language-http">POST /api/news/crawl
+Authorization: Bearer {admin_access_token}</code></pre>
         <br>
-        <p>**Response (200 OK):**</p>
-        <p>```json</p>
-        <p>{</p>
-        <p>"status": "success",</p>
-        <p>"data": {</p>
-        <p>"message": "뉴스 크롤링이 완료되었습니다.",</p>
-        <p>"articlesProcessed": 45,</p>
-        <p>"categorizedNews": {</p>
-        <p>"policy": 12,</p>
-        <p>"subscription": 18,</p>
-        <p>"market": 15</p>
-        <p>}</p>
-        <p>}</p>
-        <p>}</p>
-        <p>```</p>
+        <p><strong>Response (200 OK):</strong></p>
+        <pre><code class="language-json">{
+  "status": "success",
+  "data": {
+    "message": "뉴스 크롤링이 완료되었습니다.",
+    "articlesProcessed": 45,
+    "categorizedNews": {
+      "policy": 12,
+      "subscription": 18,
+      "market": 15
+    }
+  }
+}</code></pre>
         <br>
         <h4>🏠 Home Dashboard (`/api/home`)</h4>
         <br>
-        <p>#### Get Dashboard Data</p>
-        <p>```http</p>
-        <p>GET /api/home/dashboard</p>
-        <p>Authorization: Bearer {access_token}</p>
-        <p>```</p>
+        <h5>Get Dashboard Data</h5>
+        <pre><code class="language-http">GET /api/home/dashboard
+Authorization: Bearer {access_token}</code></pre>
         <br>
-        <p>**Response (200 OK):**</p>
-        <p>```json</p>
-        <p>{</p>
-        <p>"status": "success",</p>
-        <p>"data": {</p>
-        <p>"popularLocations": [</p>
-        <p>{</p>
-        <p>"region": "서울특별시",</p>
-        <p>"city": "강남구",</p>
-        <p>"subscriptionCount": 15,</p>
-        <p>"popularity": 85</p>
-        <p>}</p>
-        <p>],</p>
-        <p>"recentSubscriptions": [</p>
-        <p>{</p>
-        <p>"id": 1,</p>
-        <p>"houseName": "래미안 강남포레스트",</p>
-        <p>"supplyLocation": "서울특별시 강남구 대치동",</p>
-        <p>"receptionStartDate": "2024-07-01"</p>
-        <p>}</p>
-        <p>],</p>
-        <p>"trendingPosts": [</p>
-        <p>{</p>
-        <p>"id": 1,</p>
-        <p>"title": "강남구 청약 질문",</p>
-        <p>"views": 150,</p>
-        <p>"likes": 5</p>
-        <p>}</p>
-        <p>]</p>
-        <p>}</p>
-        <p>}</p>
-        <p>```</p>
+        <p><strong>Response (200 OK):</strong></p>
+        <pre><code class="language-json">{
+  "status": "success",
+  "data": {
+    "popularLocations": [
+      {
+        "region": "서울특별시",
+        "city": "강남구",
+        "subscriptionCount": 15,
+        "popularity": 85
+      }
+    ],
+    "recentSubscriptions": [
+      {
+        "id": 1,
+        "houseName": "래미안 강남포레스트",
+        "supplyLocation": "서울특별시 강남구 대치동",
+        "receptionStartDate": "2024-07-01"
+      }
+    ],
+    "trendingPosts": [
+      {
+        "id": 1,
+        "title": "강남구 청약 질문",
+        "views": 150,
+        "likes": 5
+      }
+    ]
+  }
+}</code></pre>
         <br>
-        <p>#### Get Popular Locations</p>
-        <p>```http</p>
-        <p>GET /api/home/popular-locations</p>
-        <p>```</p>
+        <h5>Get Popular Locations</h5>
+        <pre><code class="language-http">GET /api/home/popular-locations</code></pre>
         <br>
         <h4>🔧 Admin Data Management (`/api/data`)</h4>
         <br>
-        <p>#### Refresh Subscription Data (Admin Only)</p>
-        <p>```http</p>
-        <p>POST /api/data/refresh-subscriptions</p>
-        <p>Authorization: Bearer {admin_access_token}</p>
-        <p>```</p>
+        <h5>Refresh Subscription Data (Admin Only)</h5>
+        <pre><code class="language-http">POST /api/data/refresh-subscriptions
+Authorization: Bearer {admin_access_token}</code></pre>
         <br>
-        <p>#### Update Real Estate Prices (Admin Only)</p>
-        <p>```http</p>
-        <p>POST /api/data/update-prices?yyyyMM=202406</p>
-        <p>Authorization: Bearer {admin_access_token}</p>
-        <p>```</p>
+        <h5>Update Real Estate Prices (Admin Only)</h5>
+        <pre><code class="language-http">POST /api/data/update-prices?yyyyMM=202406
+Authorization: Bearer {admin_access_token}</code></pre>
         <br>
         <h3>🔌 WebSocket API</h3>
         <br>
         <h4>Real-time Chat</h4>
         <br>
-        <p>#### Connection Endpoint</p>
-        <p>```</p>
-        <p>ws://localhost:8080/ws/chat</p>
-        <p>```</p>
+        <h5>Connection Endpoint</h5>
+        <pre><code>ws://localhost:8080/ws/chat</code></pre>
         <br>
-        <p>#### Authentication</p>
+        <h5>Authentication</h5>
         <p>Include JWT token in handshake:</p>
-        <p>```javascript</p>
-        <p>const token = "your_jwt_token";</p>
-        <p>const socket = new WebSocket(`ws://localhost:8080/ws/chat?token=${token}`);</p>
-        <p>```</p>
+        <pre><code class="language-javascript">const token = "your_jwt_token";
+const socket = new WebSocket(`ws://localhost:8080/ws/chat?token=${token}`);</code></pre>
         <br>
-        <p>#### Message Format</p>
-        <p>**Send Message:**</p>
-        <p>```json</p>
-        <p>{</p>
-        <p>"type": "chat",</p>
-        <p>"content": "강남구 청약 자격 조건이 궁금해요"</p>
-        <p>}</p>
-        <p>```</p>
+        <h5>Message Format</h5>
+        <p><strong>Send Message:</strong></p>
+        <pre><code class="language-json">{
+  "type": "chat",
+  "content": "강남구 청약 자격 조건이 궁금해요"
+}</code></pre>
         <br>
-        <p>**Receive Message:**</p>
-        <p>```json</p>
-        <p>{</p>
-        <p>"type": "response",</p>
-        <p>"content": "강남구 청약을 위해서는 다음 조건들을 확인해보세요:\n1. 청약통장 가입 기간\n2. 지역 거주 요건\n3. 소득 및 자산 조건",</p>
-        <p>"timestamp": "2024-06-19T14:30:00Z"</p>
-        <p>}</p>
-        <p>```</p>
+        <p><strong>Receive Message:</strong></p>
+        <pre><code class="language-json">{
+  "type": "response",
+  "content": "강남구 청약을 위해서는 다음 조건들을 확인해보세요:\n1. 청약통장 가입 기간\n2. 지역 거주 요건\n3. 소득 및 자산 조건",
+  "timestamp": "2024-06-19T14:30:00Z"
+}</code></pre>
         <br>
-        <p>#### Usage Limits</p>
-        <li>**Daily Limit**: 15 messages per user</li>
-        <li>**Rate Limiting**: 1 message per 2 seconds</li>
-        <li>**Session Timeout**: 30 minutes of inactivity</li>
+        <h5>Usage Limits</h5>
+        <ul>
+            <li><strong>Daily Limit</strong>: 15 messages per user</li>
+            <li><strong>Rate Limiting</strong>: 1 message per 2 seconds</li>
+            <li><strong>Session Timeout</strong>: 30 minutes of inactivity</li>
+        </ul>
         <br>
-        <p>#### Connection Events</p>
-        <p>```javascript</p>
-        <p>socket.onopen = function(event) {</p>
-        <p>console.log("Chat connected");</p>
-        <p>};</p>
-        <br>
-        <p>socket.onmessage = function(event) {</p>
-        <p>const message = JSON.parse(event.data);</p>
-        <p>console.log("AI Response:", message.content);</p>
-        <p>};</p>
-        <br>
-        <p>socket.onerror = function(error) {</p>
-        <p>console.log("WebSocket error:", error);</p>
-        <p>};</p>
-        <br>
-        <p>socket.onclose = function(event) {</p>
-        <p>console.log("Chat disconnected");</p>
-        <p>};</p>
-        <p>```</p>
+        <h5>Connection Events</h5>
+        <pre><code class="language-javascript">socket.onopen = function(event) {
+  console.log("Chat connected");
+};
+
+socket.onmessage = function(event) {
+  const message = JSON.parse(event.data);
+  console.log("AI Response:", message.content);
+};
+
+socket.onerror = function(error) {
+  console.log("WebSocket error:", error);
+};
+
+socket.onclose = function(event) {
+  console.log("Chat disconnected");
+};</code></pre>
         <br>
         <h3>📊 Response Format</h3>
         <br>
         <h4>Success Response</h4>
-        <p>```json</p>
-        <p>{</p>
-        <p>"status": "success",</p>
-        <p>"data": {</p>
-        <p>// Response data</p>
-        <p>}</p>
-        <p>}</p>
-        <p>```</p>
+        <pre><code class="language-json">{
+  "status": "success",
+  "data": {
+    // Response data
+  }
+}</code></pre>
         <br>
         <h4>Error Response</h4>
         <p>```json</p>
@@ -671,34 +595,38 @@
         <li>**SIGN004**: 유효하지 않은 이메일 형식입니다</li>
         <br>
         <h4>Community Errors</h4>
-        <li>**POST001**: 게시글을 찾을 수 없습니다</li>
-        <li>**POST002**: 게시글 작성 권한이 없습니다</li>
-        <li>**COMMENT001**: 댓글을 찾을 수 없습니다</li>
+        <ul>
+            <li><strong>POST001</strong>: 게시글을 찾을 수 없습니다</li>
+            <li><strong>POST002</strong>: 게시글 작성 권한이 없습니다</li>
+            <li><strong>COMMENT001</strong>: 댓글을 찾을 수 없습니다</li>
+        </ul>
         <br>
         <h4>Subscription Errors</h4>
-        <li>**SUB001**: 청약 정보를 찾을 수 없습니다</li>
-        <li>**SUB002**: 청약 기간이 아닙니다</li>
+        <ul>
+            <li><strong>SUB001</strong>: 청약 정보를 찾을 수 없습니다</li>
+            <li><strong>SUB002</strong>: 청약 기간이 아닙니다</li>
+        </ul>
         <br>
         <h3>🔄 Rate Limiting</h3>
         <br>
         <h4>API Rate Limits</h4>
-        <li>**Authentication**: 5 requests per minute per IP</li>
-        <li>**General API**: 100 requests per minute per user</li>
-        <li>**WebSocket**: 1 message per 2 seconds per user</li>
-        <li>**Admin API**: 10 requests per minute per admin</li>
+        <ul>
+            <li><strong>Authentication</strong>: 5 requests per minute per IP</li>
+            <li><strong>General API</strong>: 100 requests per minute per user</li>
+            <li><strong>WebSocket</strong>: 1 message per 2 seconds per user</li>
+            <li><strong>Admin API</strong>: 10 requests per minute per admin</li>
+        </ul>
         <br>
         <h4>Headers</h4>
         <p>Response includes rate limit headers:</p>
-        <p>```http</p>
-        <p>X-RateLimit-Limit: 100</p>
-        <p>X-RateLimit-Remaining: 95</p>
-        <p>X-RateLimit-Reset: 1624123456</p>
-        <p>```</p>
+        <pre><code class="language-http">X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 95
+X-RateLimit-Reset: 1624123456</code></pre>
         <br>
 
     </section>
     <footer class="footer">
-        <p>Last Updated: 2025-06-19 | <a href="index.html">문서 홈으로</a></p>
+        <p>Last Updated: 2025-06-26 | <a href="index.html">문서 홈으로</a></p>
     </footer>
 </div>
 </body>

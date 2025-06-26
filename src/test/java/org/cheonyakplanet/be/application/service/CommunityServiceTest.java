@@ -12,20 +12,22 @@ import java.util.Optional;
 import org.cheonyakplanet.be.application.dto.community.CommentDTO;
 import org.cheonyakplanet.be.application.dto.community.PostCreateDTO;
 import org.cheonyakplanet.be.application.dto.community.PostDTO;
-import org.cheonyakplanet.be.domain.entity.comunity.Comment;
-import org.cheonyakplanet.be.domain.entity.comunity.Post;
-import org.cheonyakplanet.be.domain.entity.comunity.PostReaction;
-import org.cheonyakplanet.be.domain.entity.comunity.ReactionType;
-import org.cheonyakplanet.be.domain.entity.comunity.Reply;
+import org.cheonyakplanet.be.application.dto.community.PostUpdateRequestDTO;
+import org.cheonyakplanet.be.domain.entity.community.Comment;
+import org.cheonyakplanet.be.domain.entity.community.Post;
+import org.cheonyakplanet.be.domain.entity.community.PostReaction;
+import org.cheonyakplanet.be.domain.entity.community.PostCategory;
+import org.cheonyakplanet.be.domain.entity.community.ReactionType;
+import org.cheonyakplanet.be.domain.entity.community.Reply;
 import org.cheonyakplanet.be.domain.entity.user.User;
 import org.cheonyakplanet.be.domain.entity.user.UserRoleEnum;
+import org.cheonyakplanet.be.domain.exception.CustomException;
+import org.cheonyakplanet.be.domain.exception.ErrorCode;
 import org.cheonyakplanet.be.domain.repository.CommentRepository;
 import org.cheonyakplanet.be.domain.repository.PostReactionRepository;
 import org.cheonyakplanet.be.domain.repository.PostRepository;
 import org.cheonyakplanet.be.domain.repository.ReplyRepository;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
-import org.cheonyakplanet.be.presentation.exception.CustomException;
-import org.cheonyakplanet.be.presentation.exception.ErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -74,6 +76,7 @@ class CommunityServiceTest {
 		postCreateDTO = new PostCreateDTO();
 		postCreateDTO.setTitle("테스트 제목");
 		postCreateDTO.setContent("테스트 내용");
+		postCreateDTO.setPostCategory("CHITCHAT");
 
 		// 테스트용 게시글 설정
 		testPost = Post.builder()
@@ -130,7 +133,8 @@ class CommunityServiceTest {
 
 		// then
 		verify(postRepository, times(1)).findById(postId);
-		verify(postRepository, times(1)).delete(testPost);
+		// Soft delete only sets deletedBy field, no repository.delete() call
+		assertThat(testPost.getDeletedBy()).isEqualTo("tester");
 	}
 
 	@Test
@@ -198,36 +202,57 @@ class CommunityServiceTest {
 		verify(postRepository, times(1)).findAllByDeletedAtIsNullAndIsBlindIsFalse(pageable);
 	}
 
-	// @Test
-	// @DisplayName("게시글 상세 조회 - 성공")
-	// void getPostById_Success() {
-	// 	// given
-	// 	Long postId = 1L;
-	// 	when(postRepository.findPostByIdAndDeletedAtIsNull(postId)).thenReturn(testPost);
-	//
-	// 	// when
-	// 	Post result = communityService.getPostById(postId);
-	//
-	// 	// then
-	// 	assertThat(result).isNotNull();
-	// 	assertThat(result.getId()).isEqualTo(postId);
-	// 	assertThat(result.getViews()).isEqualTo(1L); // views가 증가했는지 확인
-	// 	verify(postRepository, times(1)).findPostByIdAndDeletedAtIsNull(postId);
-	// }
+	@Test
+	@DisplayName("게시글 상세 조회 - 성공 (로그인된 사용자)")
+	void getPostById_Success_WithUser() {
+		// given
+		Long postId = 1L;
+		when(postRepository.findPostByIdAndDeletedAtIsNull(postId)).thenReturn(testPost);
+		when(reactionRepository.findByPostAndEmail(testPost, userDetails.getUsername()))
+			.thenReturn(Optional.empty());
 
-	// @Test
-	// @DisplayName("게시글 상세 조회 - 실패: 게시글이 존재하지 않음")
-	// void getPostById_NotFound() {
-	// 	// given
-	// 	Long postId = 1L;
-	// 	when(postRepository.findPostByIdAndDeletedAtIsNull(postId)).thenReturn(null);
-	//
-	// 	// when & then
-	// 	assertThrows(CustomException.class, () -> {
-	// 		communityService.getPostById(postId);
-	// 	});
-	// 	verify(postRepository, times(1)).findPostByIdAndDeletedAtIsNull(postId);
-	// }
+		// when
+		var result = communityService.getPostById(postId, userDetails);
+
+		// then
+		assertThat(result).isNotNull();
+		assertThat(result.getTitle()).isEqualTo("테스트 제목");
+		verify(postRepository, times(1)).findPostByIdAndDeletedAtIsNull(postId);
+		verify(reactionRepository, times(1)).findByPostAndEmail(testPost, userDetails.getUsername());
+	}
+
+	@Test
+	@DisplayName("게시글 상세 조회 - 성공 (비로그인 사용자)")
+	void getPostById_Success_WithoutUser() {
+		// given
+		Long postId = 1L;
+		when(postRepository.findPostByIdAndDeletedAtIsNull(postId)).thenReturn(testPost);
+
+		// when
+		var result = communityService.getPostById(postId, null);
+
+		// then
+		assertThat(result).isNotNull();
+		assertThat(result.getTitle()).isEqualTo("테스트 제목");
+		verify(postRepository, times(1)).findPostByIdAndDeletedAtIsNull(postId);
+		verify(reactionRepository, never()).findByPostAndEmail(any(), any());
+	}
+
+	@Test
+	@DisplayName("게시글 상세 조회 - 실패: 게시글이 존재하지 않음")
+	void getPostById_NotFound() {
+		// given
+		Long postId = 1L;
+		when(postRepository.findPostByIdAndDeletedAtIsNull(postId)).thenThrow(new RuntimeException("Post not found"));
+
+		// when & then
+		CustomException exception = assertThrows(CustomException.class, () -> {
+			communityService.getPostById(postId, userDetails);
+		});
+
+		assertThat(exception.getErrorCode()).isEqualTo(ErrorCode.COMU001);
+		verify(postRepository, times(1)).findPostByIdAndDeletedAtIsNull(postId);
+	}
 
 	@Test
 	@DisplayName("인기 게시글 조회 - 성공")
@@ -397,5 +422,280 @@ class CommunityServiceTest {
 		});
 		verify(commentRepository, times(1)).findById(commentId);
 		verify(replyRepository, never()).save(any());
+	}
+
+	@Test
+	@DisplayName("게시글 목록 조회 - 좋아요순 정렬")
+	void getAllPosts_SortByLikes() {
+		// given
+		String sort = "likes";
+		int page = 0;
+		int size = 10;
+		Pageable pageable = PageRequest.of(page, size, Sort.by("likes").descending());
+
+		List<Post> posts = List.of(testPost);
+		Page<Post> postPage = new PageImpl<>(posts, pageable, posts.size());
+
+		when(postRepository.findAllByDeletedAtIsNullAndIsBlindIsFalse(pageable)).thenReturn(postPage);
+
+		// when
+		Page<PostDTO> result = communityService.getAllPosts(sort, page, size);
+
+		// then
+		assertThat(result).isNotNull();
+		assertThat(result.getContent()).hasSize(1);
+		verify(postRepository, times(1)).findAllByDeletedAtIsNullAndIsBlindIsFalse(pageable);
+	}
+
+	@Test
+	@DisplayName("게시글 목록 조회 - 조회수순 정렬")
+	void getAllPosts_SortByViews() {
+		// given
+		String sort = "views";
+		int page = 0;
+		int size = 10;
+		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "views"));
+
+		List<Post> posts = List.of(testPost);
+		Page<Post> postPage = new PageImpl<>(posts, pageable, posts.size());
+
+		when(postRepository.findAllByDeletedAtIsNullAndIsBlindIsFalse(pageable)).thenReturn(postPage);
+
+		// when
+		Page<PostDTO> result = communityService.getAllPosts(sort, page, size);
+
+		// then
+		assertThat(result).isNotNull();
+		assertThat(result.getContent()).hasSize(1);
+		verify(postRepository, times(1)).findAllByDeletedAtIsNullAndIsBlindIsFalse(pageable);
+	}
+
+	@Test
+	@DisplayName("게시글 목록 조회 - 기본 정렬 (시간순)")
+	void getAllPosts_DefaultSort() {
+		// given
+		String sort = "unknown";
+		int page = 0;
+		int size = 10;
+		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+		List<Post> posts = List.of(testPost);
+		Page<Post> postPage = new PageImpl<>(posts, pageable, posts.size());
+
+		when(postRepository.findAllByDeletedAtIsNullAndIsBlindIsFalse(pageable)).thenReturn(postPage);
+
+		// when
+		Page<PostDTO> result = communityService.getAllPosts(sort, page, size);
+
+		// then
+		assertThat(result).isNotNull();
+		assertThat(result.getContent()).hasSize(1);
+		verify(postRepository, times(1)).findAllByDeletedAtIsNullAndIsBlindIsFalse(pageable);
+	}
+
+	@Test
+	@DisplayName("게시글 싫어요 - 성공")
+	void dislikePost_Success() {
+		// given
+		Long postId = 1L;
+		when(postRepository.findPostByIdAndDeletedAtIsNull(postId)).thenReturn(testPost);
+		when(reactionRepository.findByPostAndEmail(testPost, userDetails.getUsername()))
+			.thenReturn(Optional.empty());
+
+		// when
+		communityService.dislikePost(postId, userDetails);
+
+		// then
+		verify(postRepository, times(1)).findPostByIdAndDeletedAtIsNull(postId);
+		verify(reactionRepository, times(1)).findByPostAndEmail(testPost, userDetails.getUsername());
+		verify(reactionRepository, times(1)).save(any(PostReaction.class));
+		verify(postRepository, times(1)).save(testPost);
+	}
+
+	@Test
+	@DisplayName("게시글 싫어요 - 실패: 로그인하지 않음")
+	void dislikePost_NotLoggedIn() {
+		// given
+		Long postId = 1L;
+
+		// when & then
+		CustomException exception = assertThrows(CustomException.class, () -> {
+			communityService.dislikePost(postId, null);
+		});
+
+		assertThat(exception.getErrorCode()).isEqualTo(ErrorCode.SIGN000);
+		verify(postRepository, never()).findPostByIdAndDeletedAtIsNull(any());
+	}
+
+	@Test
+	@DisplayName("게시글 싫어요 - 실패: 게시글이 존재하지 않음")
+	void dislikePost_PostNotFound() {
+		// given
+		Long postId = 1L;
+		when(postRepository.findPostByIdAndDeletedAtIsNull(postId)).thenReturn(null);
+
+		// when & then
+		CustomException exception = assertThrows(CustomException.class, () -> {
+			communityService.dislikePost(postId, userDetails);
+		});
+
+		assertThat(exception.getErrorCode()).isEqualTo(ErrorCode.COMU001);
+		verify(postRepository, times(1)).findPostByIdAndDeletedAtIsNull(postId);
+	}
+
+	@Test
+	@DisplayName("게시글 좋아요 - 실패: 로그인하지 않음")
+	void likePost_NotLoggedIn() {
+		// given
+		Long postId = 1L;
+
+		// when & then
+		CustomException exception = assertThrows(CustomException.class, () -> {
+			communityService.likePost(postId, null);
+		});
+
+		assertThat(exception.getErrorCode()).isEqualTo(ErrorCode.SIGN000);
+		verify(postRepository, never()).findPostByIdAndDeletedAtIsNull(any());
+	}
+
+	@Test
+	@DisplayName("게시글 좋아요 - 실패: 게시글이 존재하지 않음")
+	void likePost_PostNotFound() {
+		// given
+		Long postId = 1L;
+		when(postRepository.findPostByIdAndDeletedAtIsNull(postId)).thenReturn(null);
+
+		// when & then
+		CustomException exception = assertThrows(CustomException.class, () -> {
+			communityService.likePost(postId, userDetails);
+		});
+
+		assertThat(exception.getErrorCode()).isEqualTo(ErrorCode.COMU001);
+		verify(postRepository, times(1)).findPostByIdAndDeletedAtIsNull(postId);
+	}
+
+	@Test
+	@DisplayName("댓글 ID로 댓글 조회 - 성공")
+	void getCommentById_Success() {
+		// given
+		Long commentId = 1L;
+		when(commentRepository.findById(commentId)).thenReturn(Optional.of(testComment));
+
+		// when
+		Comment result = communityService.getCommentById(commentId);
+
+		// then
+		assertThat(result).isNotNull();
+		assertThat(result.getId()).isEqualTo(commentId);
+		verify(commentRepository, times(1)).findById(commentId);
+	}
+
+	@Test
+	@DisplayName("댓글 ID로 댓글 조회 - 실패: 댓글이 존재하지 않음")
+	void getCommentById_NotFound() {
+		// given
+		Long commentId = 1L;
+		when(commentRepository.findById(commentId)).thenReturn(Optional.empty());
+
+		// when & then
+		RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+			communityService.getCommentById(commentId);
+		});
+
+		assertThat(exception.getMessage()).isEqualTo("Comment not found");
+		verify(commentRepository, times(1)).findById(commentId);
+	}
+
+	@Test
+	@DisplayName("게시글 수정 - 성공")
+	void updatePost_Success() {
+		// given
+		Long postId = 1L;
+		PostUpdateRequestDTO updateRequest = new PostUpdateRequestDTO(
+			"수정된 제목", "수정된 내용", PostCategory.INFO_SHARE
+		);
+
+		when(postRepository.findByIdAndDeletedAtIsNullAndBlindIsFalse(postId))
+			.thenReturn(Optional.of(testPost));
+
+		// when
+		PostDTO result = communityService.updatePost(postId, updateRequest, userDetails);
+
+		// then
+		assertThat(result).isNotNull();
+		assertThat(result.getTitle()).isEqualTo("수정된 제목");
+		assertThat(result.getContent()).isEqualTo("수정된 내용");
+		verify(postRepository, times(1)).findByIdAndDeletedAtIsNullAndBlindIsFalse(postId);
+	}
+
+	@Test
+	@DisplayName("게시글 수정 - 실패: 게시글이 존재하지 않음")
+	void updatePost_PostNotFound() {
+		// given
+		Long postId = 1L;
+		PostUpdateRequestDTO updateRequest = new PostUpdateRequestDTO(
+			"수정된 제목", "수정된 내용", PostCategory.INFO_SHARE
+		);
+
+		when(postRepository.findByIdAndDeletedAtIsNullAndBlindIsFalse(postId))
+			.thenReturn(Optional.empty());
+
+		// when & then
+		CustomException exception = assertThrows(CustomException.class, () -> {
+			communityService.updatePost(postId, updateRequest, userDetails);
+		});
+
+		assertThat(exception.getErrorCode()).isEqualTo(ErrorCode.COMU001);
+		verify(postRepository, times(1)).findByIdAndDeletedAtIsNullAndBlindIsFalse(postId);
+	}
+
+	@Test
+	@DisplayName("게시글 수정 - 실패: 권한 없음")
+	void updatePost_UnauthorizedUser() {
+		// given
+		Long postId = 1L;
+		PostUpdateRequestDTO updateRequest = new PostUpdateRequestDTO(
+			"수정된 제목", "수정된 내용", PostCategory.INFO_SHARE
+		);
+
+		Post otherUserPost = Post.builder()
+			.id(postId)
+			.username("otherUser")
+			.title("다른 사용자의 게시글")
+			.content("내용")
+			.build();
+
+		when(postRepository.findByIdAndDeletedAtIsNullAndBlindIsFalse(postId))
+			.thenReturn(Optional.of(otherUserPost));
+
+		// when & then
+		CustomException exception = assertThrows(CustomException.class, () -> {
+			communityService.updatePost(postId, updateRequest, userDetails);
+		});
+
+		assertThat(exception.getErrorCode()).isEqualTo(ErrorCode.COMU002);
+		verify(postRepository, times(1)).findByIdAndDeletedAtIsNullAndBlindIsFalse(postId);
+	}
+
+	@Test
+	@DisplayName("게시글 수정 - 부분 수정 (제목만)")
+	void updatePost_PartialUpdate_TitleOnly() {
+		// given
+		Long postId = 1L;
+		PostUpdateRequestDTO updateRequest = new PostUpdateRequestDTO(
+			"수정된 제목", null, null
+		);
+
+		when(postRepository.findByIdAndDeletedAtIsNullAndBlindIsFalse(postId))
+			.thenReturn(Optional.of(testPost));
+
+		// when
+		PostDTO result = communityService.updatePost(postId, updateRequest, userDetails);
+
+		// then
+		assertThat(result).isNotNull();
+		assertThat(result.getTitle()).isEqualTo("수정된 제목");
+		assertThat(result.getContent()).isEqualTo("테스트 내용"); // 기존 내용 유지
+		verify(postRepository, times(1)).findByIdAndDeletedAtIsNullAndBlindIsFalse(postId);
 	}
 }

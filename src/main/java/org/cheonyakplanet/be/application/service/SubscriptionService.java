@@ -16,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.cheonyakplanet.be.application.dto.subscriprtion.CoordinateResponseDTO;
+import org.cheonyakplanet.be.application.dto.subscription.CoordinateResponseDTO;
 import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionInfo;
 import org.cheonyakplanet.be.domain.entity.subscription.SubscriptionLocationInfo;
 import org.cheonyakplanet.be.domain.repository.SubscriptionInfoRepository;

@@ -80,6 +80,9 @@ public class WebSecurityConfig {
 				"/v3/api-docs/**",
 				"/swagger-ui/**",
 				"/swagger-ui.html",
+				"/swagger-resources/**",
+				"/webjars/**",
+				"/favicon.ico",
 				"/ws/**",
 				"/error"
 			).permitAll()
@@ -90,18 +93,17 @@ public class WebSecurityConfig {
 			// 3) 회원가입/로그인 등 공개 API
 			.requestMatchers("/api/member/**",
 				"/api/main/**",
-				"/api/community/post/",
 				"/api/info/subscription/**", "api/subscription/detail/view",
 				"loginpage").permitAll()
 
 			.requestMatchers(HttpMethod.GET, "api/community/posts").permitAll()
+			.requestMatchers(HttpMethod.GET, "/api/community/post/**").permitAll()
 
 			// 4) 나머지는 인증필요
 			.anyRequest().authenticated()
 		);
 		// JWT 예외 처리 필터 추가 (다른 필터보다 먼저 실행되어야 함)
 		http.addFilterBefore(jwtExceptionFilter(), corsFilter().getClass());
-
 		http.addFilterBefore(corsFilter(), JwtAuthenticationFilter.class);
 		http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
 		http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

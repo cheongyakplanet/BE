@@ -76,40 +76,59 @@ class FinanceServiceTest {
 			.build();
 	}
 
-	// @Test
-	// @DisplayName("주택담보대출 정보 업데이트 성공 테스트")
-	// void givenValidApiResponse_whenUpdateMortgageLoan_thenReturnSuccessMessage() {
-	// 	// Given: 외부 API에서 정상 응답을 반환하는 시나리오
-	// 	String mockApiResponse = """
-	// 		{
-	// 		    "result": {
-	// 		        "baseList": [
-	// 		            {
-	// 		                "fin_co_no": "0010001",
-	// 		                "fin_prdt_cd": "10110001001",
-	// 		                "kor_co_nm": "테스트은행",
-	// 		                "fin_prdt_nm": "테스트주택담보대출",
-	// 		                "lend_rate_type": "변동금리",
-	// 		                "lend_rate_min": 3.5,
-	// 		                "lend_rate_max": 5.5
-	// 		            }
-	// 		        ]
-	// 		    }
-	// 		}
-	// 		""";
-	//
-	// 	given(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class)))
-	// 		.willReturn(ResponseEntity.ok(mockApiResponse));
-	// 	given(mortgageRepository.saveAll(anyList())).willReturn(Arrays.asList(testMortgage));
-	//
-	// 	// When: 주택담보대출 정보 업데이트 메서드 호출
-	// 	String result = financeService.updateMortgageLoan();
-	//
-	// 	// Then: 성공 메시지가 반환되고 저장소에 데이터가 저장됨
-	// 	assertThat(result).contains("주택담보대출 정보가 업데이트되었습니다");
-	// 	then(restTemplate).should().exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class));
-	// 	then(mortgageRepository).should().saveAll(anyList());
-	// }
+	@Test
+	@DisplayName("주택담보대출 정보 업데이트 성공 테스트")
+	void givenValidApiResponse_whenUpdateMortgageLoan_thenReturnSuccessMessage() {
+		// Given: 외부 API에서 정상 응답을 반환하는 시나리오
+		String mockApiResponse = """
+			{
+			    "result": {
+			        "baseList": [
+			            {
+			                "fin_co_no": "0010001",
+			                "fin_prdt_cd": "10110001001",
+			                "kor_co_nm": "테스트은행",
+			                "fin_prdt_nm": "테스트주택담보대출",
+			                "dcls_month": "202312",
+			                "join_way": "인터넷",
+			                "loan_inci_expn": "취급수수료 없음",
+			                "erly_rpay_fee": "중도상환수수료 1%",
+			                "dly_rate": "연체금리 3%",
+			                "loan_lmt": "5억원",
+			                "dcls_strt_day": "2023-12-01",
+			                "dcls_end_day": "2023-12-31",
+			                "fin_co_subm_day": "2023-12-01"
+			            }
+			        ],
+			        "optionList": [
+			            {
+			                "fin_prdt_cd": "10110001001",
+			                "mrtg_type": "주택담보대출",
+			                "mrtg_type_nm": "아파트담보",
+			                "rpay_type": "원리금균등상환",
+			                "rpay_type_nm": "원리금균등상환",
+			                "lend_rate_type": "변동금리",
+			                "lend_rate_type_nm": "변동금리",
+			                "lend_rate_min": 3.5,
+			                "lend_rate_max": 5.5,
+			                "lend_rate_avg": 4.5
+			            }
+			        ]
+			    }
+			}
+			""";
+
+		given(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class)))
+			.willReturn(ResponseEntity.ok(mockApiResponse));
+
+		// When: 주택담보대출 정보 업데이트 메서드 호출
+		String result = financeService.updateMortgageLoan();
+
+		// Then: 성공 메시지가 반환되고 저장소에 데이터가 저장됨
+		assertThat(result).contains("주택담보대출 정보가 업데이트되었습니다");
+		then(restTemplate).should().exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class));
+		then(mortgageRepository).should().save(any(Mortgage.class));
+	}
 
 	@Test
 	@DisplayName("주택담보대출 정보 업데이트 실패 테스트 - API 호출 오류")
@@ -126,40 +145,57 @@ class FinanceServiceTest {
 		then(mortgageRepository).should(never()).saveAll(anyList());
 	}
 
-	// @Test
-	// @DisplayName("전세자금대출 정보 업데이트 성공 테스트")
-	// void givenValidApiResponse_whenUpdateRentHouseLoan_thenReturnSuccessMessage() {
-	// 	// Given: 전세자금대출 API에서 정상 응답을 반환하는 시나리오
-	// 	String mockApiResponse = """
-	// 		{
-	// 		    "result": {
-	// 		        "baseList": [
-	// 		            {
-	// 		                "fin_co_no": "0010002",
-	// 		                "fin_prdt_cd": "10110002001",
-	// 		                "kor_co_nm": "테스트저축은행",
-	// 		                "fin_prdt_nm": "테스트전세자금대출",
-	// 		                "lend_rate_type": "고정금리",
-	// 		                "lend_rate_min": 2.8,
-	// 		                "lend_rate_max": 4.2
-	// 		            }
-	// 		        ]
-	// 		    }
-	// 		}
-	// 		""";
-	//
-	// 	given(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class)))
-	// 		.willReturn(ResponseEntity.ok(mockApiResponse));
-	// 	given(houseLoanRepository.saveAll(anyList())).willReturn(Arrays.asList(testHouseLoan));
-	//
-	// 	// When: 전세자금대출 정보 업데이트 메서드 호출
-	// 	String result = financeService.updateRentHouseLoan();
-	//
-	// 	// Then: 성공 메시지가 반환되고 저장소에 데이터가 저장됨
-	// 	assertThat(result).contains("전세자금대출 정보가 업데이트되었습니다");
-	// 	then(restTemplate).should().exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class));
-	// 	then(houseLoanRepository).should().saveAll(anyList());
-	// }
+	@Test
+	@DisplayName("전세자금대출 정보 업데이트 성공 테스트")
+	void givenValidApiResponse_whenUpdateRentHouseLoan_thenReturnSuccessMessage() {
+		// Given: 전세자금대출 API에서 정상 응답을 반환하는 시나리오
+		String mockApiResponse = """
+			{
+			    "result": {
+			        "baseList": [
+			            {
+			                "fin_co_no": "0010002",
+			                "fin_prdt_cd": "10110002001",
+			                "kor_co_nm": "테스트저축은행",
+			                "fin_prdt_nm": "테스트전세자금대출",
+			                "dcls_month": "202312",
+			                "join_way": "인터넷",
+			                "loan_inci_expn": "취급수수료 없음",
+			                "erly_rpay_fee": "중도상환수수료 1%",
+			                "dly_rate": "연체금리 3%",
+			                "loan_lmt": "3억원",
+			                "dcls_strt_day": "2023-12-01",
+			                "dcls_end_day": "2023-12-31",
+			                "fin_co_subm_day": "2023-12-01"
+			            }
+			        ],
+			        "optionList": [
+			            {
+			                "fin_prdt_cd": "10110002001",
+			                "rpay_type": "원리금균등상환",
+			                "rpay_type_nm": "원리금균등상환",
+			                "lend_rate_type": "고정금리",
+			                "lend_rate_type_nm": "고정금리",
+			                "lend_rate_min": 2.8,
+			                "lend_rate_max": 4.2,
+			                "lend_rate_avg": 3.5
+			            }
+			        ]
+			    }
+			}
+			""";
+
+		given(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class)))
+			.willReturn(ResponseEntity.ok(mockApiResponse));
+
+		// When: 전세자금대출 정보 업데이트 메서드 호출
+		String result = financeService.updateRentHouseLoan();
+
+		// Then: 성공 메시지가 반환되고 저장소에 데이터가 저장됨
+		assertThat(result).contains("전세자금대출 정보가 업데이트되었습니다");
+		then(restTemplate).should().exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class));
+		then(houseLoanRepository).should().save(any(HouseLoan.class));
+	}
 
 	@Test
 	@DisplayName("전세자금대출 정보 업데이트 실패 테스트 - 잘못된 JSON 응답")
@@ -178,87 +214,43 @@ class FinanceServiceTest {
 		then(houseLoanRepository).should(never()).saveAll(anyList());
 	}
 
-	// @Test
-	// @DisplayName("주택담보대출 목록 조회 성공 테스트")
-	// void givenMortgageDataExists_whenGetMortgageList_thenReturnMortgageList() {
-	// 	// Given: 저장소에 주택담보대출 데이터가 존재하는 시나리오
-	// 	List<Mortgage> mortgageList = Arrays.asList(testMortgage);
-	// 	given(mortgageRepository.findAll()).willReturn(mortgageList);
-	//
-	// 	// When: 주택담보대출 목록 조회 메서드 호출
-	// 	List<MortgageDTO> result = financeService.getMortgageList();
-	//
-	// 	// Then: 주택담보대출 DTO 목록이 반환됨
-	// 	assertThat(result).hasSize(1);
-	// 	assertThat(result.get(0).getKorCoNm()).isEqualTo("테스트은행");
-	// 	assertThat(result.get(0).getFinPrdtNm()).isEqualTo("테스트주택담보대출");
-	// 	assertThat(result.get(0).getLendRateMin()).isEqualTo(3.5f);
-	// 	then(mortgageRepository).should().findAll();
-	// }
-	//
-	// @Test
-	// @DisplayName("주택담보대출 목록 조회 테스트 - 데이터 없음")
-	// void givenNoMortgageData_whenGetMortgageList_thenReturnEmptyList() {
-	// 	// Given: 저장소에 주택담보대출 데이터가 없는 시나리오
-	// 	given(mortgageRepository.findAll()).willReturn(Arrays.asList());
-	//
-	// 	// When: 주택담보대출 목록 조회 메서드 호출
-	// 	List<MortgageDTO> result = financeService.getMortgageList();
-	//
-	// 	// Then: 빈 목록이 반환됨
-	// 	assertThat(result).isEmpty();
-	// 	then(mortgageRepository).should().findAll();
-	// }
-	//
-	// @Test
-	// @DisplayName("전세자금대출 목록 조회 성공 테스트")
-	// void givenHouseLoanDataExists_whenGetHouseLoanList_thenReturnHouseLoanList() {
-	// 	// Given: 저장소에 전세자금대출 데이터가 존재하는 시나리오
-	// 	List<HouseLoan> houseLoanList = Arrays.asList(testHouseLoan);
-	// 	given(houseLoanRepository.findAll()).willReturn(houseLoanList);
-	//
-	// 	// When: 전세자금대출 목록 조회 메서드 호출
-	// 	List<HouseLoanDTO> result = financeService.getHouseLoanList();
-	//
-	// 	// Then: 전세자금대출 DTO 목록이 반환됨
-	// 	assertThat(result).hasSize(1);
-	// 	assertThat(result.get(0).getKorCoNm()).isEqualTo("테스트저축은행");
-	// 	assertThat(result.get(0).getFinPrdtNm()).isEqualTo("테스트전세자금대출");
-	// 	assertThat(result.get(0).getLendRateType()).isEqualTo("고정금리");
-	// 	then(houseLoanRepository).should().findAll();
-	// }
-	//
-	// @Test
-	// @DisplayName("금리별 주택담보대출 필터링 테스트")
-	// void givenMortgageDataWithDifferentRates_whenGetMortgageList_thenVerifyRateFiltering() {
-	// 	// Given: 다양한 금리의 주택담보대출 데이터가 존재하는 시나리오
-	// 	Mortgage lowRateMortgage = Mortgage.builder()
-	// 		.finCoNo("0010003")
-	// 		.korCoNm("저금리은행")
-	// 		.finPrdtNm("저금리상품")
-	// 		.lendRateMin(2.0)
-	// 		.lendRateMax(3.0)
-	// 		.build();
-	//
-	// 	Mortgage highRateMortgage = Mortgage.builder()
-	// 		.finCoNo("0010004")
-	// 		.korCoNm("고금리은행")
-	// 		.finPrdtNm("고금리상품")
-	// 		.lendRateMin(5.0)
-	// 		.lendRateMax(7.0)
-	// 		.build();
-	//
-	// 	List<Mortgage> mortgageList = Arrays.asList(lowRateMortgage, testMortgage, highRateMortgage);
-	// 	given(mortgageRepository.findAll()).willReturn(mortgageList);
-	//
-	// 	// When: 주택담보대출 목록 조회 메서드 호출
-	// 	List<MortgageDTO> result = financeService.getMortgageList();
-	//
-	// 	// Then: 모든 상품이 조회되고 금리 정보가 정확히 매핑됨
-	// 	assertThat(result).hasSize(3);
-	// 	assertThat(result).extracting(MortgageDTO::getLendRateMin)
-	// 		.containsExactly(2.0, 3.5, 5.0);
-	// 	assertThat(result).extracting(MortgageDTO::getLendRateMax)
-	// 		.containsExactly(3.0, 5.5, 7.0);
-	// }
+	@Test
+	@DisplayName("주택담보대출 정보 업데이트 - 빈 응답 처리")
+	void givenEmptyApiResponse_whenUpdateMortgageLoan_thenReturnSuccessMessage() {
+		// Given: 빈 데이터 응답
+		String emptyApiResponse = """
+			{
+			    "result": {
+			        "baseList": [],
+			        "optionList": []
+			    }
+			}
+			""";
+
+		given(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class)))
+			.willReturn(ResponseEntity.ok(emptyApiResponse));
+
+		// When: 주택담보대출 정보 업데이트 메서드 호출
+		String result = financeService.updateMortgageLoan();
+
+		// Then: 성공 메시지가 반환되지만 저장은 발생하지 않음
+		assertThat(result).contains("주택담보대출 정보가 업데이트되었습니다");
+		then(restTemplate).should().exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class));
+		then(mortgageRepository).should(never()).save(any(Mortgage.class));
+	}
+
+	@Test
+	@DisplayName("전세자금대출 정보 업데이트 실패 테스트 - API 호출 오류")
+	void givenApiCallFails_whenUpdateRentHouseLoan_thenReturnErrorMessage() {
+		// Given: 외부 API 호출 시 예외가 발생하는 시나리오
+		given(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class)))
+			.willThrow(new RestClientException("API 연결 실패"));
+
+		// When: 전세자금대출 정보 업데이트 메서드 호출
+		String result = financeService.updateRentHouseLoan();
+
+		// Then: 오류 메시지가 반환되고 저장소 호출이 발생하지 않음
+		assertThat(result).contains("API 데이터 처리 중 오류 발생");
+		then(houseLoanRepository).should(never()).save(any(HouseLoan.class));
+	}
 }

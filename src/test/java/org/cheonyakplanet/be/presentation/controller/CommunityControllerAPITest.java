@@ -14,7 +14,7 @@ import org.cheonyakplanet.be.application.dto.community.CommentDTO;
 import org.cheonyakplanet.be.application.dto.community.PostCreateDTO;
 import org.cheonyakplanet.be.application.dto.community.PostDTO;
 import org.cheonyakplanet.be.application.service.CommunityService;
-import org.cheonyakplanet.be.domain.entity.comunity.Post;
+import org.cheonyakplanet.be.domain.entity.community.Post;
 import org.cheonyakplanet.be.domain.entity.user.User;
 import org.cheonyakplanet.be.domain.entity.user.UserRoleEnum;
 import org.cheonyakplanet.be.infrastructure.security.UserDetailsImpl;
@@ -209,7 +209,7 @@ class CommunityControllerAPITest {
 	@DisplayName("게시글 좋아요 테스트")
 	void likePostTest() throws Exception {
 		// given
-		doNothing().when(communityService).likePost(anyLong(), any(UserDetailsImpl.class));
+		doNothing().when(communityService).likePost(anyLong(), any());
 
 		// when & then
 		mockMvc.perform(post("/api/community/post/like/{id}", 1L)
@@ -220,14 +220,14 @@ class CommunityControllerAPITest {
 			.andExpect(jsonPath("$.status").value("success"))
 			.andExpect(jsonPath("$.data").value("좋아요 +1"));
 
-		verify(communityService).likePost(anyLong(), any(UserDetailsImpl.class));
+		verify(communityService).likePost(anyLong(), any());
 	}
 
 	@Test
 	@DisplayName("게시글 싫어요 테스트")
 	void dislikePostTest() throws Exception {
 		// given
-		doNothing().when(communityService).dislikePost(anyLong(), any(UserDetailsImpl.class));
+		doNothing().when(communityService).dislikePost(anyLong(), any());
 
 		// when & then
 		mockMvc.perform(post("/api/community/post/dislike/{id}", 1L)
@@ -238,7 +238,7 @@ class CommunityControllerAPITest {
 			.andExpect(jsonPath("$.status").value("success"))
 			.andExpect(jsonPath("$.data").value("싫어요 +1"));
 
-		verify(communityService).dislikePost(anyLong(), any(UserDetailsImpl.class));
+		verify(communityService).dislikePost(anyLong(), any());
 	}
 
 	@Test

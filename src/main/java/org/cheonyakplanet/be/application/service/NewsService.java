@@ -13,8 +13,8 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.cheonyakplanet.be.domain.entity.comunity.Post;
-import org.cheonyakplanet.be.domain.entity.comunity.PostCategory;
+import org.cheonyakplanet.be.domain.entity.community.Post;
+import org.cheonyakplanet.be.domain.entity.community.PostCategory;
 import org.cheonyakplanet.be.domain.entity.user.User;
 import org.cheonyakplanet.be.domain.repository.PostRepository;
 import org.cheonyakplanet.be.domain.repository.UserRepository;
