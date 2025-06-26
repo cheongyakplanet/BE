@@ -26,11 +26,23 @@
         <h3>전체 검증 (테스트 + 커버리지)</h3>
         <pre><code class="language-bash">./gradlew check</code></pre>
 
-        <h2>커버리지 기준</h2>
+        <h2>현재 커버리지 현황</h2>
+        <div class="coverage-status">
+            <h3>전체 프로젝트 현황 (2025-06-26 기준)</h3>
+            <ul>
+                <li><strong>전체 라인 커버리지</strong>: 7% (183/2613)</li>
+                <li><strong>클래스 커버리지</strong>: 38.4% (58/151)</li>
+                <li><strong>메서드 커버리지</strong>: 9.4% (105/1121)</li>
+                <li><strong>브랜치 커버리지</strong>: 0% (0/3130)</li>
+            </ul>
+        </div>
+
+        <h2>커버리지 목표 기준</h2>
 
         <h3>전체 프로젝트</h3>
         <ul>
-            <li><strong>최소 커버리지</strong>: 70%</li>
+            <li><strong>목표 최소 커버리지</strong>: 70%</li>
+            <li><strong>현재 상태</strong>: 7% - 개선 필요</li>
         </ul>
 
         <h3>서비스 클래스</h3>
@@ -190,6 +202,23 @@ class UserServiceTest {
             <li>무거운 통합 테스트는 별도 분리</li>
         </ol>
 
+        <h2>우선 개선 영역</h2>
+        <p>현재 커버리지 현황에 따른 우선 개선 영역:</p>
+        
+        <h3>높은 우선순위</h3>
+        <ul>
+            <li><strong>서비스 레이어</strong>: 현재 15.8% → 목표 80%</li>
+            <li><strong>컨트롤러 레이어</strong>: 현재 15.6% → 목표 60%</li>
+            <li><strong>도메인 엔티티</strong>: 현재 7.7% → 목표 50%</li>
+        </ul>
+
+        <h3>중간 우선순위</h3>
+        <ul>
+            <li><strong>인프라스트럭처</strong>: JWT, 보안 관련 클래스</li>
+            <li><strong>예외 처리</strong>: 글로벌 예외 핸들러</li>
+            <li><strong>스케줄러</strong>: 뉴스 크롤링 등 배치 작업</li>
+        </ul>
+
         <h2>추가 도구 연동</h2>
 
         <h3>SonarQube</h3>
@@ -209,7 +238,7 @@ class UserServiceTest {
   uses: codecov/codecov-action@v3</code></pre>
     </section>
     <footer class="footer">
-        <p>Last Updated: 2025-06-19 | <a href="../index.html">문서 홈으로</a></p>
+        <p>Last Updated: 2025-06-26 | <a href="../index.html">문서 홈으로</a></p>
     </footer>
 </div>
 </body>
