@@ -6,7 +6,9 @@
       "Bash(export PATH=$JAVA_HOME/bin:$PATH)",
       "Bash(./gradlew test:*)",
       "Bash(./gradlew build:*)",
-      "Bash(./gradlew:*)"
+      "Bash(./gradlew:*)",
+      "Bash(rg:*)",
+      "Bash(sed:*)"
     ],
     "deny": []
   }
