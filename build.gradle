@@ -104,8 +104,10 @@ jacocoTestReport {
     dependsOn test
     reports {
         xml.required = true
-        html.required = true
-        html.outputLocation = file("${buildDir}/reports/jacoco/html")
+        html {
+            required = true
+            outputLocation = file("${buildDir}/reports/jacoco/htmlReport")
+        }
         csv.required = true
     }
     afterEvaluate {
@@ -114,7 +116,7 @@ jacocoTestReport {
                     // Exclude configuration classes
                     '**/config/**',
                     '**/BeApplication.class',
-                    
+
                     // Exclude DTOs (Data Transfer Objects) - all naming patterns
                     '**/dto/**',
                     '**/*DTO.class',
@@ -123,22 +125,22 @@ jacocoTestReport {
                     '**/*Response.class',
                     '**/*RequestDTO.class',
                     '**/*ResponseDTO.class',
-                    
+
                     // Exclude entities and domain objects
                     '**/entity/**',
                     '**/*Entity.class',
-                    
+
                     // Exclude Value Objects
                     '**/vo/**',
                     '**/*VO.class',
                     '**/*Value.class',
                     '**/*ValueObject.class',
-                    
+
                     // Exclude exception classes
                     '**/exception/**',
                     '**/*Exception.class',
                     '**/*Error.class',
-                    
+
                     // Exclude enums and constants
                     '**/UserRoleEnum.class',
                     '**/UserStatusEnum.class',
@@ -147,27 +149,27 @@ jacocoTestReport {
                     '**/ErrorCode.class',
                     '**/*Enum.class',
                     '**/*Constants.class',
-                    
+
                     // Exclude Spring Boot infrastructure
                     '**/*Application.class',
                     '**/ServletInitializer.class',
-                    
+
                     // Exclude generated code and builders
                     '**/*Builder.class',
                     '**/*$*.class',
-                    
+
                     // Exclude security and JWT infrastructure (typically not business logic)
                     '**/security/**',
                     '**/jwt/**',
-                    
+
                     // Exclude utility classes that are mostly static methods
                     '**/util/**',
                     '**/*Util.class',
                     '**/*Utils.class',
-                    
+
                     // Exclude Lombok generated methods
                     '**/*$Companion.class',
-                    
+
                     // Exclude test configuration and base classes
                     '**/*TestConfiguration.class',
                     '**/*TestBase.class'
@@ -192,7 +194,7 @@ jacocoTestCoverageVerification {
                     '*.config.*',
                     '*.*Application',
                     '*.ServletInitializer',
-                    
+
                     // DTOs and data objects
                     '*.dto.*',
                     '*.*DTO',
@@ -201,22 +203,22 @@ jacocoTestCoverageVerification {
                     '*.*Response',
                     '*.*RequestDTO',
                     '*.*ResponseDTO',
-                    
+
                     // Entities and domain objects
                     '*.entity.*',
                     '*.*Entity',
-                    
+
                     // Value Objects
                     '*.vo.*',
                     '*.*VO',
                     '*.*Value',
                     '*.*ValueObject',
-                    
+
                     // Exceptions and error handling
                     '*.exception.*',
                     '*.*Exception',
                     '*.*Error',
-                    
+
                     // Enums and constants
                     '*.UserRoleEnum',
                     '*.UserStatusEnum',
@@ -225,7 +227,7 @@ jacocoTestCoverageVerification {
                     '*.ErrorCode',
                     '*.*Enum',
                     '*.*Constants',
-                    
+
                     // Infrastructure classes
                     '*.security.*',
                     '*.jwt.*',
@@ -261,3 +263,20 @@ jacocoTestCoverageVerification {
 }
 
 check.dependsOn jacocoTestCoverageVerification
+
+// IntelliJ-style Coverage Report Generation
+task intellijStyleCoverageReport {
+    dependsOn jacocoTestReport
+    doLast {
+        copy {
+            from "${buildDir}/reports/jacoco/htmlReport"
+            into "${projectDir}/htmlReport"
+        }
+
+        println "Coverage report generated at: ${projectDir}/htmlReport/index.html"
+    }
+}
+
+tasks.named('jacocoTestReport') {
+    finalizedBy tasks.named('intellijStyleCoverageReport')
+}
