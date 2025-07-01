@@ -44,3 +44,11 @@ src/main/resources/properties/env.properties
 .env.properties
 java17.tar.gz
 jdk-17.0.7+7/
+htmlReport/org.cheonyakplanet.be.application.service/
+htmlReport/org.cheonyakplanet.be.domain/
+htmlReport/org.cheonyakplanet.be.domain.chat/
+htmlReport/org.cheonyakplanet.be.infrastructure/
+htmlReport/org.cheonyakplanet.be.infrastructure.cache/
+htmlReport/org.cheonyakplanet.be.infrastructure.client/
+htmlReport/org.cheonyakplanet.be.infrastructure.scheduler/
+htmlReport/org.cheonyakplanet.be.presentation.controller/

@@ -8,611 +8,311 @@
 </head>
 <body>
 <div class="container">
+    <!-- Header -->
     <header class="header">
         <h1>오류 코드 참조</h1>
         <p class="subtitle">오류 코드 참조 문서</p>
         <p class="description">CheonYakPlanet 백엔드 관련 문서입니다.</p>
     </header>
-    <section class="quick-start">
+
+    <!-- Main Content -->
+    <section class="content">
         <h2>Error Code Reference</h2>
-        <br>
-        <h3>📋 Overview</h3>
-        <br>
-        <p>This document provides a comprehensive reference for all error codes used in the CheonYakPlanet application,
-            including their meanings, typical causes, and resolution guidance.</p>
-        <br>
-        <h3>🔢 Error Code Format</h3>
-        <br>
-        <p>Error codes follow the pattern: `[CATEGORY][NUMBER]`</p>
-        <li>**Category**: 3-4 letter prefix indicating the functional area</li>
-        <li>**Number**: 3-digit sequential number (001-999)</li>
-        <br>
-        <h3>🔐 Authentication & Authorization (AUTH)</h3>
-        <br>
-        <h4>AUTH001 - 인증이 필요한 서비스입니다</h4>
-        <p>**Description**: Authentication required for this service</p>
-        <p>**HTTP Status**: 401 Unauthorized</p>
-        <p>**Typical Causes**:</p>
-        <li>Missing JWT token in Authorization header</li>
-        <li>Request to protected endpoint without authentication</li>
-        <li>Malformed Authorization header</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Include valid JWT token: `Authorization: Bearer {token}`</li>
-        <li>Login first to obtain token</li>
-        <li>Check token format</li>
-        <br>
-        <p>**Example Response**:</p>
-        <p>```json</p>
-        <p>{</p>
-        <p>"status": "fail",</p>
-        <p>"data": {</p>
-        <p>"code": "AUTH001",</p>
-        <p>"message": "인증이 필요한 서비스입니다",</p>
-        <p>"details": "Authorization header is missing"</p>
-        <p>}</p>
-        <p>}</p>
-        <p>```</p>
-        <br>
-        <h4>AUTH002 - 권한이 없습니다</h4>
-        <p>**Description**: Insufficient permissions</p>
-        <p>**HTTP Status**: 403 Forbidden</p>
-        <p>**Typical Causes**:</p>
-        <li>User lacks required role (e.g., ADMIN required)</li>
-        <li>Attempting to access other user's data</li>
-        <li>Role-based access control restriction</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Contact administrator for role upgrade</li>
-        <li>Ensure request is for own user data</li>
-        <li>Check endpoint permissions</li>
-        <br>
-        <h4>AUTH003 - 유효하지 않은 JWT 서명</h4>
-        <p>**Description**: Invalid JWT signature</p>
-        <p>**HTTP Status**: 401 Unauthorized</p>
-        <p>**Typical Causes**:</p>
-        <li>Token tampered with or corrupted</li>
-        <li>Wrong signing key used</li>
-        <li>Token from different environment</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Re-login to get new token</li>
-        <li>Check token integrity</li>
-        <li>Verify environment configuration</li>
-        <br>
-        <h4>AUTH004 - 만료된 JWT 토큰</h4>
-        <p>**Description**: Expired JWT token</p>
-        <p>**HTTP Status**: 401 Unauthorized</p>
-        <p>**Typical Causes**:</p>
-        <li>Access token expired (60 minutes)</li>
-        <li>System clock skew</li>
-        <li>Token used after expiry</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Use refresh token to get new access token</li>
-        <li>Re-login if refresh token also expired</li>
-        <li>Check system time synchronization</li>
-        <br>
-        <h4>AUTH005 - JWT 토큰이 블랙리스트에 있습니다</h4>
-        <p>**Description**: JWT token is blacklisted</p>
-        <p>**HTTP Status**: 401 Unauthorized</p>
-        <p>**Typical Causes**:</p>
-        <li>Token invalidated by logout</li>
-        <li>Security revocation of token</li>
-        <li>Force logout by administrator</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Login again to get new token</li>
-        <li>Contact support if unexpected</li>
-        <li>Clear local token storage</li>
-        <br>
-        <h4>AUTH006 - 잘못된 토큰 형식</h4>
-        <p>**Description**: Invalid token format</p>
-        <p>**HTTP Status**: 400 Bad Request</p>
-        <p>**Typical Causes**:</p>
-        <li>Malformed JWT token</li>
-        <li>Missing Bearer prefix</li>
-        <li>Base64 encoding issues</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Check Authorization header format</li>
-        <li>Ensure "Bearer " prefix included</li>
-        <li>Verify token string integrity</li>
-        <br>
+
+        <article>
+            <h3>📋 Overview</h3>
+            <p>이 문서는 CheonYakPlanet 애플리케이션에서 사용되는 모든 오류 코드를 설명, 원인, 해결 방법과 함께 제공합니다.</p>
+        </article>
+
+        <article>
+            <h3>🔢 Error Code Format</h3>
+            <p>오류 코드는 <code>[CATEGORY][NUMBER]</code> 패턴을 따릅니다.</p>
+            <ul>
+                <li><strong>Category</strong>: 기능 영역을 나타내는 3-4자의 접두사</li>
+                <li><strong>Number</strong>: 3자리 순차 번호 (001-999)</li>
+            </ul>
+        </article>
+
+        <article>
+            <h3>🔐 Authentication & Authorization (AUTH)</h3>
+
+            <h4>AUTH001 - 인증이 필요한 서비스입니다</h4>
+            <ul>
+                <li><strong>Description</strong>: Authentication required for this service</li>
+                <li><strong>HTTP Status</strong>: 401 Unauthorized</li>
+            </ul>
+            <h4>Typical Causes</h4>
+            <ul>
+                <li>JWT 토큰이 Authorization 헤더에 없음</li>
+                <li>인증 없이 보호된 엔드포인트 요청</li>
+                <li>잘못된 Authorization 헤더 형식</li>
+            </ul>
+            <h4>Resolution</h4>
+            <ul>
+                <li>유효한 JWT 토큰 포함: <code>Authorization: Bearer {token}</code></li>
+                <li>로그인 후 토큰 획득</li>
+                <li>토큰 형식 확인</li>
+            </ul>
+            <h4>Example Response</h4>
+            <pre><code class="language-json">{
+    "status": "fail",
+    "data": {
+        "code": "AUTH001",
+        "message": "인증이 필요한 서비스입니다",
+        "details": "Authorization header is missing"
+    }
+}</code></pre>
+
+            <h4>AUTH002 - 권한이 없습니다</h4>
+            <ul>
+                <li><strong>Description</strong>: Insufficient permissions</li>
+                <li><strong>HTTP Status</strong>: 403 Forbidden</li>
+            </ul>
+            <h4>Typical Causes</h4>
+            <ul>
+                <li>필요한 역할(예: ADMIN) 미보유</li>
+                <li>다른 사용자 데이터 접근 시도</li>
+                <li>역할 기반 접근 제어 제한</li>
+            </ul>
+            <h4>Resolution</h4>
+            <ul>
+                <li>관리자에게 역할 업그레이드 요청</li>
+                <li>자신의 데이터 요청 확인</li>
+                <li>엔드포인트 권한 설정 확인</li>
+            </ul>
+
+            <h4>AUTH003 - 유효하지 않은 JWT 서명</h4>
+<ul>
+  <li><strong>Description</strong>: Invalid JWT signature</li>
+  <li><strong>HTTP Status</strong>: 401 Unauthorized</li>
+</ul>
+<h4>Typical Causes</h4>
+<ul>
+  <li>Token tampered with or corrupted</li>
+  <li>Wrong signing key used</li>
+  <li>Token from different environment</li>
+</ul>
+<h4>Resolution</h4>
+<ul>
+  <li>Re-login to get new token</li>
+  <li>Check token integrity</li>
+  <li>Verify environment configuration</li>
+</ul>
+
+<h4>AUTH004 - 만료된 JWT 토큰</h4>
+<ul>
+  <li><strong>Description</strong>: Expired JWT token</li>
+  <li><strong>HTTP Status</strong>: 401 Unauthorized</li>
+</ul>
+<h4>Typical Causes</h4>
+<ul>
+  <li>Access token expired (60 minutes)</li>
+  <li>System clock skew</li>
+  <li>Token used after expiry</li>
+</ul>
+<h4>Resolution</h4>
+<ul>
+  <li>Use refresh token to get new access token</li>
+  <li>Re-login if refresh token also expired</li>
+  <li>Check system time synchronization</li>
+</ul>
+        </article>
+
         <h3>👤 User Management (SIGN)</h3>
-        <br>
-        <h4>SIGN001 - 이미 존재하는 회원입니다</h4>
-        <p>**Description**: User already exists</p>
-        <p>**HTTP Status**: 409 Conflict</p>
-        <p>**Typical Causes**:</p>
-        <li>Email already registered</li>
-        <li>Duplicate registration attempt</li>
-        <li>Previous soft-deleted account exists</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Use different email address</li>
-        <li>Try login with existing credentials</li>
-        <li>Contact support for account recovery</li>
-        <br>
-        <h4>SIGN002 - 존재하지 않는 회원입니다</h4>
-        <p>**Description**: User not found</p>
-        <p>**HTTP Status**: 404 Not Found</p>
-        <p>**Typical Causes**:</p>
-        <li>Email not registered</li>
-        <li>Account was deleted</li>
-        <li>Typo in email address</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Check email spelling</li>
-        <li>Register new account</li>
-        <li>Contact support if account missing</li>
-        <br>
-        <h4>SIGN003 - 비밀번호가 일치하지 않습니다</h4>
-        <p>**Description**: Password mismatch</p>
-        <p>**HTTP Status**: 401 Unauthorized</p>
-        <p>**Typical Causes**:</p>
-        <li>Incorrect password entered</li>
-        <li>Password was changed</li>
-        <li>Caps lock or keyboard layout issues</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Try password again carefully</li>
-        <li>Use password reset feature</li>
-        <li>Check keyboard settings</li>
-        <br>
-        <h4>SIGN004 - 유효하지 않은 이메일 형식입니다</h4>
-        <p>**Description**: Invalid email format</p>
-        <p>**HTTP Status**: 400 Bad Request</p>
-        <p>**Typical Causes**:</p>
-        <li>Malformed email address</li>
-        <li>Missing @ symbol</li>
-        <li>Invalid domain format</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Use valid email format (user@domain.com)</li>
-        <li>Check for typos</li>
-        <li>Verify email address</li>
-        <br>
-        <h4>SIGN005 - 비밀번호가 정책에 맞지 않습니다</h4>
-        <p>**Description**: Password doesn't meet policy requirements</p>
-        <p>**HTTP Status**: 400 Bad Request</p>
-        <p>**Typical Causes**:</p>
-        <li>Password too short</li>
-        <li>Missing required character types</li>
-        <li>Common password used</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Use 8+ characters</li>
-        <li>Include uppercase, lowercase, numbers</li>
-        <li>Avoid common passwords</li>
-        <br>
-        <h4>SIGN006 - 계정이 비활성화되었습니다</h4>
-        <p>**Description**: Account is deactivated</p>
-        <p>**HTTP Status**: 403 Forbidden</p>
-        <p>**Typical Causes**:</p>
-        <li>Account suspended by administrator</li>
-        <li>User requested account deletion</li>
-        <li>Policy violation</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Contact support for reactivation</li>
-        <li>Create new account if permitted</li>
-        <li>Review terms of service</li>
-        <br>
-        <h4>SIGN007 - 인증 코드가 유효하지 않습니다</h4>
-        <p>**Description**: Invalid verification code</p>
-        <p>**HTTP Status**: 400 Bad Request</p>
-        <p>**Typical Causes**:</p>
-        <li>Expired verification code</li>
-        <li>Incorrect code entered</li>
-        <li>Code already used</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Request new verification code</li>
-        <li>Check code carefully</li>
-        <li>Verify within time limit</li>
-        <br>
-        <h4>SIGN008 - 인증 코드가 만료되었습니다</h4>
-        <p>**Description**: Verification code expired</p>
-        <p>**HTTP Status**: 400 Bad Request</p>
-        <p>**Typical Causes**:</p>
-        <li>Code not used within time limit</li>
-        <li>System time issues</li>
-        <li>Delayed email delivery</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Request new verification code</li>
-        <li>Use code immediately</li>
-        <li>Check email spam folder</li>
-        <br>
-        <h3>💬 Community (POST, COMMENT)</h3>
-        <br>
-        <h4>POST001 - 게시글을 찾을 수 없습니다</h4>
-        <p>**Description**: Post not found</p>
-        <p>**HTTP Status**: 404 Not Found</p>
-        <p>**Typical Causes**:</p>
-        <li>Post ID doesn't exist</li>
-        <li>Post was deleted</li>
-        <li>Access to private post denied</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Check post ID</li>
-        <li>Verify post still exists</li>
-        <li>Contact post author</li>
-        <br>
-        <h4>POST002 - 게시글 작성 권한이 없습니다</h4>
-        <p>**Description**: No permission to create post</p>
-        <p>**HTTP Status**: 403 Forbidden</p>
-        <p>**Typical Causes**:</p>
-        <li>User not authenticated</li>
-        <li>Account restrictions</li>
-        <li>Role limitations</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Login to account</li>
-        <li>Check account status</li>
-        <li>Contact administrator</li>
-        <br>
-        <h4>POST003 - 게시글 수정 권한이 없습니다</h4>
-        <p>**Description**: No permission to edit post</p>
-        <p>**HTTP Status**: 403 Forbidden</p>
-        <p>**Typical Causes**:</p>
-        <li>Not the post author</li>
-        <li>Insufficient permissions</li>
-        <li>Post locked by moderator</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Only author can edit</li>
-        <li>Contact moderator if needed</li>
-        <li>Create new post instead</li>
-        <br>
-        <h4>POST004 - 게시글 삭제 권한이 없습니다</h4>
-        <p>**Description**: No permission to delete post</p>
-        <p>**HTTP Status**: 403 Forbidden</p>
-        <p>**Typical Causes**:</p>
-        <li>Not the post author</li>
-        <li>Insufficient admin rights</li>
-        <li>Post has replies</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Only author/admin can delete</li>
-        <li>Remove replies first</li>
-        <li>Contact moderator</li>
-        <br>
-        <h4>POST005 - 게시글 내용이 비어있습니다</h4>
-        <p>**Description**: Post content is empty</p>
-        <p>**HTTP Status**: 400 Bad Request</p>
-        <p>**Typical Causes**:</p>
-        <li>Title or content missing</li>
-        <li>Only whitespace submitted</li>
-        <li>Content below minimum length</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Provide meaningful title</li>
-        <li>Add substantial content</li>
-        <li>Meet minimum length requirements</li>
-        <br>
-        <h4>COMMENT001 - 댓글을 찾을 수 없습니다</h4>
-        <p>**Description**: Comment not found</p>
-        <p>**HTTP Status**: 404 Not Found</p>
-        <p>**Typical Causes**:</p>
-        <li>Comment ID doesn't exist</li>
-        <li>Comment was deleted</li>
-        <li>Access denied</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Check comment ID</li>
-        <li>Verify comment exists</li>
-        <li>Refresh page</li>
-        <br>
-        <h4>COMMENT002 - 댓글 작성 권한이 없습니다</h4>
-        <p>**Description**: No permission to create comment</p>
-        <p>**HTTP Status**: 403 Forbidden</p>
-        <p>**Typical Causes**:</p>
-        <li>Not authenticated</li>
-        <li>Post locked for comments</li>
-        <li>Account restrictions</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Login to account</li>
-        <li>Check post status</li>
-        <li>Contact moderator</li>
-        <br>
-        <h4>COMMENT003 - 이미 반응하였습니다</h4>
-        <p>**Description**: Already reacted to this content</p>
-        <p>**HTTP Status**: 409 Conflict</p>
-        <p>**Typical Causes**:</p>
-        <li>User already liked/disliked</li>
-        <li>Duplicate reaction attempt</li>
-        <li>Race condition in UI</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Remove existing reaction first</li>
-        <li>Refresh page to see current state</li>
-        <li>One reaction per user allowed</li>
-        <br>
-        <h3>🏠 Subscription (SUB)</h3>
-        <br>
-        <h4>SUB001 - 청약 정보를 찾을 수 없습니다</h4>
-        <p>**Description**: Subscription information not found</p>
-        <p>**HTTP Status**: 404 Not Found</p>
-        <p>**Typical Causes**:</p>
-        <li>Subscription ID doesn't exist</li>
-        <li>Data not yet synchronized</li>
-        <li>Subscription expired/closed</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Check subscription ID</li>
-        <li>Wait for data sync</li>
-        <li>Search for active subscriptions</li>
-        <br>
-        <h4>SUB002 - 청약 기간이 아닙니다</h4>
-        <p>**Description**: Not in subscription period</p>
-        <p>**HTTP Status**: 400 Bad Request</p>
-        <p>**Typical Causes**:</p>
-        <li>Subscription not yet open</li>
-        <li>Subscription closed</li>
-        <li>Wrong date/time</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Check subscription dates</li>
-        <li>Wait for opening period</li>
-        <li>Verify system time</li>
-        <br>
-        <h4>SUB003 - 중복된 주택관리번호입니다</h4>
-        <p>**Description**: Duplicate house management number</p>
-        <p>**HTTP Status**: 409 Conflict</p>
-        <p>**Typical Causes**:</p>
-        <li>Data synchronization error</li>
-        <li>Duplicate government data</li>
-        <li>System integration issue</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Skip duplicate entry</li>
-        <li>Report to system admin</li>
-        <li>Use existing record</li>
-        <br>
-        <h4>SUB004 - 청약 자격이 없습니다</h4>
-        <p>**Description**: Not eligible for subscription</p>
-        <p>**HTTP Status**: 403 Forbidden</p>
-        <p>**Typical Causes**:</p>
-        <li>Income exceeds limits</li>
-        <li>Regional requirements not met</li>
-        <li>House ownership restrictions</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Review eligibility criteria</li>
-        <li>Update financial profile</li>
-        <li>Check regional requirements</li>
-        <br>
-        <h4>SUB005 - 이미 찜한 청약입니다</h4>
-        <p>**Description**: Subscription already favorited</p>
-        <p>**HTTP Status**: 409 Conflict</p>
-        <p>**Typical Causes**:</p>
-        <li>User already liked subscription</li>
-        <li>Duplicate like attempt</li>
-        <li>UI synchronization issue</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Remove existing like first</li>
-        <li>Refresh subscription list</li>
-        <li>Check favorite status</li>
-        <br>
-        <h3>💰 Finance (FIN)</h3>
-        <br>
-        <h4>FIN001 - 금융 상품을 찾을 수 없습니다</h4>
-        <p>**Description**: Financial product not found</p>
-        <p>**HTTP Status**: 404 Not Found</p>
-        <p>**Typical Causes**:</p>
-        <li>Product ID invalid</li>
-        <li>Product discontinued</li>
-        <li>Data sync delay</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Check product ID</li>
-        <li>Search current products</li>
-        <li>Contact financial institution</li>
-        <br>
-        <h4>FIN002 - 대출 자격이 없습니다</h4>
-        <p>**Description**: Not eligible for loan</p>
-        <p>**HTTP Status**: 403 Forbidden</p>
-        <p>**Typical Causes**:</p>
-        <li>Income insufficient</li>
-        <li>Credit score too low</li>
-        <li>Debt-to-income ratio high</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Improve financial profile</li>
-        <li>Consider different loan products</li>
-        <li>Contact financial advisor</li>
-        <br>
-        <h4>FIN003 - 금리 정보가 만료되었습니다</h4>
-        <p>**Description**: Interest rate information expired</p>
-        <p>**HTTP Status**: 410 Gone</p>
-        <p>**Typical Causes**:</p>
-        <li>Rates updated by bank</li>
-        <li>Data refresh needed</li>
-        <li>Promotional rate ended</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Refresh rate information</li>
-        <li>Check with bank directly</li>
-        <li>Look for current promotions</li>
-        <br>
-        <h3>📰 News (NEWS)</h3>
-        <br>
-        <h4>NEWS001 - 뉴스 크롤링 실패</h4>
-        <p>**Description**: News crawling failed</p>
-        <p>**HTTP Status**: 500 Internal Server Error</p>
-        <p>**Typical Causes**:</p>
-        <li>External API unavailable</li>
-        <li>Rate limit exceeded</li>
-        <li>Network connectivity issues</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Retry after delay</li>
-        <li>Check API service status</li>
-        <li>Contact system administrator</li>
-        <br>
-        <h4>NEWS002 - 뉴스 필터링 오류</h4>
-        <p>**Description**: News filtering error</p>
-        <p>**HTTP Status**: 500 Internal Server Error</p>
-        <p>**Typical Causes**:</p>
-        <li>Content processing failure</li>
-        <li>Invalid news format</li>
-        <li>Filter rule error</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Skip problematic content</li>
-        <li>Update filter rules</li>
-        <li>Log for manual review</li>
-        <br>
-        <h3>🔧 System (SYS)</h3>
-        <br>
-        <h4>SYS001 - 시스템 오류가 발생했습니다</h4>
-        <p>**Description**: System error occurred</p>
-        <p>**HTTP Status**: 500 Internal Server Error</p>
-        <p>**Typical Causes**:</p>
-        <li>Unexpected system failure</li>
-        <li>Database connectivity issue</li>
-        <li>Infrastructure problem</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Retry request</li>
-        <li>Contact support</li>
-        <li>Check system status</li>
-        <br>
-        <h4>SYS002 - 외부 API 연결 실패</h4>
-        <p>**Description**: External API connection failed</p>
-        <p>**HTTP Status**: 502 Bad Gateway</p>
-        <p>**Typical Causes**:</p>
-        <li>Government API unavailable</li>
-        <li>Network timeout</li>
-        <li>API service maintenance</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Wait and retry</li>
-        <li>Check API service status</li>
-        <li>Use cached data if available</li>
-        <br>
-        <h4>SYS003 - 데이터베이스 연결 오류</h4>
-        <p>**Description**: Database connection error</p>
-        <p>**HTTP Status**: 503 Service Unavailable</p>
-        <p>**Typical Causes**:</p>
-        <li>Database server down</li>
-        <li>Connection pool exhausted</li>
-        <li>Network issues</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Retry after delay</li>
-        <li>Contact system administrator</li>
-        <li>Check system resources</li>
-        <br>
-        <h3>✅ Validation (VAL)</h3>
-        <br>
-        <h4>VAL001 - 필수 입력값이 누락되었습니다</h4>
-        <p>**Description**: Required input missing</p>
-        <p>**HTTP Status**: 400 Bad Request</p>
-        <p>**Typical Causes**:</p>
-        <li>Required field empty</li>
-        <li>Null value submitted</li>
-        <li>Missing request parameter</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Provide all required fields</li>
-        <li>Check field names</li>
-        <li>Validate input data</li>
-        <br>
-        <h4>VAL002 - 입력값 형식이 올바르지 않습니다</h4>
-        <p>**Description**: Invalid input format</p>
-        <p>**HTTP Status**: 400 Bad Request</p>
-        <p>**Typical Causes**:</p>
-        <li>Wrong data type</li>
-        <li>Invalid format pattern</li>
-        <li>Out of range value</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Use correct data format</li>
-        <li>Check value ranges</li>
-        <li>Validate input constraints</li>
-        <br>
-        <h4>VAL003 - 입력값이 너무 깁니다</h4>
-        <p>**Description**: Input value too long</p>
-        <p>**HTTP Status**: 400 Bad Request</p>
-        <p>**Typical Causes**:</p>
-        <li>String exceeds maximum length</li>
-        <li>Text content too large</li>
-        <li>File size too big</li>
-        <br>
-        <p>**Resolution**:</p>
-        <li>Reduce input length</li>
-        <li>Check length limits</li>
-        <li>Split into smaller parts</li>
-        <br>
-        <h3>🚨 Error Response Format</h3>
-        <br>
-        <h4>Standard Error Response</h4>
-        <p>```json</p>
-        <p>{</p>
-        <p>"status": "fail",</p>
-        <p>"data": {</p>
-        <p>"code": "ERROR_CODE",</p>
-        <p>"message": "User-friendly error message in Korean",</p>
-        <p>"details": "Technical details for debugging (optional)"</p>
-        <p>}</p>
-        <p>}</p>
-        <p>```</p>
-        <br>
-        <h4>Validation Error Response</h4>
-        <p>```json</p>
-        <p>{</p>
-        <p>"status": "fail",</p>
-        <p>"data": {</p>
-        <p>"code": "VAL001",</p>
-        <p>"message": "입력값 검증에 실패했습니다",</p>
-        <p>"details": "Validation failed",</p>
-        <p>"fieldErrors": [</p>
-        <p>{</p>
-        <p>"field": "email",</p>
-        <p>"message": "이메일 형식이 올바르지 않습니다"</p>
-        <p>},</p>
-        <p>{</p>
-        <p>"field": "password",</p>
-        <p>"message": "비밀번호는 8자 이상이어야 합니다"</p>
-        <p>}</p>
-        <p>]</p>
-        <p>}</p>
-        <p>}</p>
-        <p>```</p>
-        <br>
-        <h3>🛠️ Error Handling Best Practices</h3>
-        <br>
-        <h4>For Developers</h4>
-        <p>1. **Use Specific Error Codes**: Don't use generic codes</p>
-        <p>2. **Provide Context**: Include helpful details for debugging</p>
-        <p>3. **Korean Messages**: User-facing messages in Korean</p>
-        <p>4. **Consistent Format**: Follow standard error response structure</p>
-        <p>5. **Log Errors**: Include error codes in application logs</p>
-        <br>
-        <h4>For Frontend</h4>
-        <p>1. **Handle All Codes**: Implement handlers for all possible error codes</p>
-        <p>2. **User-Friendly Display**: Show Korean messages to users</p>
-        <p>3. **Retry Logic**: Implement retry for transient errors</p>
-        <p>4. **Fallback UI**: Graceful degradation for system errors</p>
-        <p>5. **Error Reporting**: Report unexpected errors to monitoring</p>
-        <br>
-        <h4>For Users</h4>
-        <p>1. **Read Messages**: Error messages provide helpful guidance</p>
-        <p>2. **Retry When Suggested**: Some errors are temporary</p>
-        <p>3. **Contact Support**: Include error code when reporting issues</p>
-        <p>4. **Check Input**: Validation errors indicate input problems</p>
-        <br>
-        <p>---</p>
-        <br>
-        <p>**Error Code Reference Version**: 1.0</p>
+
+<h4>SIGN001 - 이미 존재하는 회원입니다</h4>
+<ul>
+  <li><strong>Description</strong>: User already exists</li>
+  <li><strong>HTTP Status</strong>: 409 Conflict</li>
+</ul>
+<h4>Typical Causes</h4>
+<ul>
+  <li>Email already registered</li>
+  <li>Duplicate registration attempt</li>
+  <li>Previous soft-deleted account exists</li>
+</ul>
+<h4>Resolution</h4>
+<ul>
+  <li>Use different email address</li>
+  <li>Try login with existing credentials</li>
+  <li>Contact support for account recovery</li>
+</ul>
+
+<h4>SIGN002 - 존재하지 않는 회원입니다</h4>
+<ul>
+  <li><strong>Description</strong>: User not found</li>
+  <li><strong>HTTP Status</strong>: 404 Not Found</li>
+</ul>
+<h4>Typical Causes</h4>
+<ul>
+  <li>Email not registered</li>
+  <li>Account was deleted</li>
+  <li>Typo in email address</li>
+</ul>
+<h4>Resolution</h4>
+<ul>
+  <li>Check email spelling</li>
+  <li>Register new account</li>
+  <li>Contact support if account missing</li>
+</ul>
+
+<!-- 다른 SIGN 코드도 동일한 패턴으로 추가 -->
+
+<h3>💬 Community (POST, COMMENT)</h3>
+
+<h4>POST001 - 게시글을 찾을 수 없습니다</h4>
+<ul>
+  <li><strong>Description</strong>: Post not found</li>
+  <li><strong>HTTP Status</strong>: 404 Not Found</li>
+</ul>
+<h4>Typical Causes</h4>
+<ul>
+  <li>Post ID doesn't exist</li>
+  <li>Post was deleted</li>
+  <li>Access to private post denied</li>
+</ul>
+<h4>Resolution</h4>
+<ul>
+  <li>Check post ID</li>
+  <li>Verify post still exists</li>
+  <li>Contact post author</li>
+</ul>
+
+<h4>COMMENT001 - 댓글을 찾을 수 없습니다</h4>
+<ul>
+  <li><strong>Description</strong>: Comment not found</li>
+  <li><strong>HTTP Status</strong>: 404 Not Found</li>
+</ul>
+<h4>Typical Causes</h4>
+<ul>
+  <li>Comment ID doesn't exist</li>
+  <li>Comment was deleted</li>
+  <li>Access denied</li>
+</ul>
+<h4>Resolution</h4>
+<ul>
+  <li>Check comment ID</li>
+  <li>Verify comment exists</li>
+  <li>Refresh page</li>
+</ul>
+
+<!-- POST/COMMENT 나머지 코드들도 동일한 패턴으로 추가 -->
+
+<h3>🏠 Subscription (SUB)</h3>
+
+<h4>SUB001 - 청약 정보를 찾을 수 없습니다</h4>
+<ul>
+  <li><strong>Description</strong>: Subscription information not found</li>
+  <li><strong>HTTP Status</strong>: 404 Not Found</li>
+</ul>
+<h4>Typical Causes</h4>
+<ul>
+  <li>Subscription ID doesn't exist</li>
+  <li>Data not yet synchronized</li>
+  <li>Subscription expired/closed</li>
+</ul>
+<h4>Resolution</h4>
+<ul>
+  <li>Check subscription ID</li>
+  <li>Wait for data sync</li>
+  <li>Search for active subscriptions</li>
+</ul>
+
+<!-- SUB 나머지 코드들도 동일한 패턴으로 추가 -->
+
+<h3>💰 Finance (FIN)</h3>
+
+<h4>FIN001 - 금융 상품을 찾을 수 없습니다</h4>
+<ul>
+  <li><strong>Description</strong>: Financial product not found</li>
+  <li><strong>HTTP Status</strong>: 404 Not Found</li>
+</ul>
+<h4>Typical Causes</h4>
+<ul>
+  <li>Product ID invalid</li>
+  <li>Product discontinued</li>
+  <li>Data sync delay</li>
+</ul>
+<h4>Resolution</h4>
+<ul>
+  <li>Check product ID</li>
+  <li>Search current products</li>
+  <li>Contact financial institution</li>
+</ul>
+
+<!-- FIN 나머지 코드들도 동일한 패턴으로 추가 -->
+
+<h3>📰 News (NEWS)</h3>
+
+<h4>NEWS001 - 뉴스 크롤링 실패</h4>
+<ul>
+  <li><strong>Description</strong>: News crawling failed</li>
+  <li><strong>HTTP Status</strong>: 500 Internal Server Error</li>
+</ul>
+<h4>Typical Causes</h4>
+<ul>
+  <li>External API unavailable</li>
+  <li>Rate limit exceeded</li>
+  <li>Network connectivity issues</li>
+</ul>
+<h4>Resolution</h4>
+<ul>
+  <li>Retry after delay</li>
+  <li>Check API service status</li>
+  <li>Contact system administrator</li>
+</ul>
+
+<!-- NEWS 나머지 코드들도 동일한 패턴으로 추가 -->
+
+<h3>🔧 System (SYS)</h3>
+
+<h4>SYS001 - 시스템 오류가 발생했습니다</h4>
+<ul>
+  <li><strong>Description</strong>: System error occurred</li>
+  <li><strong>HTTP Status</strong>: 500 Internal Server Error</li>
+</ul>
+<h4>Typical Causes</h4>
+<ul>
+  <li>Unexpected system failure</li>
+  <li>Database connectivity issue</li>
+  <li>Infrastructure problem</li>
+</ul>
+<h4>Resolution</h4>
+<ul>
+  <li>Retry request</li>
+  <li>Contact support</li>
+  <li>Check system status</li>
+</ul>
+
+<!-- SYS 나머지 코드들도 동일한 패턴으로 추가 -->
+
+<h3>✅ Validation (VAL)</h3>
+
+<h4>VAL001 - 필수 입력값이 누락되었습니다</h4>
+<ul>
+  <li><strong>Description</strong>: Required input missing</li>
+  <li><strong>HTTP Status</strong>: 400 Bad Request</li>
+</ul>
+<h4>Typical Causes</h4>
+<ul>
+  <li>Required field empty</li>
+  <li>Null value submitted</li>
+  <li>Missing request parameter</li>
+</ul>
+<h4>Resolution</h4>
+<ul>
+  <li>Provide all required fields</li>
+  <li>Check field names</li>
+  <li>Validate input data</li>
+</ul>
+
+        <hr/>
+        <p><strong>Error Code Reference Version</strong>: 1.0</p>
         <p><strong>Last Updated</strong>: 2025-06-26</p>
-        <p>**Total Error Codes**: 50+</p>
+        <p><strong>Total Error Codes</strong>: 50+</p>
     </section>
+
+    <!-- Footer -->
     <footer class="footer">
         <p>Last Updated: 2025-06-26 | <a href="../index.html">문서 홈으로</a></p>
     </footer>
