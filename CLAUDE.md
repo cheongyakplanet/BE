@@ -80,6 +80,9 @@ export JAVA_HOME=/mnt/d/projects/planet/BE/jdk-17.0.7+7 && export PATH=$JAVA_HOM
 # Generate test coverage report
 export JAVA_HOME=/mnt/d/projects/planet/BE/jdk-17.0.7+7 && export PATH=$JAVA_HOME/bin:$PATH && ./gradlew jacocoTestReport
 
+# Generate IntelliJ-style HTML coverage report (outputs to ./htmlReport/index.html)
+export JAVA_HOME=/mnt/d/projects/planet/BE/jdk-17.0.7+7 && export PATH=$JAVA_HOME/bin:$PATH && ./gradlew intellijStyleCoverageReport
+
 # Verify coverage thresholds
 export JAVA_HOME=/mnt/d/projects/planet/BE/jdk-17.0.7+7 && export PATH=$JAVA_HOME/bin:$PATH && ./gradlew jacocoTestCoverageVerification
 ```

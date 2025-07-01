@@ -31,7 +31,7 @@
             <li><a href="#adr-006-external-api-integration-strategy">ADR-006: 외부 API 통합 전략</a></li>
             <li><a href="#adr-007-database-catalog-separation">ADR-007: 데이터베이스 카탈로그 분리</a></li>
             <li><a href="#adr-008-async-processing-for-data-synchronization">ADR-008: 데이터 동기화를 위한 비동기 처리</a></li>
-            <li><a href="#adr-009-comprehensive-audit-trail-system">ADR-009: 포괄적인 감사 추적 시스템</a></li>
+            <!-- <li><a href="#adr-009-comprehensive-audit-trail-system">ADR-009: 포괄적인 감사 추적 시스템</a></li>-->
             <li><a href="#adr-010-news-content-filtering-pipeline">ADR-010: 뉴스 콘텐츠 필터링 파이프라인</a></li>
         </ol>
         <br>
@@ -39,9 +39,9 @@
         <br>
         <h3 id="adr-001-clean-architecture-adoption">ADR-001: 클린 아키텍처 채택</h3>
         <br>
-        <p><strong>상태</strong>: ✅ 승인됨</p>
-        <p><strong>날짜</strong>: 2025-06-01</p>
-        <p><strong>결정자</strong>: 개발팀</p>
+        <!--<p><strong>상태</strong>: ✅ 승인됨</p>-->
+        <!-- <p><strong>날짜</strong>: 2025-06-01</p>-->
+        <!--<p><strong>결정자</strong>: 개발팀</p>-->
         <br>
         <h4>배경</h4>
         <p>다수의 외부 통합 및 복잡한 비즈니스 규칙을 가진 복잡한 한국 부동산 플랫폼을 위한 확장 가능하고 유지보수 가능한 아키텍처를 구축해야 했습니다.</p>
@@ -89,9 +89,9 @@
         <br>
         <h3 id="adr-002-jwt-authentication-with-database-storage">ADR-002: 데이터베이스 저장 방식의 JWT 인증</h3>
         <br>
-        <p><strong>상태</strong>: ✅ 승인됨</p>
-        <p><strong>날짜</strong>: 2025-06-02</p>
-        <p><strong>결정자</strong>: 보안팀, 백엔드팀</p>
+        <!-- <p><strong>상태</strong>: ✅ 승인됨</p>-->
+        <!-- <p><strong>날짜</strong>: 2025-06-02</p>-->
+        <!-- <p><strong>결정자</strong>: 보안팀, 백엔드팀</p>-->
         <br>
         <h4>배경</h4>
         <p>토큰을 폐지하고 사용자 세션을 추적할 수 있는 기능을 지원하며, 웹 및 모바일 클라이언트를 모두 지원하는 보안 인증 시스템이 필요했습니다.</p>
@@ -139,12 +139,12 @@
         <br>
         <h3 id="adr-003-soft-delete-pattern-implementation">ADR-003: 소프트 삭제 패턴 구현</h3>
         <br>
-        <p><strong>상태</strong>: ✅ 승인됨</p>
-        <p><strong>날짜</strong>: 2025-06-03</p>
-        <p><strong>결정자</strong>: 데이터베이스팀, 비즈니스팀</p>
+        <!-- <p><strong>상태</strong>: ✅ 승인됨</p>-->
+        <!-- <p><strong>날짜</strong>: 2025-06-03</p>-->
+        <!-- <p><strong>결정자</strong>: 데이터베이스팀, 비즈니스팀</p>-->
         <br>
         <h4>배경</h4>
-        <p>한국 부동산 규제는 감사 목적을 위해 이력 데이터를 유지하도록 요구합니다. 사용자 데이터 및 구독 정보는 사용자가 "삭제"하더라도 보존되어야 합니다.</p>
+        <p>감사 목적을 위해 이력 데이터를 유지하도록 요구합니다. 사용자 데이터 및 구독 정보는 사용자가 "삭제"하더라도 보존되어야 합니다.</p>
         <br>
         <h4>결정</h4>
         <p>포괄적인 소프트 삭제 패턴을 구현합니다:</p>
@@ -189,9 +189,9 @@
         <br>
         <h3 id="adr-004-korean-business-domain-modeling">ADR-004: 한국 비즈니스 도메인 모델링</h3>
         <br>
-        <p><strong>상태</strong>: ✅ 승인됨</p>
-        <p><strong>날짜</strong>: 2025-06-04</p>
-        <p><strong>결정자</strong>: 비즈니스 분석가, 도메인 전문가</p>
+        <!-- <p><strong>상태</strong>: ✅ 승인됨</p>-->
+        <!-- <p><strong>날짜</strong>: 2025-06-04</p>-->
+        <!-- <p><strong>결정자</strong>: 비즈니스 분석가, 도메인 전문가</p>-->
         <br>
         <h4>배경</h4>
         <p>한국 부동산 청약 시스템은 시스템에 정확하게 모델링되어야 하는 복잡한 규칙과 용어를 가지고 있습니다.</p>
@@ -240,9 +240,9 @@
         <br>
         <h3 id="adr-005-websocket-for-real-time-chat">ADR-005: 실시간 채팅을 위한 WebSocket</h3>
         <br>
-        <p><strong>상태</strong>: ✅ 승인됨</p>
-        <p><strong>날짜</strong>: 2025-06-05</p>
-        <p><strong>결정자</strong>: 프런트엔드팀, 백엔드팀</p>
+        <!-- <p><strong>상태</strong>: ✅ 승인됨</p>-->
+        <!-- <p><strong>날짜</strong>: 2025-06-05</p>-->
+        <!-- <p><strong>결정자</strong>: 프런트엔드팀, 백엔드팀</p>-->
         <br>
         <h4>배경</h4>
         <p>한국 부동산 질문에 대한 사용자에게 실시간 AI 채팅 지원이 필요했습니다. 보안을 유지하면서 낮은 지연 시간 통신을 지원해야 했습니다.</p>
@@ -290,9 +290,9 @@
         <br>
         <h3 id="adr-006-external-api-integration-strategy">ADR-006: 외부 API 통합 전략</h3>
         <br>
-        <p><strong>상태</strong>: ✅ 승인됨</p>
-        <p><strong>날짜</strong>: 2025-06-06</p>
-        <p><strong>결정자</strong>: 통합팀, 인프라팀</p>
+        <!-- <p><strong>상태</strong>: ✅ 승인됨</p>-->
+        <!-- <p><strong>날짜</strong>: 2025-06-06</p>-->
+        <!-- <p><strong>결정자</strong>: 통합팀, 인프라팀</p>-->
         <br>
         <h4>배경</h4>
         <p>청약 데이터, 뉴스, 지도, 금융 정보를 위해 여러 한국 정부 및 상업 API와 통합해야 했습니다.</p>
@@ -341,9 +341,9 @@
         <br>
         <h3 id="adr-007-database-catalog-separation">ADR-007: 데이터베이스 카탈로그 분리</h3>
         <br>
-        <p><strong>상태</strong>: ✅ 승인됨</p>
-        <p><strong>날짜</strong>: 2025-06-07</p>
-        <p><strong>결정자</strong>: 데이터베이스팀, 운영팀</p>
+        <!-- <p><strong>상태</strong>: ✅ 승인됨</p>-->
+        <!-- <p><strong>날짜</strong>: 2025-06-07</p>-->
+        <!-- <p><strong>결정자</strong>: 데이터베이스팀, 운영팀</p>-->
         <br>
         <h4>배경</h4>
         <p>데이터베이스 객체의 명확한 구성과 다양한 한국 지역 또는 사업부를 위한 잠재적인 미래 다중 테넌시 지원이 필요했습니다.</p>
@@ -391,9 +391,9 @@
         <br>
         <h3 id="adr-008-async-processing-for-data-synchronization">ADR-008: 데이터 동기화를 위한 비동기 처리</h3>
         <br>
-        <p><strong>상태</strong>: ✅ 승인됨</p>
-        <p><strong>날짜</strong>: 2025-06-08</p>
-        <p><strong>결정자</strong>: 성능팀, 운영팀</p>
+        <!-- <p><strong>상태</strong>: ✅ 승인됨</p>-->
+        <!-- <p><strong>날짜</strong>: 2025-06-08</p>-->
+        <!-- <p><strong>결정자</strong>: 성능팀, 운영팀</p>-->
         <br>
         <h4>배경</h4>
         <p>정부 API 데이터 동기화 프로세스는 대량의 데이터를 처리하며 사용자 대면 작업을 차단해서는 안 됩니다. 한국 정부 API는 가용 시간대가 제한적입니다.</p>
@@ -438,9 +438,9 @@
             <li>엔터프라이즈급 성능을 위한 필수 요소</li>
         </ul>
         <br>
-        <hr>
+        <!--<hr>
         <br>
-        <h3 id="adr-009-comprehensive-audit-trail-system">ADR-009: 포괄적인 감사 추적 시스템</h3>
+         <h3 id="adr-009-comprehensive-audit-trail-system">ADR-009: 포괄적인 감사 추적 시스템</h3>
         <br>
         <p><strong>상태</strong>: ✅ 승인됨</p>
         <p><strong>날짜</strong>: 2025-06-09</p>
@@ -488,14 +488,14 @@
         <ul>
             <li>규제 산업의 엔터프라이즈 애플리케이션에 필수적</li>
         </ul>
-        <br>
+        <br>-->
         <hr>
         <br>
         <h3 id="adr-010-news-content-filtering-pipeline">ADR-010: 뉴스 콘텐츠 필터링 파이프라인</h3>
         <br>
-        <p><strong>상태</strong>: ✅ 승인됨</p>
-        <p><strong>날짜</strong>: 2025-06-10</p>
-        <p><strong>결정자</strong>: 콘텐츠팀, 비즈니스팀</p>
+        <!-- <p><strong>상태</strong>: ✅ 승인됨</p>-->
+        <!--<p><strong>날짜</strong>: 2025-06-10</p> -->
+        <!-- <p><strong>결정자</strong>: 콘텐츠팀, 비즈니스팀</p>-->
         <br>
         <h4>배경</h4>
         <p>한국 부동산 뉴스 집계는 스팸 및 홍보 자료를 피하면서 고품질의 관련 콘텐츠를 제공하기 위해 정교한 필터링이 필요합니다.</p>
